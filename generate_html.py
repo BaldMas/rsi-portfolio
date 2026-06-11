@@ -59,6 +59,28 @@ def load_scores_from_analyses():
 # ──────────────────────────────────────────────
 # Загрузка данных
 
+def fetch_cg_ranks():
+    """Возвращает {symbol: cmc_rank} для топ-500 монет по CoinGecko."""
+    ranks = {}
+    try:
+        for page in (1, 2):
+            url = (
+                "https://api.coingecko.com/api/v3/coins/markets"
+                f"?vs_currency=usd&order=market_cap_desc&per_page=250&page={page}"
+                "&sparkline=false"
+            )
+            data = fetch_json(url)
+            for item in data:
+                sym = item.get("symbol", "").upper()
+                rank = item.get("market_cap_rank")
+                if sym and rank and sym not in ranks:
+                    ranks[sym] = rank
+            time.sleep(0.3)
+    except Exception:
+        pass
+    return ranks
+
+
 def fetch_json(url):
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
     with urllib.request.urlopen(req, timeout=15) as r:
@@ -276,12 +298,13 @@ tr:hover td { background: #1c2128; }
 .fn-neg { color: #58a6ff; }
 .fn-neu { color: #8b949e; }
 .macro-warn { background: #2d1f1f; border: 1px solid #f85149; border-radius: 6px; padding: 8px 14px; margin-bottom: 12px; color: #f85149; font-size: 0.88em; }
-.pair-sub { font-size: 0.78em; color: #8b949e; margin-top: 3px; }
-.pair-sub .ok  { color: #3fb950; }
+.pair-main  { display: flex; align-items: flex-start; gap: 6px; }
+.pair-left, .pair-right { display: flex; flex-direction: column; }
+.pair-arrow { padding-top: 2px; color: #8b949e; }
+.pair-sub   { font-size: 0.78em; color: #8b949e; margin-top: 2px; }
+.pair-sub .ok   { color: #3fb950; }
 .pair-sub .warn { color: #f85149; }
-.pair-pnl { font-size: 0.82em; margin-left: 4px; }
-.pair-pnl.ok   { color: #3fb950; }
-.pair-pnl.warn { color: #f85149; }
+.rank-lbl   { color: #8b949e; }
 .changes-block { background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 10px 14px; margin-bottom: 12px; font-size: 0.82em; }
 .changes-title { color: #8b949e; font-size: 0.85em; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
 .chg-row { padding: 3px 0; border-bottom: 1px solid #21262d; line-height: 1.5; }
@@ -461,38 +484,33 @@ def build_html(results, macro, generated_at, total=0, cnt_rotate=0, cnt_watch=0,
 
         # P/L источника
         coin_pnl = pv.get(coin, {}).get("pnl")
-        if coin_pnl is not None:
-            cpnl_cls  = "ok" if coin_pnl >= 0 else "warn"
-            cpnl_html = f'<span class="pair-pnl {cpnl_cls}">{coin_pnl:+.1f}%</span>'
-        else:
-            cpnl_html = ""
-
-        # P/L получателя сейчас
-        ref_pnl = pv.get(ref, {}).get("pnl")
-        if ref_pnl is not None:
-            rpnl_cls  = "ok" if ref_pnl >= 0 else "warn"
-            rpnl_now  = f'<span class="{rpnl_cls}">{ref_pnl:+.1f}%</span>'
-        else:
-            rpnl_now  = '<span style="color:#8b949e">н/д</span>'
+        cpnl_cls  = "ok" if (coin_pnl or 0) >= 0 else "warn"
+        cpnl_str  = f'{coin_pnl:+.1f}%' if coin_pnl is not None else "н/д"
 
         # P/L получателя ПОСЛЕ ротации
         after_pnl = rotation_after_pnl(coin, ref, pv, r["ref_invested"])
-        if after_pnl is not None:
-            acls      = "ok" if after_pnl >= 0 else "warn"
-            rpnl_after = f'<span class="{acls}">{after_pnl:+.1f}%</span>'
-        else:
-            rpnl_after = '<span style="color:#8b949e">н/д</span>'
+        acls      = "ok" if (after_pnl or 0) >= 0 else "warn"
+        after_str = f'{after_pnl:+.1f}%' if after_pnl is not None else "н/д"
+
+        # Ранки
+        crank  = f'#{r["rank"]} '  if r.get("rank")     else ""
+        rcrank = f'#{r["ref_rank"]} ' if r.get("ref_rank") else ""
 
         rows_html += f"""
 <tr data-sig="{sc}">
   <td class="medal">{medal}</td>
   <td class="pair">
-    <div>
-      {coin}<span class="coin-tag {grp_class(grp)}" title="Score: {cscore}/500">г{grp} ★{cscore}</span>{cpnl_html}
-      →
-      {ref}<span class="coin-tag {grp_class(ref_g)}" title="Score: {rscore}/500">г{ref_g} ★{rscore}</span>
+    <div class="pair-main">
+      <span class="pair-left">
+        {coin}<span class="coin-tag {grp_class(grp)}" title="Score: {cscore}/500">г{grp} ★{cscore}</span>
+        <span class="pair-sub"><span class="rank-lbl">{crank}</span><span class="{cpnl_cls}">{cpnl_str}</span></span>
+      </span>
+      <span class="pair-arrow">→</span>
+      <span class="pair-right">
+        {ref}<span class="coin-tag {grp_class(ref_g)}" title="Score: {rscore}/500">г{ref_g} ★{rscore}</span>
+        <span class="pair-sub"><span class="rank-lbl">{rcrank}</span><span class="{acls}">{after_str}</span></span>
+      </span>
     </div>
-    <div class="pair-sub">{rpnl_now} → {rpnl_after}</div>
   </td>
   <td data-val="{r['rsi_d'] or 0:.1f}">{rsi_color(r['rsi_d'])}</td>
   <td data-val="{r['rsi_w'] or 0:.1f}">{rsi_color(r['rsi_w'])}</td>
@@ -622,6 +640,10 @@ def main():
     print("Макро...", flush=True)
     macro = fetch_macro()
 
+    print("Ранки CoinGecko...", flush=True)
+    cg_ranks = fetch_cg_ranks()
+    print(f"  Получено {len(cg_ranks)} монет", flush=True)
+
     print("Цены...", flush=True)
     prices = {}
     all_coins = list(PORTFOLIO.keys())
@@ -691,6 +713,8 @@ def main():
                 "sig": sig,
                 "invested":     INVESTED.get(coin, 0),
                 "ref_invested": INVESTED.get(ref_coin, 0),
+                "rank":     cg_ranks.get(coin),
+                "ref_rank": cg_ranks.get(ref_coin),
             })
 
     results.sort(key=lambda x: x["sig"], reverse=True)
