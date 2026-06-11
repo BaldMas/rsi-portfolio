@@ -7,6 +7,8 @@ find_base*.py
 find_bff*.py
 report.html
 update.log
+changes.log
+portfolio_snapshot.json
 
 # Секреты - НИКОГДА не коммитить
 .env
