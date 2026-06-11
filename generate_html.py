@@ -492,7 +492,7 @@ def build_html(results, macro, generated_at, total=0, cnt_rotate=0, cnt_watch=0,
       →
       {ref}<span class="coin-tag {grp_class(ref_g)}" title="Score: {rscore}/500">г{ref_g} ★{rscore}</span>
     </div>
-    <div class="pair-sub">сейчас {rpnl_now} → после перелива {rpnl_after}</div>
+    <div class="pair-sub">{rpnl_now} → {rpnl_after}</div>
   </td>
   <td data-val="{r['rsi_d'] or 0:.1f}">{rsi_color(r['rsi_d'])}</td>
   <td data-val="{r['rsi_w'] or 0:.1f}">{rsi_color(r['rsi_w'])}</td>
