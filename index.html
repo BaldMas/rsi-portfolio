@@ -90,7 +90,7 @@ tr:hover td { background: #1c2128; }
 <body>
 <h1>RSI Portfolio Rotation Monitor</h1>
 <p class="subtitle timestamp">
-  Сгенерировано: 2026-06-11 14:15:21 (MNE)&ensp;<span id="loaded-at" style="color:#8b949e"></span>
+  Сгенерировано: 2026-06-11 14:15:34 (MNE)&ensp;<span id="loaded-at" style="color:#8b949e"></span>
 </p>
 
 <div class="macro">
@@ -1073,8 +1073,11 @@ function filterRows(type) {
   document.addEventListener('mousemove', e => {
     if (t.style.display==='none') return;
     const x=e.clientX+16, y=e.clientY+10;
-    t.style.left=(x+t.offsetWidth>innerWidth?x-t.offsetWidth-30:x)+'px';
-    t.style.top=(y+t.offsetHeight>innerHeight?y-t.offsetHeight-18:y)+'px';
+    const tx=x+t.offsetWidth>innerWidth?x-t.offsetWidth-30:x;
+    let ty=y+t.offsetHeight>innerHeight?y-t.offsetHeight-18:y;
+    ty=Math.max(4,ty);
+    t.style.left=tx+'px';
+    t.style.top=ty+'px';
   });
   document.addEventListener('mouseout', e => {
     const el=e.target.closest('[data-tid]');
@@ -1088,7 +1091,7 @@ function filterRows(type) {
   const ts = now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())+' '+pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
   const el = document.getElementById('loaded-at');
   if (el) el.textContent = 'Обновлено: ' + ts;
-  const refreshAt = 1781180121473 + 17*60*1000;
+  const refreshAt = 1781180134267 + 17*60*1000;
   const delay = Math.max(30000, refreshAt - Date.now());
   setTimeout(() => location.reload(), delay);
 })();
