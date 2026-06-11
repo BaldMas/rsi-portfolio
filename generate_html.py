@@ -481,7 +481,6 @@ def build_html(results, macro, generated_at, total=0, cnt_rotate=0, cnt_watch=0,
 </div>
 
 {warn_html}
-{changes_html}
 
 <div class="filter-bar">
   <button class="filter-btn active" data-filter="all" onclick="filterRows('all')">Все ({total})</button>
@@ -512,6 +511,8 @@ def build_html(results, macro, generated_at, total=0, cnt_rotate=0, cnt_watch=0,
 {rows_html}
 </tbody>
 </table>
+
+{changes_html}
 
 <script>{JS}</script>
 </body>
