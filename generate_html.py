@@ -8,6 +8,7 @@ import sys
 import time
 import json
 import math
+import os
 import urllib.request
 from datetime import datetime
 
@@ -53,6 +54,32 @@ def fetch_json(url):
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
     with urllib.request.urlopen(req, timeout=15) as r:
         return json.loads(r.read())
+
+
+def fetch_portfolio_values():
+    """Текущие стоимости и P/L с Dropstab API."""
+    result = {}
+    try:
+        env_path = os.path.join(os.path.dirname(__file__), ".env")
+        token = ""
+        with open(env_path) as f:
+            for line in f:
+                if "DROPSTAB_TOKEN" in line:
+                    token = line.split("=", 1)[1].strip()
+        if not token:
+            return result
+        data = fetch_json(f"https://dropstab.com/_gateway/api/portfolio/api/portfolioGroup/individualShare/{token}")
+        for item in data.get("portfolios", []):
+            sym = item.get("symbol", "").upper()
+            total = item.get("totalCap", {})
+            pnl   = item.get("unrealizedProfitPercent", {})
+            value = float(total.get("USD", 0) or 0) if isinstance(total, dict) else 0
+            pnl_p = float(pnl.get("USD", 0) or 0) if isinstance(pnl, dict) else 0
+            if sym and value > 0:
+                result[sym] = {"value": value, "pnl": pnl_p}
+    except Exception:
+        pass
+    return result
 
 
 def fetch_closes_binance(symbol, limit=500):
@@ -323,6 +350,15 @@ def fn_fmt(v, label):
     cls = "fn-hot" if v > 0.05 else "fn-neg" if v < -0.02 else "fn-neu"
     return f'<span class="{cls}" title="{label}" data-val="{v:.4f}">{v:+.3f}%</span>'
 
+def pnl_fmt(coin, pv):
+    if coin not in pv:
+        return '<span style="color:#8b949e">-</span>'
+    val  = pv[coin]["value"]
+    pnl  = pv[coin]["pnl"]
+    cls  = "ok" if pnl >= 0 else "warn"
+    pnl_str = f'{pnl:+.1f}%'
+    return f'<span data-val="{val:.0f}">${val:,.0f} <span class="{cls}">({pnl_str})</span></span>'
+
 def rs_fmt(v):
     if v is None: return '<span style="color:#8b949e">н/д</span>'
     cls = "warn" if v > 30 else "ok" if v < -10 else ""
@@ -336,7 +372,7 @@ def sig_class(sig):
 
 MEDALS = ["🥇", "🥈", "🥉"]
 
-def build_html(results, macro, generated_at):
+def build_html(results, macro, generated_at, total=0, cnt_rotate=0, cnt_watch=0, cnt_wait=0, portfolio_values=None):
     dom  = macro.get("dominance")
     fg   = macro.get("fg")
     fglb = macro.get("fg_label", "")
@@ -353,6 +389,8 @@ def build_html(results, macro, generated_at):
     warn_html = ""
     if macro_warn:
         warn_html = f'<div class="macro-warn">⚠ МАКРОФИЛЬТР: {" | ".join(macro_warn)}</div>'
+
+    pv = portfolio_values or {}
 
     rows_html = ""
     rank = 0
@@ -394,6 +432,7 @@ def build_html(results, macro, generated_at):
   <td>{fn_fmt(r['funding'], r['funding_sig'])}</td>
   <td data-val="{sig:.2f}"><span class="sig-{sc}">{sig:+.2f}</span></td>
   <td>${r['invested']:,}</td>
+  <td>{pnl_fmt(coin, pv)}</td>
   <td>{tag_html}</td>
 </tr>"""
 
@@ -423,10 +462,10 @@ def build_html(results, macro, generated_at):
 {warn_html}
 
 <div class="filter-bar">
-  <button class="filter-btn active" data-filter="all" onclick="filterRows('all')">Все</button>
-  <button class="filter-btn" data-filter="rotate" onclick="filterRows('rotate')">▶ Ротировать</button>
-  <button class="filter-btn" data-filter="watch" onclick="filterRows('watch')">▷ Смотреть</button>
-  <button class="filter-btn" data-filter="wait" onclick="filterRows('wait')">◀ Ждать</button>
+  <button class="filter-btn active" data-filter="all" onclick="filterRows('all')">Все ({total})</button>
+  <button class="filter-btn" data-filter="rotate" onclick="filterRows('rotate')">▶ Ротировать ({cnt_rotate})</button>
+  <button class="filter-btn" data-filter="watch" onclick="filterRows('watch')">▷ Смотреть ({cnt_watch})</button>
+  <button class="filter-btn" data-filter="wait" onclick="filterRows('wait')">◀ Ждать ({cnt_wait})</button>
 </div>
 
 <table id="main-table" data-sort-col="-1" data-sort-dir="desc">
@@ -443,6 +482,7 @@ def build_html(results, macro, generated_at):
   <th onclick="sortTable(8)">Funding</th>
   <th onclick="sortTable(9)">Сигнал</th>
   <th onclick="sortTable(10)">Инвест</th>
+  <th onclick="sortTable(11)">Сейчас (P/L)</th>
   <th>Статус</th>
 </tr>
 </thead>
@@ -462,6 +502,10 @@ def main():
     print("Макро...", flush=True)
     macro = fetch_macro()
 
+    print("Текущие стоимости (Dropstab)...", flush=True)
+    portfolio_values = fetch_portfolio_values()
+    print(f"  Получено {len(portfolio_values)} позиций", flush=True)
+
     print("Цены...", flush=True)
     prices = {}
     all_coins = list(PORTFOLIO.keys()) + ["TON"]
@@ -477,7 +521,7 @@ def main():
     print("Funding...", flush=True)
     funding_hist = {}
     for coin in PORTFOLIO:
-        if coin in NO_PERP or coin in ("BTC", "ETH"):
+        if coin in NO_PERP:
             continue
         fh = fetch_funding_history(coin, 30)
         funding_hist[coin] = fh
@@ -486,25 +530,25 @@ def main():
     print("OI...", flush=True)
     oi_changes = {}
     for coin in PORTFOLIO:
-        if coin in NO_PERP or coin in GATE_FUNDING or coin in ("BTC", "ETH"):
+        if coin in NO_PERP or coin in GATE_FUNDING:
             continue
         hist = fetch_oi_history(coin, 8)
         oi_changes[coin] = calc_oi_change(hist)
         time.sleep(0.1)
 
-    btc = prices.get("BTC", [])
-    eth = prices.get("ETH", [])
-
     results = []
     for coin, grp in PORTFOLIO.items():
-        if coin in ("BTC", "ETH") or coin not in prices:
+        if coin not in prices:
             continue
         p = prices[coin]
         f_last, f_sig = funding_label(funding_hist.get(coin, []))
         dist_200 = calc_ma200(p)
         oi_chg   = oi_changes.get(coin)
 
-        for ref_name, ref_p, ref_g in [("BTC", btc, 1), ("ETH", eth, 1)]:
+        for ref_coin, ref_grp in PORTFOLIO.items():
+            if ref_coin == coin or ref_grp > grp:
+                continue
+            ref_p = prices.get(ref_coin, [])
             if not ref_p:
                 continue
             n = min(len(p), len(ref_p))
@@ -522,8 +566,8 @@ def main():
             sig = score_signal(rsi_d, rsi_w, z90, rs_30, f_last, dist_200, oi_chg)
 
             results.append({
-                "coin": coin, "ref": ref_name,
-                "grp": grp, "ref_g": ref_g,
+                "coin": coin, "ref": ref_coin,
+                "grp": grp, "ref_g": ref_grp,
                 "rsi_d": rsi_d, "rsi_w": rsi_w,
                 "z90": z90, "rs_30": rs_30,
                 "funding": f_last, "funding_sig": f_sig,
@@ -535,7 +579,11 @@ def main():
     results.sort(key=lambda x: x["sig"], reverse=True)
 
     generated_at = datetime.now().strftime("%Y-%m-%d %H:%M")
-    html = build_html(results, macro, generated_at)
+    total      = len(results)
+    cnt_rotate = sum(1 for r in results if r["sig"] > 4)
+    cnt_watch  = sum(1 for r in results if 2 < r["sig"] <= 4)
+    cnt_wait   = sum(1 for r in results if r["sig"] < -3)
+    html = build_html(results, macro, generated_at, total, cnt_rotate, cnt_watch, cnt_wait, portfolio_values)
 
     with open(out_file, "w", encoding="utf-8") as f:
         f.write(html)
