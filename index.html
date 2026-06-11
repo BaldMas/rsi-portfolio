@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RSI Portfolio Rotation</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', sans-serif; background: #0d1117; color: #e6edf3; padding: 20px; }
+h1 { font-size: 1.4em; margin-bottom: 4px; color: #58a6ff; }
+.subtitle { color: #8b949e; font-size: 0.85em; margin-bottom: 16px; }
+.macro { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; display: flex; gap: 32px; flex-wrap: wrap; }
+.macro-item { font-size: 0.9em; }
+.macro-item .label { color: #8b949e; }
+.macro-item .value { font-weight: 600; }
+.warn { color: #f85149; }
+.ok   { color: #3fb950; }
+.caution { color: #d29922; }
+table { width: 100%; border-collapse: collapse; font-size: 0.82em; }
+th { background: #161b22; color: #8b949e; padding: 8px 10px; text-align: left; border-bottom: 2px solid #30363d; white-space: nowrap; cursor: pointer; user-select: none; }
+th:hover { color: #58a6ff; }
+td { padding: 7px 10px; border-bottom: 1px solid #21262d; white-space: nowrap; vertical-align: middle; }
+tr:hover td { background: #1c2128; }
+.medal { font-size: 1.1em; }
+.pair { font-weight: 600; }
+.coin-tag { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 0.78em; margin-left: 3px; }
+.g1 { background: #1f3a24; color: #3fb950; }
+.g2 { background: #1a2e4a; color: #58a6ff; }
+.g3 { background: #2d2a1e; color: #d29922; }
+.g4 { background: #2d1f1f; color: #f0883e; }
+.g5 { background: #3d1a1a; color: #f85149; }
+.score-bar { display: inline-block; height: 6px; border-radius: 3px; vertical-align: middle; margin-right: 4px; }
+.sig-rotate  { color: #3fb950; font-weight: 700; }
+.sig-watch   { color: #d29922; font-weight: 600; }
+.sig-wait    { color: #f85149; }
+.sig-neutral { color: #8b949e; }
+.tag-rotate  { background: #1f3a24; color: #3fb950; padding: 2px 8px; border-radius: 4px; font-size: 0.8em; font-weight: 700; }
+.tag-watch   { background: #2d2a1e; color: #d29922; padding: 2px 8px; border-radius: 4px; font-size: 0.8em; }
+.tag-wait    { background: #3d1a1a; color: #f85149; padding: 2px 8px; border-radius: 4px; font-size: 0.8em; }
+.z-hi  { color: #f85149; }
+.z-lo  { color: #3fb950; }
+.z-mid { color: #8b949e; }
+.ma-up { color: #3fb950; }
+.ma-dn { color: #f85149; }
+.oi-up { color: #3fb950; }
+.oi-dn { color: #f85149; }
+.fn-hot { color: #f85149; }
+.fn-neg { color: #58a6ff; }
+.fn-neu { color: #8b949e; }
+.macro-warn { background: #2d1f1f; border: 1px solid #f85149; border-radius: 6px; padding: 8px 14px; margin-bottom: 12px; color: #f85149; font-size: 0.88em; }
+.filter-bar { margin-bottom: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+.filter-btn { padding: 4px 12px; border-radius: 4px; border: 1px solid #30363d; background: #161b22; color: #8b949e; cursor: pointer; font-size: 0.82em; }
+.filter-btn.active { border-color: #58a6ff; color: #58a6ff; }
+.timestamp { color: #8b949e; font-size: 0.78em; }
+</style>
+</head>
+<body>
+<h1>RSI Portfolio Rotation Monitor</h1>
+<p class="subtitle timestamp">Обновлено: 2026-06-11 03:04</p>
+
+<div class="macro">
+  <div class="macro-item">
+    <span class="label">BTC Dominance: </span>
+    <span class="value ok">55.77%</span>
+  </div>
+  <div class="macro-item">
+    <span class="label">Fear & Greed: </span>
+    <span class="value warn">12 (Extreme Fear)</span>
+  </div>
+</div>
+
+<div class="macro-warn">⚠ МАКРОФИЛЬТР: Fear & Greed 12 (Extreme Fear) — рынок в страхе</div>
+
+<div class="filter-bar">
+  <button class="filter-btn active" data-filter="all" onclick="filterRows('all')">Все</button>
+  <button class="filter-btn" data-filter="rotate" onclick="filterRows('rotate')">▶ Ротировать</button>
+  <button class="filter-btn" data-filter="watch" onclick="filterRows('watch')">▷ Смотреть</button>
+  <button class="filter-btn" data-filter="wait" onclick="filterRows('wait')">◀ Ждать</button>
+</div>
+
+<table id="main-table" data-sort-col="-1" data-sort-dir="desc">
+<thead>
+<tr>
+  <th onclick="sortTable(0)">#</th>
+  <th onclick="sortTable(1)">Из → В</th>
+  <th onclick="sortTable(2)">RSI 1D</th>
+  <th onclick="sortTable(3)">RSI 1W</th>
+  <th onclick="sortTable(4)">Z-score 90д</th>
+  <th onclick="sortTable(5)">RS 30д</th>
+  <th onclick="sortTable(6)">MA200</th>
+  <th onclick="sortTable(7)">OI 7д</th>
+  <th onclick="sortTable(8)">Funding</th>
+  <th onclick="sortTable(9)">Сигнал</th>
+  <th onclick="sortTable(10)">Инвест</th>
+  <th>Статус</th>
+</tr>
+</thead>
+<tbody>
+
+<tr data-sig="watch">
+  <td class="medal">🥇</td>
+  <td class="pair">
+    COMP<span class="coin-tag g4" title="Score: 212/500">г4 ★212</span>
+    →
+    ETH<span class="coin-tag g1" title="Score: 396/500">г1 ★396</span>
+  </td>
+  <td data-val="59.6"><span class="">59.6</span></td>
+  <td data-val="55.6"><span class="">55.6</span></td>
+  <td><span class="z-hi" data-val="1.62">+1.62!</span></td>
+  <td><span class="" data-val="3.3">+3.3%</span></td>
+  <td><span class="ma-dn" data-val="-20.2">-20% ▼</span></td>
+  <td><span class="oi-dn" data-val="-17">-17%▼</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="0.0100">+0.010%</span></td>
+  <td data-val="3.71"><span class="sig-watch">+3.71</span></td>
+  <td>$500</td>
+  <td><span class="tag-watch">▷ смотреть</span></td>
+</tr>
+<tr data-sig="watch">
+  <td class="medal">🥈</td>
+  <td class="pair">
+    ONDO<span class="coin-tag g2" title="Score: 340/500">г2 ★340</span>
+    →
+    ETH<span class="coin-tag g1" title="Score: 396/500">г1 ★396</span>
+  </td>
+  <td data-val="55.2"><span class="">55.2</span></td>
+  <td data-val="63.4"><span class="caution">63.4</span></td>
+  <td><span class="z-hi" data-val="1.57">+1.57!</span></td>
+  <td><span class="" data-val="14.6">+14.6%</span></td>
+  <td><span class="ma-up" data-val="0.3">+0% ▲</span></td>
+  <td><span class="oi-dn" data-val="-52">-52%▼▼</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="-0.0078">-0.008%</span></td>
+  <td data-val="3.50"><span class="sig-watch">+3.50</span></td>
+  <td>$300</td>
+  <td><span class="tag-watch">▷ смотреть</span></td>
+</tr>
+<tr data-sig="watch">
+  <td class="medal">🥉</td>
+  <td class="pair">
+    HBAR<span class="coin-tag g2" title="Score: 312/500">г2 ★312</span>
+    →
+    ETH<span class="coin-tag g1" title="Score: 396/500">г1 ★396</span>
+  </td>
+  <td data-val="58.5"><span class="">58.5</span></td>
+  <td data-val="55.5"><span class="">55.5</span></td>
+  <td><span class="z-hi" data-val="1.70">+1.70!</span></td>
+  <td><span class="" data-val="11.5">+11.5%</span></td>
+  <td><span class="ma-dn" data-val="-22.8">-23% ▼</span></td>
+  <td><span class="z-mid" data-val="-9">-9%</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="0.0043">+0.004%</span></td>
+  <td data-val="3.44"><span class="sig-watch">+3.44</span></td>
+  <td>$5,996</td>
+  <td><span class="tag-watch">▷ смотреть</span></td>
+</tr>
+<tr data-sig="watch">
+  <td class="medal">4</td>
+  <td class="pair">
+    XRP<span class="coin-tag g2" title="Score: 367/500">г2 ★367</span>
+    →
+    ETH<span class="coin-tag g1" title="Score: 396/500">г1 ★396</span>
+  </td>
+  <td data-val="57.0"><span class="">57.0</span></td>
+  <td data-val="53.9"><span class="">53.9</span></td>
+  <td><span class="z-mid" data-val="1.34">+1.34</span></td>
+  <td><span class="" data-val="5.0">+5.0%</span></td>
+  <td><span class="ma-dn" data-val="-30.5">-30% ▼</span></td>
+  <td><span class="z-mid" data-val="-8">-8%</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="-0.0078">-0.008%</span></td>
+  <td data-val="2.96"><span class="sig-watch">+2.96</span></td>
+  <td>$9,921</td>
+  <td><span class="tag-watch">▷ смотреть</span></td>
+</tr>
+<tr data-sig="watch">
+  <td class="medal">5</td>
+  <td class="pair">
+    ONDO<span class="coin-tag g2" title="Score: 340/500">г2 ★340</span>
+    →
+    BTC<span class="coin-tag g1" title="Score: 413/500">г1 ★413</span>
+  </td>
+  <td data-val="52.2"><span class="">52.2</span></td>
+  <td data-val="57.2"><span class="">57.2</span></td>
+  <td><span class="z-mid" data-val="1.36">+1.36</span></td>
+  <td><span class="" data-val="9.5">+9.5%</span></td>
+  <td><span class="ma-up" data-val="0.3">+0% ▲</span></td>
+  <td><span class="oi-dn" data-val="-52">-52%▼▼</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="-0.0078">-0.008%</span></td>
+  <td data-val="2.38"><span class="sig-watch">+2.38</span></td>
+  <td>$300</td>
+  <td><span class="tag-watch">▷ смотреть</span></td>
+</tr>
+<tr data-sig="watch">
+  <td class="medal">6</td>
+  <td class="pair">
+    ICP<span class="coin-tag g3" title="Score: 234/500">г3 ★234</span>
+    →
+    ETH<span class="coin-tag g1" title="Score: 396/500">г1 ★396</span>
+  </td>
+  <td data-val="50.2"><span class="">50.2</span></td>
+  <td data-val="55.6"><span class="">55.6</span></td>
+  <td><span class="z-mid" data-val="1.06">+1.06</span></td>
+  <td><span class="" data-val="-1.5">-1.5%</span></td>
+  <td><span class="ma-dn" data-val="-20.5">-20% ▼</span></td>
+  <td><span class="oi-dn" data-val="-28">-28%▼</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="-0.0152">-0.015%</span></td>
+  <td data-val="2.13"><span class="sig-watch">+2.13</span></td>
+  <td>$1,350</td>
+  <td><span class="tag-watch">▷ смотреть</span></td>
+</tr>
+<tr data-sig="neutral">
+  <td class="medal">7</td>
+  <td class="pair">
+    IMX<span class="coin-tag g4" title="Score: 176/500">г4 ★176</span>
+    →
+    ETH<span class="coin-tag g1" title="Score: 396/500">г1 ★396</span>
+  </td>
+  <td data-val="55.8"><span class="">55.8</span></td>
+  <td data-val="44.8"><span class="">44.8</span></td>
+  <td><span class="z-mid" data-val="1.33">+1.33</span></td>
+  <td><span class="" data-val="1.6">+1.6%</span></td>
+  <td><span class="ma-dn" data-val="-30.4">-30% ▼</span></td>
+  <td><span class="z-mid" data-val="-7">-7%</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="-0.0047">-0.005%</span></td>
+  <td data-val="1.80"><span class="sig-neutral">+1.80</span></td>
+  <td>$1,354</td>
+  <td></td>
+</tr>
+<tr data-sig="neutral">
+  <td class="medal">8</td>
+  <td class="pair">
+    STRK<span class="coin-tag g3" title="Score: 226/500">г3 ★226</span>
+    →
+    ETH<span class="coin-tag g1" title="Score: 396/500">г1 ★396</span>
+  </td>
+  <td data-val="56.2"><span class="">56.2</span></td>
+  <td data-val="44.6"><span class="">44.6</span></td>
+  <td><span class="z-mid" data-val="1.24">+1.24</span></td>
+  <td><span class="" data-val="-3.5">-3.5%</span></td>
+  <td><span class="ma-dn" data-val="-42.5">-42% ▼</span></td>
+  <td><span class="oi-dn" data-val="-14">-14%▼</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="0.0050">+0.005%</span></td>
+  <td data-val="1.64"><span class="sig-neutral">+1.64</span></td>
+  <td>$20,377</td>
+  <td></td>
+</tr>
+<tr data-sig="neutral">
+  <td class="medal">9</td>
+  <td class="pair">
+    JUP<span class="coin-tag g2" title="Score: 311/500">г2 ★311</span>
+    →
+    ETH<span class="coin-tag g1" title="Score: 396/500">г1 ★396</span>
+  </td>
+  <td data-val="45.8"><span class="">45.8</span></td>
+  <td data-val="51.7"><span class="">51.7</span></td>
+  <td><span class="z-mid" data-val="0.64">+0.64</span></td>
+  <td><span class="" data-val="-7.3">-7.3%</span></td>
+  <td><span class="ma-dn" data-val="-19.8">-20% ▼</span></td>
+  <td><span class="oi-dn" data-val="-27">-27%▼</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="-0.0133">-0.013%</span></td>
+  <td data-val="0.84"><span class="sig-neutral">+0.84</span></td>
+  <td>$1,113</td>
+  <td></td>
+</tr>
+<tr data-sig="neutral">
+  <td class="medal">10</td>
+  <td class="pair">
+    COMP<span class="coin-tag g4" title="Score: 212/500">г4 ★212</span>
+    →
+    BTC<span class="coin-tag g1" title="Score: 413/500">г1 ★413</span>
+  </td>
+  <td data-val="56.3"><span class="">56.3</span></td>
+  <td data-val="49.3"><span class="">49.3</span></td>
+  <td><span class="z-mid" data-val="0.39">+0.39</span></td>
+  <td><span class="" data-val="-1.8">-1.8%</span></td>
+  <td><span class="ma-dn" data-val="-20.2">-20% ▼</span></td>
+  <td><span class="oi-dn" data-val="-17">-17%▼</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="0.0100">+0.010%</span></td>
+  <td data-val="0.47"><span class="sig-neutral">+0.47</span></td>
+  <td>$500</td>
+  <td></td>
+</tr>
+<tr data-sig="neutral">
+  <td class="medal">11</td>
+  <td class="pair">
+    TIA<span class="coin-tag g4" title="Score: 206/500">г4 ★206</span>
+    →
+    ETH<span class="coin-tag g1" title="Score: 396/500">г1 ★396</span>
+  </td>
+  <td data-val="49.1"><span class="">49.1</span></td>
+  <td data-val="45.4"><span class="">45.4</span></td>
+  <td><span class="z-mid" data-val="0.92">+0.92</span></td>
+  <td><span class="" data-val="-3.8">-3.8%</span></td>
+  <td><span class="ma-dn" data-val="-23.7">-24% ▼</span></td>
+  <td><span class="oi-dn" data-val="-11">-11%▼</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="0.0026">+0.003%</span></td>
+  <td data-val="0.46"><span class="sig-neutral">+0.46</span></td>
+  <td>$599</td>
+  <td></td>
+</tr>
+<tr data-sig="neutral">
+  <td class="medal">12</td>
+  <td class="pair">
+    RENDER<span class="coin-tag g2" title="Score: 314/500">г2 ★314</span>
+    →
+    ETH<span class="coin-tag g1" title="Score: 396/500">г1 ★396</span>
+  </td>
+  <td data-val="44.9"><span class="">44.9</span></td>
+  <td data-val="58.9"><span class="">58.9</span></td>
+  <td><span class="z-mid" data-val="0.63">+0.63</span></td>
+  <td><span class="" data-val="8.2">+8.2%</span></td>
+  <td><span class="ma-dn" data-val="-11.5">-12% ▼</span></td>
+  <td><span class="oi-dn" data-val="-22">-22%▼</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="-0.0063">-0.006%</span></td>
+  <td data-val="0.28"><span class="sig-neutral">+0.28</span></td>
+  <td>$600</td>
+  <td></td>
+</tr>
+<tr data-sig="neutral">
+  <td class="medal">13</td>
+  <td class="pair">
+    ICP<span class="coin-tag g3" title="Score: 234/500">г3 ★234</span>
+    →
+    BTC<span class="coin-tag g1" title="Score: 413/500">г1 ★413</span>
+  </td>
+  <td data-val="47.1"><span class="">47.1</span></td>
+  <td data-val="50.2"><span class="">50.2</span></td>
+  <td><span class="z-mid" data-val="0.32">+0.32</span></td>
+  <td><span class="" data-val="-6.6">-6.6%</span></td>
+  <td><span class="ma-dn" data-val="-20.5">-20% ▼</span></td>
+  <td><span class="oi-dn" data-val="-28">-28%▼</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="-0.0152">-0.015%</span></td>
+  <td data-val="0.03"><span class="sig-neutral">+0.03</span></td>
+  <td>$1,350</td>
+  <td></td>
+</tr>
+<tr data-sig="neutral">
+  <td class="medal">14</td>
+  <td class="pair">
+    FIL<span class="coin-tag g3" title="Score: 249/500">г3 ★249</span>
+    →
+    ETH<span class="coin-tag g1" title="Score: 396/500">г1 ★396</span>
+  </td>
+  <td data-val="46.2"><span class="">46.2</span></td>
+  <td data-val="47.9"><span class="">47.9</span></td>
+  <td><span class="z-mid" data-val="0.52">+0.52</span></td>
+  <td><span class="" data-val="-4.2">-4.2%</span></td>
+  <td><span class="ma-dn" data-val="-32.6">-33% ▼</span></td>
+  <td><span class="oi-dn" data-val="-20">-20%▼</span></td>
+  <td><span class="fn-neg" title="нейтр" data-val="-0.0368">-0.037%</span></td>
+  <td data-val="-0.25"><span class="sig-neutral">-0.25</span></td>
+  <td>$380</td>
+  <td></td>
+</tr>
+<tr data-sig="neutral">
+  <td class="medal">15</td>
+  <td class="pair">
+    FLOW<span class="coin-tag g5" title="Score: 47/500">г5 ★47</span>
+    →
+    ETH<span class="coin-tag g1" title="Score: 396/500">г1 ★396</span>
+  </td>
+  <td data-val="62.2"><span class="caution">62.2</span></td>
+  <td data-val="27.7"><span class="ok">27.7</span></td>
+  <td><span class="z-mid" data-val="1.17">+1.17</span></td>
+  <td><span class="" data-val="0.3">+0.3%</span></td>
+  <td><span class="ma-dn" data-val="-59.8">-60% ▼</span></td>
+  <td><span style="color:#8b949e">н/д</span></td>
+  <td><span class="fn-neg" title="нейтр" data-val="-0.0342">-0.034%</span></td>
+  <td data-val="-0.31"><span class="sig-neutral">-0.31</span></td>
+  <td>$770</td>
+  <td></td>
+</tr>
+<tr data-sig="neutral">
+  <td class="medal">16</td>
+  <td class="pair">
+    HBAR<span class="coin-tag g2" title="Score: 312/500">г2 ★312</span>
+    →
+    BTC<span class="coin-tag g1" title="Score: 413/500">г1 ★413</span>
+  </td>
+  <td data-val="52.7"><span class="">52.7</span></td>
+  <td data-val="46.8"><span class="">46.8</span></td>
+  <td><span class="z-mid" data-val="0.42">+0.42</span></td>
+  <td><span class="" data-val="6.4">+6.4%</span></td>
+  <td><span class="ma-dn" data-val="-22.8">-23% ▼</span></td>
+  <td><span class="z-mid" data-val="-9">-9%</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="0.0043">+0.004%</span></td>
+  <td data-val="-0.49"><span class="sig-neutral">-0.49</span></td>
+  <td>$5,996</td>
+  <td></td>
+</tr>
+<tr data-sig="neutral">
+  <td class="medal">17</td>
+  <td class="pair">
+    STRK<span class="coin-tag g3" title="Score: 226/500">г3 ★226</span>
+    →
+    BTC<span class="coin-tag g1" title="Score: 413/500">г1 ★413</span>
+  </td>
+  <td data-val="50.9"><span class="">50.9</span></td>
+  <td data-val="39.9"><span class="ok">39.9</span></td>
+  <td><span class="z-mid" data-val="0.45">+0.45</span></td>
+  <td><span class="" data-val="-8.6">-8.6%</span></td>
+  <td><span class="ma-dn" data-val="-42.5">-42% ▼</span></td>
+  <td><span class="oi-dn" data-val="-14">-14%▼</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="0.0050">+0.005%</span></td>
+  <td data-val="-0.66"><span class="sig-neutral">-0.66</span></td>
+  <td>$20,377</td>
+  <td></td>
+</tr>
+<tr data-sig="neutral">
+  <td class="medal">18</td>
+  <td class="pair">
+    CFX<span class="coin-tag g4" title="Score: 215/500">г4 ★215</span>
+    →
+    ETH<span class="coin-tag g1" title="Score: 396/500">г1 ★396</span>
+  </td>
+  <td data-val="48.3"><span class="">48.3</span></td>
+  <td data-val="50.1"><span class="">50.1</span></td>
+  <td><span class="z-mid" data-val="0.02">+0.02</span></td>
+  <td><span class="" data-val="-3.3">-3.3%</span></td>
+  <td><span class="ma-dn" data-val="-28.6">-29% ▼</span></td>
+  <td><span class="oi-dn" data-val="-16">-16%▼</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="0.0067">+0.007%</span></td>
+  <td data-val="-0.77"><span class="sig-neutral">-0.77</span></td>
+  <td>$617</td>
+  <td></td>
+</tr>
+<tr data-sig="neutral">
+  <td class="medal">19</td>
+  <td class="pair">
+    JUP<span class="coin-tag g2" title="Score: 311/500">г2 ★311</span>
+    →
+    BTC<span class="coin-tag g1" title="Score: 413/500">г1 ★413</span>
+  </td>
+  <td data-val="43.3"><span class="">43.3</span></td>
+  <td data-val="47.0"><span class="">47.0</span></td>
+  <td><span class="z-mid" data-val="-0.12">-0.12</span></td>
+  <td><span class="ok" data-val="-12.4">-12.4%</span></td>
+  <td><span class="ma-dn" data-val="-19.8">-20% ▼</span></td>
+  <td><span class="oi-dn" data-val="-27">-27%▼</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="-0.0133">-0.013%</span></td>
+  <td data-val="-1.13"><span class="sig-neutral">-1.13</span></td>
+  <td>$1,113</td>
+  <td></td>
+</tr>
+<tr data-sig="neutral">
+  <td class="medal">20</td>
+  <td class="pair">
+    TIA<span class="coin-tag g4" title="Score: 206/500">г4 ★206</span>
+    →
+    BTC<span class="coin-tag g1" title="Score: 413/500">г1 ★413</span>
+  </td>
+  <td data-val="45.6"><span class="">45.6</span></td>
+  <td data-val="41.7"><span class="">41.7</span></td>
+  <td><span class="z-mid" data-val="0.29">+0.29</span></td>
+  <td><span class="" data-val="-8.9">-8.9%</span></td>
+  <td><span class="ma-dn" data-val="-23.7">-24% ▼</span></td>
+  <td><span class="oi-dn" data-val="-11">-11%▼</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="0.0026">+0.003%</span></td>
+  <td data-val="-1.20"><span class="sig-neutral">-1.20</span></td>
+  <td>$599</td>
+  <td></td>
+</tr>
+<tr data-sig="neutral">
+  <td class="medal">21</td>
+  <td class="pair">
+    IMX<span class="coin-tag g4" title="Score: 176/500">г4 ★176</span>
+    →
+    BTC<span class="coin-tag g1" title="Score: 413/500">г1 ★413</span>
+  </td>
+  <td data-val="49.6"><span class="">49.6</span></td>
+  <td data-val="39.4"><span class="ok">39.4</span></td>
+  <td><span class="z-mid" data-val="0.11">+0.11</span></td>
+  <td><span class="" data-val="-3.5">-3.5%</span></td>
+  <td><span class="ma-dn" data-val="-30.4">-30% ▼</span></td>
+  <td><span class="z-mid" data-val="-7">-7%</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="-0.0047">-0.005%</span></td>
+  <td data-val="-1.57"><span class="sig-neutral">-1.57</span></td>
+  <td>$1,354</td>
+  <td></td>
+</tr>
+<tr data-sig="neutral">
+  <td class="medal">22</td>
+  <td class="pair">
+    HFT<span class="coin-tag g5" title="Score: 93/500">г5 ★93</span>
+    →
+    ETH<span class="coin-tag g1" title="Score: 396/500">г1 ★396</span>
+  </td>
+  <td data-val="49.9"><span class="">49.9</span></td>
+  <td data-val="38.5"><span class="ok">38.5</span></td>
+  <td><span class="z-mid" data-val="-0.47">-0.47</span></td>
+  <td><span class="ok" data-val="-11.9">-11.9%</span></td>
+  <td><span class="ma-dn" data-val="-49.6">-50% ▼</span></td>
+  <td><span style="color:#8b949e">н/д</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="0.0100">+0.010%</span></td>
+  <td data-val="-2.00"><span class="sig-neutral">-2.00</span></td>
+  <td>$212</td>
+  <td></td>
+</tr>
+<tr data-sig="neutral">
+  <td class="medal">23</td>
+  <td class="pair">
+    PYTH<span class="coin-tag g4" title="Score: 220/500">г4 ★220</span>
+    →
+    ETH<span class="coin-tag g1" title="Score: 396/500">г1 ★396</span>
+  </td>
+  <td data-val="48.1"><span class="">48.1</span></td>
+  <td data-val="41.2"><span class="">41.2</span></td>
+  <td><span class="z-mid" data-val="-0.38">-0.38</span></td>
+  <td><span class="ok" data-val="-12.2">-12.2%</span></td>
+  <td><span class="ma-dn" data-val="-37.7">-38% ▼</span></td>
+  <td><span class="oi-dn" data-val="-27">-27%▼</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="0.0042">+0.004%</span></td>
+  <td data-val="-2.04"><span class="sig-neutral">-2.04</span></td>
+  <td>$1,250</td>
+  <td></td>
+</tr>
+<tr data-sig="neutral">
+  <td class="medal">24</td>
+  <td class="pair">
+    LDO<span class="coin-tag g3" title="Score: 257/500">г3 ★257</span>
+    →
+    ETH<span class="coin-tag g1" title="Score: 396/500">г1 ★396</span>
+  </td>
+  <td data-val="43.6"><span class="">43.6</span></td>
+  <td data-val="41.5"><span class="">41.5</span></td>
+  <td><span class="z-mid" data-val="-0.05">-0.05</span></td>
+  <td><span class="" data-val="-6.5">-6.5%</span></td>
+  <td><span class="ma-dn" data-val="-38.7">-39% ▼</span></td>
+  <td><span class="oi-dn" data-val="-24">-24%▼</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="0.0068">+0.007%</span></td>
+  <td data-val="-2.37"><span class="sig-neutral">-2.37</span></td>
+  <td>$1,527</td>
+  <td></td>
+</tr>
+<tr data-sig="neutral">
+  <td class="medal">25</td>
+  <td class="pair">
+    RENDER<span class="coin-tag g2" title="Score: 314/500">г2 ★314</span>
+    →
+    BTC<span class="coin-tag g1" title="Score: 413/500">г1 ★413</span>
+  </td>
+  <td data-val="42.5"><span class="">42.5</span></td>
+  <td data-val="52.5"><span class="">52.5</span></td>
+  <td><span class="z-mid" data-val="-0.36">-0.36</span></td>
+  <td><span class="" data-val="3.1">+3.1%</span></td>
+  <td><span class="ma-dn" data-val="-11.5">-12% ▼</span></td>
+  <td><span class="oi-dn" data-val="-22">-22%▼</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="-0.0063">-0.006%</span></td>
+  <td data-val="-2.40"><span class="sig-neutral">-2.40</span></td>
+  <td>$600</td>
+  <td></td>
+</tr>
+<tr data-sig="neutral">
+  <td class="medal">26</td>
+  <td class="pair">
+    XCH<span class="coin-tag g4" title="Score: 147/500">г4 ★147</span>
+    →
+    ETH<span class="coin-tag g1" title="Score: 396/500">г1 ★396</span>
+  </td>
+  <td data-val="48.6"><span class="">48.6</span></td>
+  <td data-val="43.1"><span class="">43.1</span></td>
+  <td><span class="z-mid" data-val="0.33">+0.33</span></td>
+  <td><span class="" data-val="18.2">+18.2%</span></td>
+  <td><span class="ma-dn" data-val="-41.7">-42% ▼</span></td>
+  <td><span style="color:#8b949e">н/д</span></td>
+  <td><span class="fn-neu">н/д</span></td>
+  <td data-val="-2.82"><span class="sig-neutral">-2.82</span></td>
+  <td>$800</td>
+  <td></td>
+</tr>
+<tr data-sig="neutral">
+  <td class="medal">27</td>
+  <td class="pair">
+    GRT<span class="coin-tag g4" title="Score: 193/500">г4 ★193</span>
+    →
+    ETH<span class="coin-tag g1" title="Score: 396/500">г1 ★396</span>
+  </td>
+  <td data-val="41.0"><span class="">41.0</span></td>
+  <td data-val="39.8"><span class="ok">39.8</span></td>
+  <td><span class="z-mid" data-val="-0.10">-0.10</span></td>
+  <td><span class="" data-val="-6.5">-6.5%</span></td>
+  <td><span class="ma-dn" data-val="-38.4">-38% ▼</span></td>
+  <td><span class="oi-dn" data-val="-25">-25%▼</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="-0.0070">-0.007%</span></td>
+  <td data-val="-2.97"><span class="sig-neutral">-2.97</span></td>
+  <td>$400</td>
+  <td></td>
+</tr>
+<tr data-sig="wait">
+  <td class="medal">28</td>
+  <td class="pair">
+    FLOW<span class="coin-tag g5" title="Score: 47/500">г5 ★47</span>
+    →
+    BTC<span class="coin-tag g1" title="Score: 413/500">г1 ★413</span>
+  </td>
+  <td data-val="57.0"><span class="">57.0</span></td>
+  <td data-val="24.3"><span class="ok">24.3</span></td>
+  <td><span class="z-mid" data-val="-0.04">-0.04</span></td>
+  <td><span class="" data-val="-4.8">-4.8%</span></td>
+  <td><span class="ma-dn" data-val="-59.8">-60% ▼</span></td>
+  <td><span style="color:#8b949e">н/д</span></td>
+  <td><span class="fn-neg" title="нейтр" data-val="-0.0342">-0.034%</span></td>
+  <td data-val="-3.26"><span class="sig-wait">-3.26</span></td>
+  <td>$770</td>
+  <td><span class="tag-wait">◀ ждать</span></td>
+</tr>
+<tr data-sig="wait">
+  <td class="medal">29</td>
+  <td class="pair">
+    WLD<span class="coin-tag g3" title="Score: 266/500">г3 ★266</span>
+    →
+    ETH<span class="coin-tag g1" title="Score: 396/500">г1 ★396</span>
+  </td>
+  <td data-val="62.0"><span class="caution">62.0</span></td>
+  <td data-val="67.8"><span class="caution">67.8</span></td>
+  <td><span class="z-hi" data-val="2.42">+2.42!!</span></td>
+  <td><span class="warn" data-val="98.6">+98.6%</span></td>
+  <td><span class="ma-up" data-val="12.2">+12% ▲</span></td>
+  <td><span class="oi-dn" data-val="-34">-34%▼▼</span></td>
+  <td><span class="fn-neg" title="ШОРТЫ" data-val="-0.0565">-0.056%</span></td>
+  <td data-val="-3.35"><span class="sig-wait">-3.35</span></td>
+  <td>$745</td>
+  <td><span class="tag-wait">◀ ждать</span></td>
+</tr>
+<tr data-sig="wait">
+  <td class="medal">30</td>
+  <td class="pair">
+    OP<span class="coin-tag g3" title="Score: 276/500">г3 ★276</span>
+    →
+    ETH<span class="coin-tag g1" title="Score: 396/500">г1 ★396</span>
+  </td>
+  <td data-val="41.1"><span class="">41.1</span></td>
+  <td data-val="33.4"><span class="ok">33.4</span></td>
+  <td><span class="z-mid" data-val="-0.20">-0.20</span></td>
+  <td><span class="ok" data-val="-11.9">-11.9%</span></td>
+  <td><span class="ma-dn" data-val="-52.1">-52% ▼</span></td>
+  <td><span class="oi-dn" data-val="-15">-15%▼</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="-0.0192">-0.019%</span></td>
+  <td data-val="-3.60"><span class="sig-wait">-3.60</span></td>
+  <td>$17,857</td>
+  <td><span class="tag-wait">◀ ждать</span></td>
+</tr>
+<tr data-sig="wait">
+  <td class="medal">31</td>
+  <td class="pair">
+    XRP<span class="coin-tag g2" title="Score: 367/500">г2 ★367</span>
+    →
+    BTC<span class="coin-tag g1" title="Score: 413/500">г1 ★413</span>
+  </td>
+  <td data-val="45.5"><span class="">45.5</span></td>
+  <td data-val="42.0"><span class="">42.0</span></td>
+  <td><span class="z-mid" data-val="-0.86">-0.86</span></td>
+  <td><span class="" data-val="-0.1">-0.1%</span></td>
+  <td><span class="ma-dn" data-val="-30.5">-30% ▼</span></td>
+  <td><span class="z-mid" data-val="-8">-8%</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="-0.0078">-0.008%</span></td>
+  <td data-val="-3.86"><span class="sig-wait">-3.86</span></td>
+  <td>$9,921</td>
+  <td><span class="tag-wait">◀ ждать</span></td>
+</tr>
+<tr data-sig="wait">
+  <td class="medal">32</td>
+  <td class="pair">
+    DOT<span class="coin-tag g3" title="Score: 246/500">г3 ★246</span>
+    →
+    ETH<span class="coin-tag g1" title="Score: 396/500">г1 ★396</span>
+  </td>
+  <td data-val="43.1"><span class="">43.1</span></td>
+  <td data-val="39.6"><span class="ok">39.6</span></td>
+  <td><span class="z-mid" data-val="-0.48">-0.48</span></td>
+  <td><span class="" data-val="-2.5">-2.5%</span></td>
+  <td><span class="ma-dn" data-val="-40.2">-40% ▼</span></td>
+  <td><span class="oi-dn" data-val="-17">-17%▼</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="-0.0060">-0.006%</span></td>
+  <td data-val="-3.95"><span class="sig-wait">-3.95</span></td>
+  <td>$11,198</td>
+  <td><span class="tag-wait">◀ ждать</span></td>
+</tr>
+<tr data-sig="wait">
+  <td class="medal">33</td>
+  <td class="pair">
+    FIL<span class="coin-tag g3" title="Score: 249/500">г3 ★249</span>
+    →
+    BTC<span class="coin-tag g1" title="Score: 413/500">г1 ★413</span>
+  </td>
+  <td data-val="43.2"><span class="">43.2</span></td>
+  <td data-val="41.2"><span class="">41.2</span></td>
+  <td><span class="z-mid" data-val="-0.99">-0.99</span></td>
+  <td><span class="" data-val="-9.3">-9.3%</span></td>
+  <td><span class="ma-dn" data-val="-32.6">-33% ▼</span></td>
+  <td><span class="oi-dn" data-val="-20">-20%▼</span></td>
+  <td><span class="fn-neg" title="нейтр" data-val="-0.0368">-0.037%</span></td>
+  <td data-val="-4.06"><span class="sig-wait">-4.06</span></td>
+  <td>$380</td>
+  <td><span class="tag-wait">◀ ждать</span></td>
+</tr>
+<tr data-sig="wait">
+  <td class="medal">34</td>
+  <td class="pair">
+    WLD<span class="coin-tag g3" title="Score: 266/500">г3 ★266</span>
+    →
+    BTC<span class="coin-tag g1" title="Score: 413/500">г1 ★413</span>
+  </td>
+  <td data-val="60.6"><span class="caution">60.6</span></td>
+  <td data-val="62.9"><span class="caution">62.9</span></td>
+  <td><span class="z-hi" data-val="2.24">+2.24!!</span></td>
+  <td><span class="warn" data-val="93.5">+93.5%</span></td>
+  <td><span class="ma-up" data-val="12.2">+12% ▲</span></td>
+  <td><span class="oi-dn" data-val="-34">-34%▼▼</span></td>
+  <td><span class="fn-neg" title="ШОРТЫ" data-val="-0.0565">-0.056%</span></td>
+  <td data-val="-4.07"><span class="sig-wait">-4.07</span></td>
+  <td>$745</td>
+  <td><span class="tag-wait">◀ ждать</span></td>
+</tr>
+<tr data-sig="wait">
+  <td class="medal">35</td>
+  <td class="pair">
+    HFT<span class="coin-tag g5" title="Score: 93/500">г5 ★93</span>
+    →
+    BTC<span class="coin-tag g1" title="Score: 413/500">г1 ★413</span>
+  </td>
+  <td data-val="46.0"><span class="">46.0</span></td>
+  <td data-val="35.2"><span class="ok">35.2</span></td>
+  <td><span class="z-mid" data-val="-1.35">-1.35</span></td>
+  <td><span class="ok" data-val="-17.0">-17.0%</span></td>
+  <td><span class="ma-dn" data-val="-49.6">-50% ▼</span></td>
+  <td><span style="color:#8b949e">н/д</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="0.0100">+0.010%</span></td>
+  <td data-val="-4.12"><span class="sig-wait">-4.12</span></td>
+  <td>$212</td>
+  <td><span class="tag-wait">◀ ждать</span></td>
+</tr>
+<tr data-sig="wait">
+  <td class="medal">36</td>
+  <td class="pair">
+    ARB<span class="coin-tag g3" title="Score: 232/500">г3 ★232</span>
+    →
+    ETH<span class="coin-tag g1" title="Score: 396/500">г1 ★396</span>
+  </td>
+  <td data-val="34.2"><span class="ok">34.2</span></td>
+  <td data-val="38.5"><span class="ok">38.5</span></td>
+  <td><span class="z-mid" data-val="-0.74">-0.74</span></td>
+  <td><span class="ok" data-val="-14.7">-14.7%</span></td>
+  <td><span class="ma-dn" data-val="-44.1">-44% ▼</span></td>
+  <td><span class="oi-dn" data-val="-23">-23%▼</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="-0.0130">-0.013%</span></td>
+  <td data-val="-4.31"><span class="sig-wait">-4.31</span></td>
+  <td>$1,696</td>
+  <td><span class="tag-wait">◀ ждать</span></td>
+</tr>
+<tr data-sig="wait">
+  <td class="medal">37</td>
+  <td class="pair">
+    CFX<span class="coin-tag g4" title="Score: 215/500">г4 ★215</span>
+    →
+    BTC<span class="coin-tag g1" title="Score: 413/500">г1 ★413</span>
+  </td>
+  <td data-val="43.2"><span class="">43.2</span></td>
+  <td data-val="42.7"><span class="">42.7</span></td>
+  <td><span class="z-mid" data-val="-1.28">-1.28</span></td>
+  <td><span class="" data-val="-8.4">-8.4%</span></td>
+  <td><span class="ma-dn" data-val="-28.6">-29% ▼</span></td>
+  <td><span class="oi-dn" data-val="-16">-16%▼</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="0.0067">+0.007%</span></td>
+  <td data-val="-4.48"><span class="sig-wait">-4.48</span></td>
+  <td>$617</td>
+  <td><span class="tag-wait">◀ ждать</span></td>
+</tr>
+<tr data-sig="wait">
+  <td class="medal">38</td>
+  <td class="pair">
+    PYTH<span class="coin-tag g4" title="Score: 220/500">г4 ★220</span>
+    →
+    BTC<span class="coin-tag g1" title="Score: 413/500">г1 ★413</span>
+  </td>
+  <td data-val="43.7"><span class="">43.7</span></td>
+  <td data-val="37.2"><span class="ok">37.2</span></td>
+  <td><span class="z-mid" data-val="-1.40">-1.40</span></td>
+  <td><span class="ok" data-val="-17.3">-17.3%</span></td>
+  <td><span class="ma-dn" data-val="-37.7">-38% ▼</span></td>
+  <td><span class="oi-dn" data-val="-27">-27%▼</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="0.0042">+0.004%</span></td>
+  <td data-val="-4.64"><span class="sig-wait">-4.64</span></td>
+  <td>$1,250</td>
+  <td><span class="tag-wait">◀ ждать</span></td>
+</tr>
+<tr data-sig="wait">
+  <td class="medal">39</td>
+  <td class="pair">
+    XCH<span class="coin-tag g4" title="Score: 147/500">г4 ★147</span>
+    →
+    BTC<span class="coin-tag g1" title="Score: 413/500">г1 ★413</span>
+  </td>
+  <td data-val="46.0"><span class="">46.0</span></td>
+  <td data-val="38.1"><span class="ok">38.1</span></td>
+  <td><span class="z-mid" data-val="-0.40">-0.40</span></td>
+  <td><span class="" data-val="13.1">+13.1%</span></td>
+  <td><span class="ma-dn" data-val="-41.7">-42% ▼</span></td>
+  <td><span style="color:#8b949e">н/д</span></td>
+  <td><span class="fn-neu">н/д</span></td>
+  <td data-val="-4.79"><span class="sig-wait">-4.79</span></td>
+  <td>$800</td>
+  <td><span class="tag-wait">◀ ждать</span></td>
+</tr>
+<tr data-sig="wait">
+  <td class="medal">40</td>
+  <td class="pair">
+    ZK<span class="coin-tag g4" title="Score: 171/500">г4 ★171</span>
+    →
+    ETH<span class="coin-tag g1" title="Score: 396/500">г1 ★396</span>
+  </td>
+  <td data-val="41.0"><span class="">41.0</span></td>
+  <td data-val="33.1"><span class="ok">33.1</span></td>
+  <td><span class="z-mid" data-val="-1.29">-1.29</span></td>
+  <td><span class="ok" data-val="-15.5">-15.5%</span></td>
+  <td><span class="ma-dn" data-val="-53.1">-53% ▼</span></td>
+  <td><span class="oi-dn" data-val="-26">-26%▼</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="0.0050">+0.005%</span></td>
+  <td data-val="-5.46"><span class="sig-wait">-5.46</span></td>
+  <td>$601</td>
+  <td><span class="tag-wait">◀ ждать</span></td>
+</tr>
+<tr data-sig="wait">
+  <td class="medal">41</td>
+  <td class="pair">
+    LDO<span class="coin-tag g3" title="Score: 257/500">г3 ★257</span>
+    →
+    BTC<span class="coin-tag g1" title="Score: 413/500">г1 ★413</span>
+  </td>
+  <td data-val="37.6"><span class="ok">37.6</span></td>
+  <td data-val="37.5"><span class="ok">37.5</span></td>
+  <td><span class="z-mid" data-val="-1.39">-1.39</span></td>
+  <td><span class="ok" data-val="-11.6">-11.6%</span></td>
+  <td><span class="ma-dn" data-val="-38.7">-39% ▼</span></td>
+  <td><span class="oi-dn" data-val="-24">-24%▼</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="0.0068">+0.007%</span></td>
+  <td data-val="-5.74"><span class="sig-wait">-5.74</span></td>
+  <td>$1,527</td>
+  <td><span class="tag-wait">◀ ждать</span></td>
+</tr>
+<tr data-sig="wait">
+  <td class="medal">42</td>
+  <td class="pair">
+    W<span class="coin-tag g5" title="Score: 146/500">г5 ★146</span>
+    →
+    ETH<span class="coin-tag g1" title="Score: 396/500">г1 ★396</span>
+  </td>
+  <td data-val="39.6"><span class="ok">39.6</span></td>
+  <td data-val="31.7"><span class="ok">31.7</span></td>
+  <td><span class="z-mid" data-val="-1.09">-1.09</span></td>
+  <td><span class="ok" data-val="-16.5">-16.5%</span></td>
+  <td><span class="ma-dn" data-val="-61.2">-61% ▼</span></td>
+  <td><span class="oi-dn" data-val="-33">-33%▼▼</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="0.0050">+0.005%</span></td>
+  <td data-val="-5.83"><span class="sig-wait">-5.83</span></td>
+  <td>$1,174</td>
+  <td><span class="tag-wait">◀ ждать</span></td>
+</tr>
+<tr data-sig="wait">
+  <td class="medal">43</td>
+  <td class="pair">
+    OP<span class="coin-tag g3" title="Score: 276/500">г3 ★276</span>
+    →
+    BTC<span class="coin-tag g1" title="Score: 413/500">г1 ★413</span>
+  </td>
+  <td data-val="38.9"><span class="ok">38.9</span></td>
+  <td data-val="31.2"><span class="ok">31.2</span></td>
+  <td><span class="z-lo" data-val="-1.55">-1.55!</span></td>
+  <td><span class="ok" data-val="-17.0">-17.0%</span></td>
+  <td><span class="ma-dn" data-val="-52.1">-52% ▼</span></td>
+  <td><span class="oi-dn" data-val="-15">-15%▼</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="-0.0192">-0.019%</span></td>
+  <td data-val="-6.32"><span class="sig-wait">-6.32</span></td>
+  <td>$17,857</td>
+  <td><span class="tag-wait">◀ ждать</span></td>
+</tr>
+<tr data-sig="wait">
+  <td class="medal">44</td>
+  <td class="pair">
+    W<span class="coin-tag g5" title="Score: 146/500">г5 ★146</span>
+    →
+    BTC<span class="coin-tag g1" title="Score: 413/500">г1 ★413</span>
+  </td>
+  <td data-val="37.8"><span class="ok">37.8</span></td>
+  <td data-val="29.2"><span class="ok">29.2</span></td>
+  <td><span class="z-mid" data-val="-1.46">-1.46</span></td>
+  <td><span class="ok" data-val="-21.6">-21.6%</span></td>
+  <td><span class="ma-dn" data-val="-61.2">-61% ▼</span></td>
+  <td><span class="oi-dn" data-val="-33">-33%▼▼</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="0.0050">+0.005%</span></td>
+  <td data-val="-6.60"><span class="sig-wait">-6.60</span></td>
+  <td>$1,174</td>
+  <td><span class="tag-wait">◀ ждать</span></td>
+</tr>
+<tr data-sig="wait">
+  <td class="medal">45</td>
+  <td class="pair">
+    ZK<span class="coin-tag g4" title="Score: 171/500">г4 ★171</span>
+    →
+    BTC<span class="coin-tag g1" title="Score: 413/500">г1 ★413</span>
+  </td>
+  <td data-val="37.6"><span class="ok">37.6</span></td>
+  <td data-val="29.1"><span class="ok">29.1</span></td>
+  <td><span class="z-lo" data-val="-1.65">-1.65!</span></td>
+  <td><span class="ok" data-val="-20.6">-20.6%</span></td>
+  <td><span class="ma-dn" data-val="-53.1">-53% ▼</span></td>
+  <td><span class="oi-dn" data-val="-26">-26%▼</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="0.0050">+0.005%</span></td>
+  <td data-val="-6.62"><span class="sig-wait">-6.62</span></td>
+  <td>$601</td>
+  <td><span class="tag-wait">◀ ждать</span></td>
+</tr>
+<tr data-sig="wait">
+  <td class="medal">46</td>
+  <td class="pair">
+    ARB<span class="coin-tag g3" title="Score: 232/500">г3 ★232</span>
+    →
+    BTC<span class="coin-tag g1" title="Score: 413/500">г1 ★413</span>
+  </td>
+  <td data-val="30.0"><span class="ok">30.0</span></td>
+  <td data-val="35.7"><span class="ok">35.7</span></td>
+  <td><span class="z-lo" data-val="-1.78">-1.78!</span></td>
+  <td><span class="ok" data-val="-19.8">-19.8%</span></td>
+  <td><span class="ma-dn" data-val="-44.1">-44% ▼</span></td>
+  <td><span class="oi-dn" data-val="-23">-23%▼</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="-0.0130">-0.013%</span></td>
+  <td data-val="-6.72"><span class="sig-wait">-6.72</span></td>
+  <td>$1,696</td>
+  <td><span class="tag-wait">◀ ждать</span></td>
+</tr>
+<tr data-sig="wait">
+  <td class="medal">47</td>
+  <td class="pair">
+    APT<span class="coin-tag g4" title="Score: 205/500">г4 ★205</span>
+    →
+    ETH<span class="coin-tag g1" title="Score: 396/500">г1 ★396</span>
+  </td>
+  <td data-val="28.9"><span class="ok">28.9</span></td>
+  <td data-val="36.5"><span class="ok">36.5</span></td>
+  <td><span class="z-lo" data-val="-1.52">-1.52!</span></td>
+  <td><span class="ok" data-val="-14.0">-14.0%</span></td>
+  <td><span class="ma-dn" data-val="-48.7">-49% ▼</span></td>
+  <td><span class="oi-dn" data-val="-16">-16%▼</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="-0.0131">-0.013%</span></td>
+  <td data-val="-6.76"><span class="sig-wait">-6.76</span></td>
+  <td>$500</td>
+  <td><span class="tag-wait">◀ ждать</span></td>
+</tr>
+<tr data-sig="wait">
+  <td class="medal">48</td>
+  <td class="pair">
+    DOT<span class="coin-tag g3" title="Score: 246/500">г3 ★246</span>
+    →
+    BTC<span class="coin-tag g1" title="Score: 413/500">г1 ★413</span>
+  </td>
+  <td data-val="36.0"><span class="ok">36.0</span></td>
+  <td data-val="32.2"><span class="ok">32.2</span></td>
+  <td><span class="z-mid" data-val="-1.31">-1.31</span></td>
+  <td><span class="" data-val="-7.6">-7.6%</span></td>
+  <td><span class="ma-dn" data-val="-40.2">-40% ▼</span></td>
+  <td><span class="oi-dn" data-val="-17">-17%▼</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="-0.0060">-0.006%</span></td>
+  <td data-val="-6.95"><span class="sig-wait">-6.95</span></td>
+  <td>$11,198</td>
+  <td><span class="tag-wait">◀ ждать</span></td>
+</tr>
+<tr data-sig="wait">
+  <td class="medal">49</td>
+  <td class="pair">
+    ROSE<span class="coin-tag g5" title="Score: 120/500">г5 ★120</span>
+    →
+    ETH<span class="coin-tag g1" title="Score: 396/500">г1 ★396</span>
+  </td>
+  <td data-val="27.9"><span class="ok">27.9</span></td>
+  <td data-val="37.1"><span class="ok">37.1</span></td>
+  <td><span class="z-lo" data-val="-2.09">-2.09!!</span></td>
+  <td><span class="ok" data-val="-15.9">-15.9%</span></td>
+  <td><span class="ma-dn" data-val="-48.1">-48% ▼</span></td>
+  <td><span style="color:#8b949e">н/д</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="-0.0190">-0.019%</span></td>
+  <td data-val="-7.24"><span class="sig-wait">-7.24</span></td>
+  <td>$168</td>
+  <td><span class="tag-wait">◀ ждать</span></td>
+</tr>
+<tr data-sig="wait">
+  <td class="medal">50</td>
+  <td class="pair">
+    ROSE<span class="coin-tag g5" title="Score: 120/500">г5 ★120</span>
+    →
+    BTC<span class="coin-tag g1" title="Score: 413/500">г1 ★413</span>
+  </td>
+  <td data-val="28.0"><span class="ok">28.0</span></td>
+  <td data-val="33.5"><span class="ok">33.5</span></td>
+  <td><span class="z-lo" data-val="-2.16">-2.16!!</span></td>
+  <td><span class="ok" data-val="-21.0">-21.0%</span></td>
+  <td><span class="ma-dn" data-val="-48.1">-48% ▼</span></td>
+  <td><span style="color:#8b949e">н/д</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="-0.0190">-0.019%</span></td>
+  <td data-val="-7.40"><span class="sig-wait">-7.40</span></td>
+  <td>$168</td>
+  <td><span class="tag-wait">◀ ждать</span></td>
+</tr>
+<tr data-sig="wait">
+  <td class="medal">51</td>
+  <td class="pair">
+    GRT<span class="coin-tag g4" title="Score: 193/500">г4 ★193</span>
+    →
+    BTC<span class="coin-tag g1" title="Score: 413/500">г1 ★413</span>
+  </td>
+  <td data-val="35.2"><span class="ok">35.2</span></td>
+  <td data-val="32.9"><span class="ok">32.9</span></td>
+  <td><span class="z-lo" data-val="-1.85">-1.85!</span></td>
+  <td><span class="ok" data-val="-11.6">-11.6%</span></td>
+  <td><span class="ma-dn" data-val="-38.4">-38% ▼</span></td>
+  <td><span class="oi-dn" data-val="-25">-25%▼</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="-0.0070">-0.007%</span></td>
+  <td data-val="-7.57"><span class="sig-wait">-7.57</span></td>
+  <td>$400</td>
+  <td><span class="tag-wait">◀ ждать</span></td>
+</tr>
+<tr data-sig="wait">
+  <td class="medal">52</td>
+  <td class="pair">
+    APT<span class="coin-tag g4" title="Score: 205/500">г4 ★205</span>
+    →
+    BTC<span class="coin-tag g1" title="Score: 413/500">г1 ★413</span>
+  </td>
+  <td data-val="28.5"><span class="ok">28.5</span></td>
+  <td data-val="32.1"><span class="ok">32.1</span></td>
+  <td><span class="z-lo" data-val="-2.50">-2.50!!</span></td>
+  <td><span class="ok" data-val="-19.1">-19.1%</span></td>
+  <td><span class="ma-dn" data-val="-48.7">-49% ▼</span></td>
+  <td><span class="oi-dn" data-val="-16">-16%▼</span></td>
+  <td><span class="fn-neu" title="нейтр" data-val="-0.0131">-0.013%</span></td>
+  <td data-val="-8.92"><span class="sig-wait">-8.92</span></td>
+  <td>$500</td>
+  <td><span class="tag-wait">◀ ждать</span></td>
+</tr>
+</tbody>
+</table>
+
+<script>
+function sortTable(col) {
+  const tb = document.getElementById('main-table');
+  const rows = Array.from(tb.tBodies[0].rows);
+  const asc = tb.dataset.sortCol == col && tb.dataset.sortDir == 'asc';
+  rows.sort((a,b) => {
+    let av = a.cells[col].dataset.val || a.cells[col].textContent;
+    let bv = b.cells[col].dataset.val || b.cells[col].textContent;
+    let an = parseFloat(av), bn = parseFloat(bv);
+    if (!isNaN(an) && !isNaN(bn)) return asc ? an-bn : bn-an;
+    return asc ? av.localeCompare(bv) : bv.localeCompare(av);
+  });
+  rows.forEach(r => tb.tBodies[0].appendChild(r));
+  tb.dataset.sortCol = col;
+  tb.dataset.sortDir = asc ? 'desc' : 'asc';
+}
+
+function filterRows(type) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('[data-filter="'+type+'"]').classList.add('active');
+  document.querySelectorAll('#main-table tbody tr').forEach(r => {
+    r.style.display = (type == 'all' || r.dataset.sig == type) ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>
