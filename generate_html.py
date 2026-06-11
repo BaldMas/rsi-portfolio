@@ -19,16 +19,8 @@ GATE_FALLBACK = {"XCH"}
 GATE_FUNDING  = {"ROSE", "FLOW", "HFT"}
 NO_PERP       = {"XCH"}
 
-PORTFOLIO = {
-    "STRK": 3, "OP": 3, "DOT": 3, "ETH": 1, "XRP": 2,
-    "HBAR": 2, "ARB": 3, "LDO": 3, "IMX": 4, "ICP": 3,
-    "PYTH": 4, "W": 5, "JUP": 2, "XCH": 4, "FLOW": 5,
-    "WLD": 3, "CFX": 4, "ZK": 4, "RENDER": 2, "TIA": 4,
-    "COMP": 4, "APT": 4, "GRT": 4, "FIL": 3, "ONDO": 2,
-    "HFT": 5, "ROSE": 5, "BTC": 1,
-}
-
-SCORES = {
+# Статический fallback для scores (пополняется auto_analyze.py)
+SCORES_STATIC = {
     "BTC": 413, "ETH": 396, "XRP": 367, "ONDO": 340, "RENDER": 314,
     "HBAR": 312, "TON": 311, "JUP": 311, "OP": 276, "WLD": 266,
     "LDO": 257, "FIL": 249, "DOT": 246, "ICP": 234, "ARB": 232,
@@ -37,15 +29,32 @@ SCORES = {
     "W": 146, "ROSE": 120, "HFT": 93, "FLOW": 47,
 }
 
-INVESTED = {
-    "STRK": 20377, "OP": 17857, "DOT": 11198, "ETH": 10695,
-    "XRP": 9921, "HBAR": 5996, "ARB": 1696, "LDO": 1527,
-    "IMX": 1354, "ICP": 1350, "PYTH": 1250, "W": 1174,
-    "JUP": 1113, "XCH": 800, "FLOW": 770, "WLD": 745,
-    "CFX": 617, "ZK": 601, "RENDER": 600, "TIA": 599,
-    "COMP": 500, "APT": 500, "GRT": 400, "FIL": 380,
-    "ONDO": 300, "HFT": 212, "ROSE": 168,
-}
+
+def load_scores_from_analyses():
+    """Читает score из .md файлов анализа для новых монет."""
+    import re
+    scores = dict(SCORES_STATIC)
+    analysis_dir = "/home/masus/crypto_analysis"
+    if not os.path.isdir(analysis_dir):
+        return scores
+    for fname in os.listdir(analysis_dir):
+        if not fname.endswith(".md") or fname.startswith("_"):
+            continue
+        sym = fname[:-3].upper()
+        if sym in scores:
+            continue
+        path = os.path.join(analysis_dir, fname)
+        try:
+            with open(path) as f:
+                txt = f.read(500)
+            m = re.search(r'Score.*?(\d{2,3})/500', txt)
+            if not m:
+                m = re.search(r'raw_score.*?(\d+)', txt)
+            if m:
+                scores[sym] = int(m.group(1))
+        except Exception:
+            pass
+    return scores
 
 # ──────────────────────────────────────────────
 # Загрузка данных
@@ -57,29 +66,14 @@ def fetch_json(url):
 
 
 def fetch_portfolio_values():
-    """Текущие стоимости и P/L с Dropstab API."""
-    result = {}
+    """Делегируем в portfolio_live."""
     try:
-        env_path = os.path.join(os.path.dirname(__file__), ".env")
-        token = ""
-        with open(env_path) as f:
-            for line in f:
-                if "DROPSTAB_TOKEN" in line:
-                    token = line.split("=", 1)[1].strip()
-        if not token:
-            return result
-        data = fetch_json(f"https://dropstab.com/_gateway/api/portfolio/api/portfolioGroup/individualShare/{token}")
-        for item in data.get("portfolios", []):
-            sym = item.get("symbol", "").upper()
-            total = item.get("totalCap", {})
-            pnl   = item.get("unrealizedProfitPercent", {})
-            value = float(total.get("USD", 0) or 0) if isinstance(total, dict) else 0
-            pnl_p = float(pnl.get("USD", 0) or 0) if isinstance(pnl, dict) else 0
-            if sym and value > 0:
-                result[sym] = {"value": value, "pnl": pnl_p}
+        sys.path.insert(0, os.path.dirname(__file__))
+        from portfolio_live import get_dynamic_portfolio
+        _, _, pv, _ = get_dynamic_portfolio()
+        return pv
     except Exception:
-        pass
-    return result
+        return {}
 
 
 def fetch_closes_binance(symbol, limit=500):
@@ -372,7 +366,7 @@ def sig_class(sig):
 
 MEDALS = ["🥇", "🥈", "🥉"]
 
-def build_html(results, macro, generated_at, total=0, cnt_rotate=0, cnt_watch=0, cnt_wait=0, portfolio_values=None):
+def build_html(results, macro, generated_at, total=0, cnt_rotate=0, cnt_watch=0, cnt_wait=0, portfolio_values=None, scores=None):
     dom  = macro.get("dominance")
     fg   = macro.get("fg")
     fglb = macro.get("fg_label", "")
@@ -391,6 +385,7 @@ def build_html(results, macro, generated_at, total=0, cnt_rotate=0, cnt_watch=0,
         warn_html = f'<div class="macro-warn">⚠ МАКРОФИЛЬТР: {" | ".join(macro_warn)}</div>'
 
     pv = portfolio_values or {}
+    _scores = scores or SCORES_STATIC
 
     rows_html = ""
     rank = 0
@@ -405,8 +400,8 @@ def build_html(results, macro, generated_at, total=0, cnt_rotate=0, cnt_watch=0,
         grp   = r["grp"]
         ref_g = r["ref_g"]
 
-        cscore = SCORES.get(coin, 0)
-        rscore = SCORES.get(ref, 0)
+        cscore = _scores.get(coin, 0)
+        rscore = _scores.get(ref, 0)
 
         tag_html = {
             "rotate":  '<span class="tag-rotate">▶ РОТИРОВАТЬ</span>',
@@ -499,16 +494,58 @@ def build_html(results, macro, generated_at, total=0, cnt_rotate=0, cnt_watch=0,
 def main():
     out_file = sys.argv[1] if len(sys.argv) > 1 else "/home/masus/dropstab/report.html"
 
+    print("Портфель (Dropstab)...", flush=True)
+    sys.path.insert(0, os.path.dirname(__file__))
+    try:
+        from portfolio_live import get_dynamic_portfolio
+        PORTFOLIO, INVESTED, portfolio_values, new_coins = get_dynamic_portfolio()
+        print(f"  Позиций: {len(PORTFOLIO)} | Новых монет: {len(new_coins)}", flush=True)
+        if new_coins:
+            print(f"  Новые: {new_coins}", flush=True)
+            # Запускаем автоанализ для новых монет
+            try:
+                import auto_analyze
+                for sym in new_coins:
+                    analysis_path = f"/home/masus/crypto_analysis/{sym}.md"
+                    if not os.path.exists(analysis_path):
+                        print(f"  Автоанализ {sym}...", flush=True)
+                        data = auto_analyze.analyze_coin(sym)
+                        if data:
+                            auto_analyze.save_analysis(data)
+                            auto_analyze.update_groups_file(sym, data["group"], data["raw_score"])
+                            PORTFOLIO[sym] = data["group"]
+            except Exception as e:
+                print(f"  auto_analyze error: {e}", flush=True)
+    except Exception as e:
+        print(f"  Ошибка загрузки портфеля: {e}, использую статику", flush=True)
+        PORTFOLIO = {
+            "STRK": 3, "OP": 3, "DOT": 3, "ETH": 1, "XRP": 2,
+            "HBAR": 2, "ARB": 3, "LDO": 3, "IMX": 4, "ICP": 3,
+            "PYTH": 4, "W": 5, "JUP": 2, "XCH": 4, "FLOW": 5,
+            "WLD": 3, "CFX": 4, "ZK": 4, "RENDER": 2, "TIA": 4,
+            "COMP": 4, "APT": 4, "GRT": 4, "FIL": 3, "ONDO": 2,
+            "HFT": 5, "ROSE": 5, "BTC": 1,
+        }
+        INVESTED = {
+            "STRK": 20377, "OP": 17857, "DOT": 11198, "ETH": 10695,
+            "XRP": 9921, "HBAR": 5996, "ARB": 1696, "LDO": 1527,
+            "IMX": 1354, "ICP": 1350, "PYTH": 1250, "W": 1174,
+            "JUP": 1113, "XCH": 800, "FLOW": 770, "WLD": 745,
+            "CFX": 617, "ZK": 601, "RENDER": 600, "TIA": 599,
+            "COMP": 500, "APT": 500, "GRT": 400, "FIL": 380,
+            "ONDO": 300, "HFT": 212, "ROSE": 168,
+        }
+        portfolio_values = {}
+        new_coins = []
+
+    SCORES = load_scores_from_analyses()
+
     print("Макро...", flush=True)
     macro = fetch_macro()
 
-    print("Текущие стоимости (Dropstab)...", flush=True)
-    portfolio_values = fetch_portfolio_values()
-    print(f"  Получено {len(portfolio_values)} позиций", flush=True)
-
     print("Цены...", flush=True)
     prices = {}
-    all_coins = list(PORTFOLIO.keys()) + ["TON"]
+    all_coins = list(PORTFOLIO.keys())
     for i, coin in enumerate(all_coins):
         try:
             prices[coin] = fetch_closes(coin)
@@ -584,7 +621,7 @@ def main():
     cnt_rotate = sum(1 for r in results if r["sig"] > 4)
     cnt_watch  = sum(1 for r in results if 2 < r["sig"] <= 4)
     cnt_wait   = sum(1 for r in results if r["sig"] < -3)
-    html = build_html(results, macro, generated_at, total, cnt_rotate, cnt_watch, cnt_wait, portfolio_values)
+    html = build_html(results, macro, generated_at, total, cnt_rotate, cnt_watch, cnt_wait, portfolio_values, SCORES)
 
     with open(out_file, "w", encoding="utf-8") as f:
         f.write(html)
