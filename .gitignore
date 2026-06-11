@@ -1,5 +1,7 @@
 # Игнорировать всё
 *
 
-# Кроме index.html
+# Кроме нужных файлов
 !index.html
+!analysis/
+!analysis/*.md
