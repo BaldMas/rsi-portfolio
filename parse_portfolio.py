@@ -2,18 +2,31 @@
 """
 Парсер портфеля Dropstab через API _gateway.
 Использование: python3 parse_portfolio.py [share_token_or_url]
-По умолчанию: fjkjsebo6f
+Токен берётся из .env (DROPSTAB_TOKEN) или передаётся аргументом.
 """
 
 import sys
 import json
 import re
+import os
 import urllib.request
 from datetime import datetime
 
 API_BASE = "https://dropstab.com/_gateway/api"
 OUTPUT_DIR = "/home/masus/crypto_analysis"
-DEFAULT_TOKEN = "fjkjsebo6f"
+
+def _load_env():
+    env_path = os.path.join(os.path.dirname(__file__), ".env")
+    if os.path.exists(env_path):
+        with open(env_path) as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    k, v = line.split("=", 1)
+                    os.environ.setdefault(k.strip(), v.strip())
+
+_load_env()
+DEFAULT_TOKEN = os.environ.get("DROPSTAB_TOKEN", "")
 
 
 def fetch_json(url):
