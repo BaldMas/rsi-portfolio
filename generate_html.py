@@ -10,7 +10,7 @@ import json
 import math
 import os
 import urllib.request
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 
 # ──────────────────────────────────────────────
 # Справочники
@@ -578,7 +578,8 @@ def main():
 
     results.sort(key=lambda x: x["sig"], reverse=True)
 
-    generated_at = datetime.now().strftime("%Y-%m-%d %H:%M")
+    mne = timezone(timedelta(hours=2))
+    generated_at = datetime.now(tz=mne).strftime("%Y-%m-%d %H:%M") + " (MNE)"
     total      = len(results)
     cnt_rotate = sum(1 for r in results if r["sig"] > 4)
     cnt_watch  = sum(1 for r in results if 2 < r["sig"] <= 4)
