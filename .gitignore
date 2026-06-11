@@ -1,21 +1,5 @@
-__pycache__/
-*.pyc
-_inspect_dropstab.py
-check_html.py
-find_*.py
-find_base*.py
-find_bff*.py
-report.html
-update.log
-changes.log
-portfolio_snapshot.json
-signals.json
-news.db
-recommendations.log
+# Игнорировать всё
+*
 
-# Секреты - НИКОГДА не коммитить
-.env
-.env.*
-*.key
-*.pem
-secrets.*
+# Кроме index.html
+!index.html
