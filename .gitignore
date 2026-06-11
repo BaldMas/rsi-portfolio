@@ -3,5 +3,8 @@
 
 # Кроме нужных файлов
 !index.html
+!watch.html
+!wait.html
+!all.html
 !analysis/
 !analysis/*.md
