@@ -59,6 +59,135 @@ def load_scores_from_analyses():
 # ──────────────────────────────────────────────
 # Загрузка данных
 
+# DeFiLlama slug для каждого символа (только протоколы с on-chain fees)
+DEFILLAMA_SLUGS = {
+    "ETH":    "ethereum",
+    "LDO":    "lido",
+    "COMP":   "compound-v3",
+    "GRT":    "the-graph",
+    "JUP":    "jupiter",
+    "OP":     "op-mainnet",
+    "ARB":    "arbitrum",
+    "IMX":    "immutable",
+    "ONDO":   "ondo-yield-assets",
+    "PYTH":   "pyth-pro",
+    "TON":    "ton",
+    "ICP":    "internet-computer",
+    "HBAR":   "hedera",
+    "DOT":    "polkadot",
+    "FIL":    "filecoin",
+    "RENDER": "render",
+    "APT":    "aptos",
+    "STRK":   "starknet",
+    "ZK":     "zksync",
+    "TIA":    "celestia",
+    "XRP":    "xrp",
+    "W":      "wormhole",
+    "FLOW":   "flow",
+    "HFT":    "hashflow",
+}
+
+# Механизм влияния дохода протокола на цену токена:
+#   "direct"   - buyback/burn или прямое распределение держателям
+#   "indirect" - staking rewards из fees, fee-sharing с валидаторами
+#   "none"     - доход есть, но токен не акруирует
+#   "na"       - протокол не генерирует доход
+REVENUE_ACCRUAL = {
+    "BTC":    ("indirect", "Miner fees → безопасность сети; без yield для холдеров"),
+    "ETH":    ("indirect", "Base fee burn (EIP-1559) + validator tips → дефляция"),
+    "LDO":    ("none",     "Протокол берёт 10% staking rewards, но доход не идёт к LDO-холдерам напрямую"),
+    "COMP":   ("indirect", "Lending fees → reserve; governance vote может направить к холдерам"),
+    "GRT":    ("indirect", "Query fees → индексерам/делегаторам; GRT нужен для работы"),
+    "JUP":    ("direct",   "50% swap fees → buyback через Litterbox Trust (~$70M spent)"),
+    "OP":     ("direct",   "50% sequencer fees → buyback program ($8M/год)"),
+    "ARB":    ("none",     "Sequencer fees идут в DAO treasury; buyback не запущен"),
+    "IMX":    ("direct",   "20% platform revenue → burn через zkEVM"),
+    "ONDO":   ("none",     "Revenue $13M/квартал, но fee-switch vote только H2 2026"),
+    "PYTH":   ("direct",   "Revenue-based buyback (Pyth DAO) - объём мизерный vs supply"),
+    "TON":    ("direct",   "50% fees → burn; Telegram validator capture"),
+    "ICP":    ("indirect", "Cycle fees сжигаются; NNS staking rewards из инфляции"),
+    "CFX":    ("indirect", "Storage fees сжигаются; block rewards снижаются"),
+    "HBAR":   ("none",     "Tx fees собирает Hedera Council; токен-холдерам не распределяется"),
+    "DOT":    ("indirect", "Tx fees частично сжигаются (20%); staking yield из инфляции"),
+    "FIL":    ("indirect", "Storage fees → майнерам; 25% базовых наград сжигается"),
+    "RENDER": ("none",     "GPU rendering fees → провайдерам; RNDR→RENDER миграция без accrual"),
+    "APT":    ("indirect", "Tx fees частично сжигаются; staking из инфляции"),
+    "WLD":    ("none",     "Нет revenue для протокола; токен governance only"),
+    "STRK":   ("none",     "Gas fees минимальны; нет buyback/burn при текущей TVL"),
+    "ZK":     ("indirect", "Enterprise fees (Prividium) в ZK; объём пока незначителен"),
+    "TIA":    ("indirect", "DA fees → валидаторам; staking из инфляции; real yield ~0"),
+    "XRP":    ("none",     "Tx fees сжигаются (дефляция), но negligible; Ripple ≠ XRP"),
+    "W":      ("none",     "Bridge fees → валидаторам; нет акруирования к W-холдерам"),
+    "ROSE":   ("indirect", "Tx fees → валидаторам и сжигание; staking из инфляции"),
+    "HFT":    ("direct",   "Buy-burn 50% fees + fee-sharing 50%; но объёмы малы"),
+    "FLOW":   ("none",     "Tx fees минимальны; нет механизма accrual к холдерам"),
+    "XCH":    ("indirect", "Storage fees → фермерам; дефляционная модель через fees"),
+    "PYTH":   ("direct",   "Revenue-based buyback (Pyth DAO) - объём мизерный vs supply"),
+}
+
+ACCRUAL_LABEL = {
+    "direct":   ("влияет",    "#3fb950"),
+    "indirect": ("косвенно",  "#e3b341"),
+    "none":     ("не влияет", "#f85149"),
+    "na":       ("н/д",       "#8b949e"),
+}
+
+
+def fetch_defillama_revenue():
+    """
+    Возвращает {symbol: {fees_30d, revenue_30d}} из DeFiLlama.
+    fees_30d    - комиссии, уплаченные пользователями
+    revenue_30d - доход самого протокола (что остаётся после выплат LP/валидаторам)
+    """
+    result = {}
+    slug_to_sym = {v: k for k, v in DEFILLAMA_SLUGS.items()}
+
+    # Шаг 1: fees overview (один запрос)
+    try:
+        data = fetch_json(
+            "https://api.llama.fi/overview/fees"
+            "?excludeTotalDataChart=true&excludeTotalDataChartBreakdown=true"
+        )
+        for proto in data.get("protocols", []):
+            slug = proto.get("slug", "")
+            sym  = slug_to_sym.get(slug)
+            if sym and sym not in result:
+                result[sym] = {"fees_30d": proto.get("total30d") or 0, "revenue_30d": 0}
+    except Exception as e:
+        print(f"  DeFiLlama fees ERR: {e}", flush=True)
+
+    # Шаг 2: revenue per-protocol для ключевых монет
+    REV_SLUGS = {
+        "LDO": "lido", "JUP": "jupiter", "OP": "op-mainnet",
+        "COMP": "compound-v3", "GRT": "the-graph", "ETH": "ethereum",
+        "ONDO": "ondo-yield-assets", "ARB": "arbitrum",
+    }
+    for sym, slug in REV_SLUGS.items():
+        try:
+            d = fetch_json(f"https://api.llama.fi/summary/fees/{slug}?dataType=dailyRevenue")
+            rev = d.get("total30d") or 0
+            if sym not in result:
+                result[sym] = {"fees_30d": 0, "revenue_30d": rev}
+            else:
+                result[sym]["revenue_30d"] = rev
+            time.sleep(0.2)
+        except Exception:
+            pass
+
+    return result
+
+
+def fmt_revenue(v):
+    """Форматирует сумму: $1.2M, $450K, $12K."""
+    if not v:
+        return None
+    if v >= 1_000_000:
+        return f"${v/1_000_000:.1f}M"
+    if v >= 1_000:
+        return f"${v/1_000:.0f}K"
+    return f"${v:.0f}"
+
+
 def fetch_cg_ranks():
     """Возвращает {symbol: cmc_rank} для топ-500 монет по CoinGecko."""
     ranks = {}
@@ -305,6 +434,9 @@ tr:hover td { background: #1c2128; }
 .pair-sub .ok   { color: #3fb950; }
 .pair-sub .warn { color: #f85149; }
 .rank-lbl   { color: #8b949e; }
+.rev-block  { font-size: 0.82em; line-height: 1.5; }
+.rev-val    { font-weight: 600; color: #e6edf3; }
+.rev-badge  { display: inline-block; font-size: 0.75em; padding: 1px 5px; border-radius: 3px; margin-top: 2px; font-weight: 600; }
 .changes-block { background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 10px 14px; margin-bottom: 12px; font-size: 0.82em; }
 .changes-title { color: #8b949e; font-size: 0.85em; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
 .chg-row { padding: 3px 0; border-bottom: 1px solid #21262d; line-height: 1.5; }
@@ -496,6 +628,33 @@ def build_html(results, macro, generated_at, total=0, cnt_rotate=0, cnt_watch=0,
         crank  = f'#{r["rank"]} '  if r.get("rank")     else ""
         rcrank = f'#{r["ref_rank"]} ' if r.get("ref_rank") else ""
 
+        # Доход протокола + механизм влияния
+        rev_data    = r.get("revenue") or {}
+        fees_30d    = rev_data.get("fees_30d", 0) if isinstance(rev_data, dict) else 0
+        revenue_30d = rev_data.get("revenue_30d", 0) if isinstance(rev_data, dict) else 0
+
+        accrual_type, accrual_desc = REVENUE_ACCRUAL.get(coin, ("na", "нет данных"))
+        a_label, a_color = ACCRUAL_LABEL.get(accrual_type, ("н/д", "#8b949e"))
+        accrual_badge = (
+            f'<span class="rev-badge" style="background:{a_color}22;color:{a_color};'
+            f'border:1px solid {a_color}66" title="{accrual_desc}">{a_label}</span>'
+        )
+
+        if revenue_30d:
+            rev_line = (
+                f'<span class="rev-val">{fmt_revenue(revenue_30d)}</span>'
+                f'<span style="color:#8b949e;font-size:0.85em"> rev</span>'
+            )
+        elif fees_30d:
+            rev_line = (
+                f'<span class="rev-val">{fmt_revenue(fees_30d)}</span>'
+                f'<span style="color:#8b949e;font-size:0.85em"> fees</span>'
+            )
+        else:
+            rev_line = '<span style="color:#8b949e">н/д</span>'
+
+        rev_cell = f'<div class="rev-block">{rev_line}/30д<br>{accrual_badge}</div>'
+
         rows_html += f"""
 <tr data-sig="{sc}">
   <td class="medal">{medal}</td>
@@ -522,6 +681,7 @@ def build_html(results, macro, generated_at, total=0, cnt_rotate=0, cnt_watch=0,
   <td data-val="{sig:.2f}"><span class="sig-{sc}">{sig:+.2f}</span></td>
   <td>${r['invested']:,}</td>
   <td>{pnl_fmt(coin, pv)}</td>
+  <td>{rev_cell}</td>
   <td>{tag_html}</td>
 </tr>"""
 
@@ -572,6 +732,7 @@ def build_html(results, macro, generated_at, total=0, cnt_rotate=0, cnt_watch=0,
   <th onclick="sortTable(9)">Сигнал</th>
   <th onclick="sortTable(10)">Инвест</th>
   <th onclick="sortTable(11)">Сейчас (P/L)</th>
+  <th>Доход протокола</th>
   <th>Статус</th>
 </tr>
 </thead>
@@ -644,6 +805,10 @@ def main():
     cg_ranks = fetch_cg_ranks()
     print(f"  Получено {len(cg_ranks)} монет", flush=True)
 
+    print("Доход протоколов (DeFiLlama)...", flush=True)
+    defi_revenue = fetch_defillama_revenue()
+    print(f"  Получено {len(defi_revenue)} протоколов", flush=True)
+
     print("Цены...", flush=True)
     prices = {}
     all_coins = list(PORTFOLIO.keys())
@@ -713,8 +878,9 @@ def main():
                 "sig": sig,
                 "invested":     INVESTED.get(coin, 0),
                 "ref_invested": INVESTED.get(ref_coin, 0),
-                "rank":     cg_ranks.get(coin),
-                "ref_rank": cg_ranks.get(ref_coin),
+                "rank":         cg_ranks.get(coin),
+                "ref_rank":     cg_ranks.get(ref_coin),
+                "revenue":      defi_revenue.get(coin),
             })
 
     results.sort(key=lambda x: x["sig"], reverse=True)
