@@ -70,7 +70,7 @@ def fetch_portfolio_values():
     try:
         sys.path.insert(0, os.path.dirname(__file__))
         from portfolio_live import get_dynamic_portfolio
-        _, _, pv, _ = get_dynamic_portfolio()
+        _, _, pv, _, _ = get_dynamic_portfolio()
         return pv
     except Exception:
         return {}
@@ -276,6 +276,15 @@ tr:hover td { background: #1c2128; }
 .fn-neg { color: #58a6ff; }
 .fn-neu { color: #8b949e; }
 .macro-warn { background: #2d1f1f; border: 1px solid #f85149; border-radius: 6px; padding: 8px 14px; margin-bottom: 12px; color: #f85149; font-size: 0.88em; }
+.changes-block { background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 10px 14px; margin-bottom: 12px; font-size: 0.82em; }
+.changes-title { color: #8b949e; font-size: 0.85em; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+.chg-row { padding: 3px 0; border-bottom: 1px solid #21262d; line-height: 1.5; }
+.chg-row:last-child { border-bottom: none; }
+.chg-buy  { color: #3fb950; }
+.chg-sell { color: #f85149; }
+.chg-up   { color: #3fb950; }
+.chg-down { color: #f85149; }
+.chg-info { color: #e3b341; }
 .filter-bar { margin-bottom: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
 .filter-btn { padding: 4px 12px; border-radius: 4px; border: 1px solid #30363d; background: #161b22; color: #8b949e; cursor: pointer; font-size: 0.82em; }
 .filter-btn.active { border-color: #58a6ff; color: #58a6ff; }
@@ -366,7 +375,7 @@ def sig_class(sig):
 
 MEDALS = ["🥇", "🥈", "🥉"]
 
-def build_html(results, macro, generated_at, total=0, cnt_rotate=0, cnt_watch=0, cnt_wait=0, portfolio_values=None, scores=None):
+def build_html(results, macro, generated_at, total=0, cnt_rotate=0, cnt_watch=0, cnt_wait=0, portfolio_values=None, scores=None, recent_changes=None):
     dom  = macro.get("dominance")
     fg   = macro.get("fg")
     fglb = macro.get("fg_label", "")
@@ -383,6 +392,23 @@ def build_html(results, macro, generated_at, total=0, cnt_rotate=0, cnt_watch=0,
     warn_html = ""
     if macro_warn:
         warn_html = f'<div class="macro-warn">⚠ МАКРОФИЛЬТР: {" | ".join(macro_warn)}</div>'
+
+    # Блок изменений портфеля
+    changes_html = ""
+    if recent_changes:
+        def _change_class(line):
+            if "КУПЛЕНО" in line:   return "chg-buy"
+            if "ПРОДАНО" in line:   return "chg-sell"
+            if "пополнена" in line: return "chg-buy"
+            if "частично продана" in line: return "chg-sell"
+            if "выросло" in line:   return "chg-up"
+            if "упало" in line:     return "chg-down"
+            return "chg-info"
+        rows = "".join(
+            f'<div class="chg-row {_change_class(c)}">{c}</div>'
+            for c in reversed(recent_changes)
+        )
+        changes_html = f'<div class="changes-block"><div class="changes-title">История изменений портфеля</div>{rows}</div>'
 
     pv = portfolio_values or {}
     _scores = scores or SCORES_STATIC
@@ -455,6 +481,7 @@ def build_html(results, macro, generated_at, total=0, cnt_rotate=0, cnt_watch=0,
 </div>
 
 {warn_html}
+{changes_html}
 
 <div class="filter-bar">
   <button class="filter-btn active" data-filter="all" onclick="filterRows('all')">Все ({total})</button>
@@ -498,7 +525,7 @@ def main():
     sys.path.insert(0, os.path.dirname(__file__))
     try:
         from portfolio_live import get_dynamic_portfolio
-        PORTFOLIO, INVESTED, portfolio_values, new_coins = get_dynamic_portfolio()
+        PORTFOLIO, INVESTED, portfolio_values, new_coins, changes = get_dynamic_portfolio()
         print(f"  Позиций: {len(PORTFOLIO)} | Новых монет: {len(new_coins)}", flush=True)
         if new_coins:
             print(f"  Новые: {new_coins}", flush=True)
@@ -537,6 +564,7 @@ def main():
         }
         portfolio_values = {}
         new_coins = []
+        changes = []
 
     SCORES = load_scores_from_analyses()
 
@@ -621,7 +649,9 @@ def main():
     cnt_rotate = sum(1 for r in results if r["sig"] > 4)
     cnt_watch  = sum(1 for r in results if 2 < r["sig"] <= 4)
     cnt_wait   = sum(1 for r in results if r["sig"] < -3)
-    html = build_html(results, macro, generated_at, total, cnt_rotate, cnt_watch, cnt_wait, portfolio_values, SCORES)
+    from portfolio_live import load_recent_changes
+    recent_changes = load_recent_changes(20)
+    html = build_html(results, macro, generated_at, total, cnt_rotate, cnt_watch, cnt_wait, portfolio_values, SCORES, recent_changes)
 
     with open(out_file, "w", encoding="utf-8") as f:
         f.write(html)
