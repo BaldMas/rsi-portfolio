@@ -276,6 +276,12 @@ tr:hover td { background: #1c2128; }
 .fn-neg { color: #58a6ff; }
 .fn-neu { color: #8b949e; }
 .macro-warn { background: #2d1f1f; border: 1px solid #f85149; border-radius: 6px; padding: 8px 14px; margin-bottom: 12px; color: #f85149; font-size: 0.88em; }
+.pair-sub { font-size: 0.78em; color: #8b949e; margin-top: 3px; }
+.pair-sub .ok  { color: #3fb950; }
+.pair-sub .warn { color: #f85149; }
+.pair-pnl { font-size: 0.82em; margin-left: 4px; }
+.pair-pnl.ok   { color: #3fb950; }
+.pair-pnl.warn { color: #f85149; }
 .changes-block { background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 10px 14px; margin-bottom: 12px; font-size: 0.82em; }
 .changes-title { color: #8b949e; font-size: 0.85em; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
 .chg-row { padding: 3px 0; border-bottom: 1px solid #21262d; line-height: 1.5; }
@@ -362,6 +368,23 @@ def pnl_fmt(coin, pv):
     pnl_str = f'{pnl:+.1f}%'
     return f'<span data-val="{val:.0f}">${val:,.0f} <span class="{cls}">({pnl_str})</span></span>'
 
+
+def rotation_after_pnl(coin, ref, pv, ref_invested):
+    """
+    P/L целевой монеты ПОСЛЕ ротации:
+    продаём coin по текущей цене → покупаем ref.
+    Новая себестоимость добавки = coin_val (куплено по рынку).
+    """
+    coin_val = pv.get(coin, {}).get("value", 0)
+    ref_val  = pv.get(ref,  {}).get("value", 0)
+    if coin_val <= 0:
+        return None
+    new_val = ref_val + coin_val
+    new_inv = ref_invested + coin_val   # cost basis добавки = текущая цена
+    if new_inv <= 0:
+        return None
+    return (new_val / new_inv - 1) * 100
+
 def rs_fmt(v):
     if v is None: return '<span style="color:#8b949e">н/д</span>'
     cls = "warn" if v > 30 else "ok" if v < -10 else ""
@@ -436,13 +459,40 @@ def build_html(results, macro, generated_at, total=0, cnt_rotate=0, cnt_watch=0,
             "neutral": "",
         }[sc]
 
+        # P/L источника
+        coin_pnl = pv.get(coin, {}).get("pnl")
+        if coin_pnl is not None:
+            cpnl_cls  = "ok" if coin_pnl >= 0 else "warn"
+            cpnl_html = f'<span class="pair-pnl {cpnl_cls}">{coin_pnl:+.1f}%</span>'
+        else:
+            cpnl_html = ""
+
+        # P/L получателя сейчас
+        ref_pnl = pv.get(ref, {}).get("pnl")
+        if ref_pnl is not None:
+            rpnl_cls  = "ok" if ref_pnl >= 0 else "warn"
+            rpnl_now  = f'<span class="{rpnl_cls}">{ref_pnl:+.1f}%</span>'
+        else:
+            rpnl_now  = '<span style="color:#8b949e">н/д</span>'
+
+        # P/L получателя ПОСЛЕ ротации
+        after_pnl = rotation_after_pnl(coin, ref, pv, r["ref_invested"])
+        if after_pnl is not None:
+            acls      = "ok" if after_pnl >= 0 else "warn"
+            rpnl_after = f'<span class="{acls}">{after_pnl:+.1f}%</span>'
+        else:
+            rpnl_after = '<span style="color:#8b949e">н/д</span>'
+
         rows_html += f"""
 <tr data-sig="{sc}">
   <td class="medal">{medal}</td>
   <td class="pair">
-    {coin}<span class="coin-tag {grp_class(grp)}" title="Score: {cscore}/500">г{grp} ★{cscore}</span>
-    →
-    {ref}<span class="coin-tag {grp_class(ref_g)}" title="Score: {rscore}/500">г{ref_g} ★{rscore}</span>
+    <div>
+      {coin}<span class="coin-tag {grp_class(grp)}" title="Score: {cscore}/500">г{grp} ★{cscore}</span>{cpnl_html}
+      →
+      {ref}<span class="coin-tag {grp_class(ref_g)}" title="Score: {rscore}/500">г{ref_g} ★{rscore}</span>
+    </div>
+    <div class="pair-sub">сейчас {rpnl_now} → после перелива {rpnl_after}</div>
   </td>
   <td data-val="{r['rsi_d'] or 0:.1f}">{rsi_color(r['rsi_d'])}</td>
   <td data-val="{r['rsi_w'] or 0:.1f}">{rsi_color(r['rsi_w'])}</td>
@@ -639,7 +689,8 @@ def main():
                 "funding": f_last, "funding_sig": f_sig,
                 "dist_200": dist_200, "oi_chg": oi_chg,
                 "sig": sig,
-                "invested": INVESTED.get(coin, 0),
+                "invested":     INVESTED.get(coin, 0),
+                "ref_invested": INVESTED.get(ref_coin, 0),
             })
 
     results.sort(key=lambda x: x["sig"], reverse=True)
