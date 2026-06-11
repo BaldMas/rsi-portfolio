@@ -644,6 +644,18 @@ def main():
 
     results.sort(key=lambda x: x["sig"], reverse=True)
 
+    # Сохраняем сигналы для recommendations.py
+    try:
+        signals_out = [
+            {k: r[k] for k in ("coin","ref","grp","ref_g","sig","rsi_d","rsi_w",
+                                "z90","rs_30","funding","dist_200","oi_chg")}
+            for r in results
+        ]
+        with open(os.path.join(os.path.dirname(__file__), "signals.json"), "w") as _sf:
+            json.dump({"generated": "now", "signals": signals_out}, _sf)
+    except Exception:
+        pass
+
     mne = timezone(timedelta(hours=2))
     generated_at = datetime.now(tz=mne).strftime("%Y-%m-%d %H:%M") + " (MNE)"
     total      = len(results)

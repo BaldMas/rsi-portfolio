@@ -9,6 +9,9 @@ report.html
 update.log
 changes.log
 portfolio_snapshot.json
+signals.json
+news.db
+recommendations.log
 
 # Секреты - НИКОГДА не коммитить
 .env
