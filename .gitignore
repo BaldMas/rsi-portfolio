@@ -1,16 +1,10 @@
 # Игнорировать всё
 *
 
-# Кроме нужных файлов
+# Только HTML файлы
 !index.html
 !urgent.html
 !watch.html
 !neutral.html
 !wait.html
 !all.html
-!analysis/
-!analysis/*.md
-
-# КРИТИЧНО: блокируем приватные файлы с префиксом _
-# (содержат позиции, P&L, скрининги, личные сводки)
-analysis/_*.md
