@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Watchlist - кандидаты на покупку</title>
+<style>
+  body { background:#0d1117; color:#c9d1d9; font-family: -apple-system, BlinkMacSystemFont, sans-serif; padding:20px; max-width:1600px; margin:auto; }
+  h1 { color:#58a6ff; margin-bottom:5px; }
+  .meta { color:#8b949e; font-size:0.85em; margin-bottom:20px; }
+  .meta a { color:#58a6ff; text-decoration:none; }
+  .summary { background:#161b22; border:1px solid #30363d; border-radius:6px; padding:12px 16px; margin-bottom:16px; }
+  .stat-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:10px; }
+  .stat-card { background:#0d1117; border:1px solid #21262d; border-radius:4px; padding:8px 12px; }
+  .stat-card .label { color:#8b949e; font-size:0.8em; }
+  .stat-card .value { font-size:1.2em; font-weight:bold; }
+  table { width:100%; border-collapse:collapse; background:#0d1117; font-size:0.88em; }
+  th, td { padding:6px 8px; text-align:left; border-bottom:1px solid #21262d; }
+  th { background:#161b22; cursor:pointer; user-select:none; position:sticky; top:0; }
+  th:hover { background:#21262d; }
+  tr:hover { background:#161b22; }
+  tr.hidden { display:none; }
+  .ok { color:#3fb950; }
+  .warn { color:#f85149; }
+  .caution { color:#d29922; }
+  .muted { color:#6e7681; }
+  .filter-bar { margin-bottom:12px; display:flex; gap:6px; flex-wrap:wrap; }
+  .prio-btn { padding:4px 10px; border-radius:4px; border:1px solid #30363d; background:#161b22; color:#8b949e; cursor:pointer; font-size:0.82em; }
+  .prio-btn.active { border-color:#58a6ff; color:#58a6ff; }
+  .prio-btn:hover { background:#21262d; }
+</style>
+</head>
+<body>
+
+<h1>📋 Watchlist - кандидаты на покупку</h1>
+<div class="meta">
+  Generated: 2026-06-20 21:12 MNE &nbsp;|&nbsp;
+  Last refresh: 18/20 tickers &nbsp;|&nbsp;
+  <a href="index.html">← на главную (ротации)</a> &nbsp;|&nbsp;
+  <a href="groups.html">📋 группы портфеля</a>
+</div>
+
+<div class="summary">
+  <div class="stat-grid">
+    <div class="stat-card"><div class="label">Всего в watchlist</div><div class="value">20</div></div>
+    <div class="stat-card"><div class="label">P0 критических</div><div class="value" style="color:#f85149">4</div></div>
+    <div class="stat-card"><div class="label">Refreshed</div><div class="value">18/20</div></div>
+  </div>
+</div>
+
+<div class="filter-bar">
+  <span style="color:#8b949e;font-size:0.85em;margin-right:8px">Приоритет:</span>
+  <button class="prio-btn active" data-prio="all" onclick="filterPrio('all')">Все</button><button class="prio-btn" data-prio="P0" onclick="filterPrio('P0')">🔴 P0 (4)</button><button class="prio-btn" data-prio="P1" onclick="filterPrio('P1')">🟠 P1 (4)</button><button class="prio-btn" data-prio="P2" onclick="filterPrio('P2')">🟡 P2 (4)</button><button class="prio-btn" data-prio="P3" onclick="filterPrio('P3')">⚪ P3 (8)</button>
+</div>
+
+<table id="main-table">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Prio</th>
+      <th onclick="sortBy(2,'str')">Ticker</th>
+      <th onclick="sortBy(3,'str')">Tier</th>
+      <th>Category</th>
+      <th>Fee accrual</th>
+      <th onclick="sortBy(6,'num')" style="text-align:right">Price</th>
+      <th onclick="sortBy(7,'num')" style="text-align:right">MC</th>
+      <th onclick="sortBy(8,'num')" style="text-align:right">Vol 24h</th>
+      <th onclick="sortBy(9,'num')" style="text-align:right">24h%</th>
+      <th onclick="sortBy(10,'num')" style="text-align:right">7d%</th>
+      <th onclick="sortBy(11,'num')" style="text-align:right">30d%</th>
+      <th onclick="sortBy(12,'num')" style="text-align:right">% от ATH</th>
+      <th onclick="sortBy(13,'num','data-rs')" style="text-align:right">RS vs BTC 30d</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody id="main-tbody">
+<tr data-prio="P0" data-rs="36.61334915081201"><td>1</td><td><span style="color:#f85149;font-weight:bold">P0</span></td><td><b>HYPE</b></td><td>T1</td><td>Perp DEX</td><td><span style="color:#3fb950">💰 direct</span></td><td style="text-align:right">$69.75</td><td style="text-align:right">$15.50B</td><td style="text-align:right">$561.0M</td><td style="text-align:right"><span class="warn">-1.6%</span></td><td style="text-align:right"><span class="ok">+16.9%</span></td><td style="text-align:right"><span class="ok">+19.2%</span></td><td style="text-align:right"><span class="ok">-9%</span></td><td style="text-align:right"><span class="ok">+36.6%</span></td><td style="font-size:0.85em">$400M+/год fee buyback. Лидер perp dex.</td></tr>
+<tr data-prio="P0" data-rs="-1.4981788173917359"><td>2</td><td><span style="color:#f85149;font-weight:bold">P0</span></td><td><b>LINK</b></td><td>T4</td><td>Oracle</td><td><span style="color:#7ee787">💵 indirect</span></td><td style="text-align:right">$7.89</td><td style="text-align:right">$5.90B</td><td style="text-align:right">$159.4M</td><td style="text-align:right"><span class="ok">+0.1%</span></td><td style="text-align:right"><span class="warn">-1.4%</span></td><td style="text-align:right"><span class="warn">-18.9%</span></td><td style="text-align:right"><span class="warn">-85%</span></td><td style="text-align:right"><span class="warn">-1.5%</span></td><td style="font-size:0.85em">90% EVM oracle market. CCIP cross-chain растёт.</td></tr>
+<tr data-prio="P0" data-rs="-0.2149148887871668"><td>3</td><td><span style="color:#f85149;font-weight:bold">P0</span></td><td><b>SOL</b></td><td>T1</td><td>L1 PoS</td><td><span style="color:#3fb950">💰 direct</span></td><td style="text-align:right">$71.69</td><td style="text-align:right">$41.60B</td><td style="text-align:right">$2.00B</td><td style="text-align:right"><span class="ok">+4.1%</span></td><td style="text-align:right"><span class="ok">+5.4%</span></td><td style="text-align:right"><span class="warn">-17.6%</span></td><td style="text-align:right"><span class="caution">-76%</span></td><td style="text-align:right"><span class="warn">-0.2%</span></td><td style="font-size:0.85em">Главный gap - нет Solana экспозиции прямой. 2-я экосистема после ETH.</td></tr>
+<tr data-prio="P0" data-rs="0.2884837715681208"><td>4</td><td><span style="color:#f85149;font-weight:bold">P0</span></td><td><b>UNI</b></td><td>T2</td><td>DEX</td><td><span style="color:#3fb950">💰 direct</span></td><td style="text-align:right">$3.00</td><td style="text-align:right">$1.86B</td><td style="text-align:right">$185.2M</td><td style="text-align:right"><span class="warn">-0.7%</span></td><td style="text-align:right"><span class="ok">+17.7%</span></td><td style="text-align:right"><span class="warn">-17.1%</span></td><td style="text-align:right"><span class="warn">-93%</span></td><td style="text-align:right"><span class="ok">+0.3%</span></td><td style="font-size:0.85em">Fee switch активирован 2025. Доминирующий EVM DEX.</td></tr>
+<tr data-prio="P1" data-rs="6.7860285881691045"><td>5</td><td><span style="color:#f0883e;font-weight:bold">P1</span></td><td><b>BNB</b></td><td>T1</td><td>CEX/L1</td><td><span style="color:#3fb950">💰 direct</span></td><td style="text-align:right">$585.48</td><td style="text-align:right">$78.86B</td><td style="text-align:right">$571.1M</td><td style="text-align:right"><span class="ok">+1.3%</span></td><td style="text-align:right"><span class="warn">-3.6%</span></td><td style="text-align:right"><span class="warn">-10.6%</span></td><td style="text-align:right"><span class="caution">-57%</span></td><td style="text-align:right"><span class="ok">+6.8%</span></td><td style="font-size:0.85em">Quarterly burn от Binance revenue $1.5B+/год.</td></tr>
+<tr data-prio="P1" data-rs="0"><td>6</td><td><span style="color:#f0883e;font-weight:bold">P1</span></td><td><b>CRCL</b></td><td>T2</td><td>USDC issuer</td><td><span style="color:#3fb950">💰 direct</span></td><td style="text-align:right"><span class="muted">-</span></td><td style="text-align:right"><span class="muted">-</span></td><td style="text-align:right"><span class="muted">-</span></td><td style="text-align:right"><span class="muted">-</span></td><td style="text-align:right"><span class="muted">-</span></td><td style="text-align:right"><span class="muted">-</span></td><td style="text-align:right"><span class="muted">-</span></td><td style="text-align:right"><span class="muted">-</span></td><td style="font-size:0.85em">Public company. USDC reserves $1B+/год yield.</td></tr>
+<tr data-prio="P1" data-rs="-1.298934632787354"><td>7</td><td><span style="color:#f0883e;font-weight:bold">P1</span></td><td><b>ENA</b></td><td>T3</td><td>Synthetic dollar</td><td><span style="color:#3fb950">💰 direct</span></td><td style="text-align:right">$0.0873</td><td style="text-align:right">$809.9M</td><td style="text-align:right">$96.9M</td><td style="text-align:right"><span class="warn">-1.0%</span></td><td style="text-align:right"><span class="ok">+2.9%</span></td><td style="text-align:right"><span class="warn">-18.7%</span></td><td style="text-align:right"><span class="warn">-94%</span></td><td style="text-align:right"><span class="warn">-1.3%</span></td><td style="font-size:0.85em">Funding rate yield → USDe holders.</td></tr>
+<tr data-prio="P1" data-rs="46.65267419199899"><td>8</td><td><span style="color:#f0883e;font-weight:bold">P1</span></td><td><b>JTO</b></td><td>T2</td><td>Solana LST/MEV</td><td><span style="color:#3fb950">💰 direct</span></td><td style="text-align:right">$0.6725</td><td style="text-align:right">$325.7M</td><td style="text-align:right">$88.8M</td><td style="text-align:right"><span class="warn">-10.9%</span></td><td style="text-align:right"><span class="ok">+25.1%</span></td><td style="text-align:right"><span class="ok">+29.3%</span></td><td style="text-align:right"><span class="warn">-89%</span></td><td style="text-align:right"><span class="ok">+46.7%</span></td><td style="font-size:0.85em">Solana liquid staking лидер + MEV revenue.</td></tr>
+<tr data-prio="P2" data-rs="6.193041911169461"><td>9</td><td><span style="color:#d29922;font-weight:bold">P2</span></td><td><b>CRV</b></td><td>T2</td><td>StableSwap DEX</td><td><span style="color:#3fb950">💰 direct</span></td><td style="text-align:right">$0.2114</td><td style="text-align:right">$322.6M</td><td style="text-align:right">$32.0M</td><td style="text-align:right"><span class="warn">-0.8%</span></td><td style="text-align:right"><span class="warn">-10.6%</span></td><td style="text-align:right"><span class="warn">-11.2%</span></td><td style="text-align:right"><span class="warn">-99%</span></td><td style="text-align:right"><span class="ok">+6.2%</span></td><td style="font-size:0.85em">veCRV получает 50% fees, slow growth.</td></tr>
+<tr data-prio="P2" data-rs="45.763546062627505"><td>10</td><td><span style="color:#d29922;font-weight:bold">P2</span></td><td><b>EIGEN</b></td><td>T5</td><td>Restaking</td><td><span style="color:#d29922">⏳ pending</span></td><td style="text-align:right">$0.2508</td><td style="text-align:right">$185.8M</td><td style="text-align:right">$118.7M</td><td style="text-align:right"><span class="ok">+9.5%</span></td><td style="text-align:right"><span class="ok">+34.3%</span></td><td style="text-align:right"><span class="ok">+28.4%</span></td><td style="text-align:right"><span class="warn">-96%</span></td><td style="text-align:right"><span class="ok">+45.8%</span></td><td style="font-size:0.85em">EigenLayer security marketplace.</td></tr>
+<tr data-prio="P2" data-rs="-4.192261481043868"><td>11</td><td><span style="color:#d29922;font-weight:bold">P2</span></td><td><b>MNT</b></td><td>T3</td><td>L2 + treasury</td><td><span style="color:#7ee787">💵 indirect</span></td><td style="text-align:right">$0.5330</td><td style="text-align:right">$1.76B</td><td style="text-align:right">$15.8M</td><td style="text-align:right"><span class="ok">+1.7%</span></td><td style="text-align:right"><span class="warn">-2.9%</span></td><td style="text-align:right"><span class="warn">-21.6%</span></td><td style="text-align:right"><span class="warn">-81%</span></td><td style="text-align:right"><span class="warn">-4.2%</span></td><td style="font-size:0.85em">$2B treasury + sequencer fees.</td></tr>
+<tr data-prio="P2" data-rs="-1.375064631984582"><td>12</td><td><span style="color:#d29922;font-weight:bold">P2</span></td><td><b>TAO</b></td><td>T5</td><td>AI subnets</td><td><span style="color:#3fb950">💰 direct</span></td><td style="text-align:right">$228.43</td><td style="text-align:right">$2.19B</td><td style="text-align:right">$292.7M</td><td style="text-align:right"><span class="ok">+1.1%</span></td><td style="text-align:right"><span class="warn">-9.9%</span></td><td style="text-align:right"><span class="warn">-18.8%</span></td><td style="text-align:right"><span class="caution">-70%</span></td><td style="text-align:right"><span class="warn">-1.4%</span></td><td style="font-size:0.85em">AI compute mining. Volatile.</td></tr>
+<tr data-prio="P3" data-rs="13.817693252499984"><td>13</td><td><span style="color:#8b949e;font-weight:bold">P3</span></td><td><b>AKT</b></td><td>T4</td><td>DePIN compute</td><td><span style="color:#3fb950">💰 direct</span></td><td style="text-align:right">$0.7574</td><td style="text-align:right">$221.3M</td><td style="text-align:right">$7.7M</td><td style="text-align:right"><span class="ok">+1.5%</span></td><td style="text-align:right"><span class="ok">+7.7%</span></td><td style="text-align:right"><span class="warn">-3.6%</span></td><td style="text-align:right"><span class="warn">-91%</span></td><td style="text-align:right"><span class="ok">+13.8%</span></td><td style="font-size:0.85em">Decentralized AWS.</td></tr>
+<tr data-prio="P3" data-rs="0"><td>14</td><td><span style="color:#8b949e;font-weight:bold">P3</span></td><td><b>FTN</b></td><td>T3</td><td>L1 (Bahamut)</td><td><span style="color:#3fb950">💰 direct</span></td><td style="text-align:right"><span class="muted">-</span></td><td style="text-align:right"><span class="muted">-</span></td><td style="text-align:right"><span class="muted">-</span></td><td style="text-align:right"><span class="muted">-</span></td><td style="text-align:right"><span class="muted">-</span></td><td style="text-align:right"><span class="muted">-</span></td><td style="text-align:right"><span class="muted">-</span></td><td style="text-align:right"><span class="muted">-</span></td><td style="font-size:0.85em">Casino-backed (controversial).</td></tr>
+<tr data-prio="P3" data-rs="-48.520776171313855"><td>15</td><td><span style="color:#8b949e;font-weight:bold">P3</span></td><td><b>HNT</b></td><td>T4</td><td>DePIN wireless</td><td><span style="color:#3fb950">💰 direct</span></td><td style="text-align:right">$0.2745</td><td style="text-align:right">$50.0M</td><td style="text-align:right">$3.2M</td><td style="text-align:right"><span class="warn">-0.9%</span></td><td style="text-align:right"><span class="warn">-8.6%</span></td><td style="text-align:right"><span class="warn">-65.9%</span></td><td style="text-align:right"><span class="warn">-100%</span></td><td style="text-align:right"><span class="warn">-48.5%</span></td><td style="font-size:0.85em">T-Mobile carrier deal.</td></tr>
+<tr data-prio="P3" data-rs="38.113679081628064"><td>16</td><td><span style="color:#8b949e;font-weight:bold">P3</span></td><td><b>IO</b></td><td>T4</td><td>AI GPU compute</td><td><span style="color:#3fb950">💰 direct</span></td><td style="text-align:right">$0.1846</td><td style="text-align:right">$64.7M</td><td style="text-align:right">$17.4M</td><td style="text-align:right"><span class="ok">+2.2%</span></td><td style="text-align:right"><span class="ok">+0.5%</span></td><td style="text-align:right"><span class="ok">+20.7%</span></td><td style="text-align:right"><span class="warn">-97%</span></td><td style="text-align:right"><span class="ok">+38.1%</span></td><td style="font-size:0.85em">Volatile AI narrative.</td></tr>
+<tr data-prio="P3" data-rs="-1.2810170038416508"><td>17</td><td><span style="color:#8b949e;font-weight:bold">P3</span></td><td><b>PLUME</b></td><td>T3</td><td>RWA L1</td><td><span style="color:#3fb950">💰 direct</span></td><td style="text-align:right">$0.0110</td><td style="text-align:right">$63.4M</td><td style="text-align:right">$6.5M</td><td style="text-align:right"><span class="ok">+0.7%</span></td><td style="text-align:right"><span class="ok">+3.4%</span></td><td style="text-align:right"><span class="warn">-18.7%</span></td><td style="text-align:right"><span class="warn">-96%</span></td><td style="text-align:right"><span class="warn">-1.3%</span></td><td style="font-size:0.85em">Узкая RWA ниша.</td></tr>
+<tr data-prio="P3" data-rs="6.67787704383267"><td>18</td><td><span style="color:#8b949e;font-weight:bold">P3</span></td><td><b>TRX</b></td><td>T2</td><td>L1 (USDT chain)</td><td><span style="color:#7ee787">💵 indirect</span></td><td style="text-align:right">$0.3249</td><td style="text-align:right">$30.82B</td><td style="text-align:right">$642.7M</td><td style="text-align:right"><span class="ok">+0.7%</span></td><td style="text-align:right"><span class="ok">+2.4%</span></td><td style="text-align:right"><span class="warn">-10.7%</span></td><td style="text-align:right"><span class="">-25%</span></td><td style="text-align:right"><span class="ok">+6.7%</span></td><td style="font-size:0.85em">Доминирует USDT settlement в Asia.</td></tr>
+<tr data-prio="P3" data-rs="-2.192981045383064"><td>19</td><td><span style="color:#8b949e;font-weight:bold">P3</span></td><td><b>VIRTUAL</b></td><td>T5</td><td>AI agents</td><td><span style="color:#3fb950">💰 direct</span></td><td style="text-align:right">$0.5965</td><td style="text-align:right">$392.0M</td><td style="text-align:right">$43.7M</td><td style="text-align:right"><span class="warn">-1.8%</span></td><td style="text-align:right"><span class="warn">-6.8%</span></td><td style="text-align:right"><span class="warn">-19.6%</span></td><td style="text-align:right"><span class="warn">-88%</span></td><td style="text-align:right"><span class="warn">-2.2%</span></td><td style="font-size:0.85em">AI agents marketplace.</td></tr>
+<tr data-prio="P3" data-rs="142.76458946817698"><td>20</td><td><span style="color:#8b949e;font-weight:bold">P3</span></td><td><b>WLD</b></td><td>T5</td><td>Identity</td><td><span style="color:#7ee787">💵 indirect</span></td><td style="text-align:right">$0.6016</td><td style="text-align:right">$2.05B</td><td style="text-align:right">$289.1M</td><td style="text-align:right"><span class="warn">-1.7%</span></td><td style="text-align:right"><span class="ok">+21.8%</span></td><td style="text-align:right"><span class="ok">+125.4%</span></td><td style="text-align:right"><span class="warn">-95%</span></td><td style="text-align:right"><span class="ok">+142.8%</span></td><td style="font-size:0.85em">Controversial. Продан раньше -87%.</td></tr>
+
+  </tbody>
+</table>
+
+<div style="margin-top:20px;font-size:0.85em;color:#8b949e">
+  <b>Колонки:</b><br>
+  <b>Tier:</b> 1=Доминанты | 2=DeFi blue | 3=RWA/новые | 4=Infrastructure | 5=Niche utility<br>
+  <b>Fee accrual:</b> 💰direct (buyback/burn) | 💵indirect (staking yield) | ⏳pending (fee switch в roadmap)<br>
+  <b>% от ATH:</b> зелёный=близко к ATH (топ), жёлтый=средний drop, красный=&gt;80% drop (дно)<br>
+  <b>RS vs BTC 30d:</b> outperform/underperform BTC за 30 дней. Положительное = катализатор/momentum.<br>
+  <b>Refresh:</b> ежедневно через cron (CoinGecko free tier).
+</div>
+
+<script>
+let currentPrio = 'all';
+function filterPrio(p) {
+  currentPrio = p;
+  document.querySelectorAll('.prio-btn').forEach(b => b.classList.toggle('active', b.dataset.prio === p));
+  let n = 1;
+  document.querySelectorAll('#main-tbody tr').forEach(r => {
+    const show = p === 'all' || r.dataset.prio === p;
+    r.classList.toggle('hidden', !show);
+    if (show) r.cells[0].textContent = n++;
+  });
+}
+
+let sortState = { col: -1, dir: 'desc' };
+function sortBy(col, type='str', dataAttr=null) {
+  const tbody = document.getElementById('main-tbody');
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  if (sortState.col === col) sortState.dir = sortState.dir === 'asc' ? 'desc' : 'asc';
+  else { sortState.col = col; sortState.dir = 'desc'; }
+  rows.sort((a, b) => {
+    let av, bv;
+    if (dataAttr) {
+      av = parseFloat(a.dataset[dataAttr.replace('data-','')]) || 0;
+      bv = parseFloat(b.dataset[dataAttr.replace('data-','')]) || 0;
+    } else {
+      av = a.cells[col].textContent.trim();
+      bv = b.cells[col].textContent.trim();
+      if (type === 'num') { av = parseFloat(av.replace(/[$,%+BMK]/g,''))||0; bv = parseFloat(bv.replace(/[$,%+BMK]/g,''))||0; }
+    }
+    if (av < bv) return sortState.dir === 'asc' ? -1 : 1;
+    if (av > bv) return sortState.dir === 'asc' ? 1 : -1;
+    return 0;
+  });
+  rows.forEach(r => tbody.appendChild(r));
+  let n = 1;
+  document.querySelectorAll('#main-tbody tr:not(.hidden) td:first-child').forEach(c => c.textContent = n++);
+}
+</script>
+
+</body>
+</html>
