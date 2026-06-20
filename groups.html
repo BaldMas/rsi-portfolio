@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Группы и теги портфеля</title>
+<style>
+  body { background:#0d1117; color:#c9d1d9; font-family: -apple-system, BlinkMacSystemFont, sans-serif; padding:20px; max-width:1400px; margin:auto; }
+  h1 { color:#58a6ff; margin-bottom:5px; }
+  .meta { color:#8b949e; font-size:0.85em; margin-bottom:20px; }
+  .meta a { color:#58a6ff; text-decoration:none; }
+  .meta a:hover { text-decoration:underline; }
+  .summary-block { background:#161b22; border:1px solid #30363d; border-radius:6px; padding:12px 16px; margin-bottom:16px; }
+  .summary-block h3 { margin:0 0 8px 0; color:#7ee787; font-size:1em; }
+  table { width:100%; border-collapse:collapse; background:#0d1117; }
+  th, td { padding:8px 10px; text-align:left; border-bottom:1px solid #21262d; font-size:0.9em; }
+  th { background:#161b22; cursor:pointer; user-select:none; position:sticky; top:0; }
+  th:hover { background:#21262d; }
+  th::after { content:' ⇅'; color:#6e7681; font-size:0.85em; }
+  th.sort-asc::after { content:' ▲'; color:#58a6ff; }
+  th.sort-desc::after { content:' ▼'; color:#58a6ff; }
+  tr:hover { background:#161b22; }
+  tr.hidden { display:none; }
+  .row-dead { background:#1a0d0d; }
+  .row-grp-1 { background:#0d1c14; }
+  .row-grp-2 { background:#0d1c14; }
+  .ok { color:#3fb950; }
+  .warn { color:#f85149; }
+  .muted { color:#6e7681; }
+  .small { font-size:0.85em; }
+  .filter-bar { margin-bottom:12px; display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
+  .filter-bar .sep { width:100%; height:0; margin:4px 0; }
+  .grp-btn, .tag-btn { padding:4px 10px; border-radius:4px; border:1px solid #30363d; background:#161b22; color:#8b949e; cursor:pointer; font-size:0.82em; }
+  .grp-btn.active, .tag-btn.active { border-color:#58a6ff; color:#58a6ff; }
+  .grp-btn:hover, .tag-btn:hover { background:#21262d; }
+  code { font-family: 'Menlo', monospace; }
+  .stat-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px; }
+  .stat-card { background:#0d1117; border:1px solid #21262d; border-radius:4px; padding:8px 12px; }
+  .stat-card .label { color:#8b949e; font-size:0.8em; }
+  .stat-card .value { font-size:1.2em; font-weight:bold; }
+</style>
+</head>
+<body>
+
+<h1>Группы и теги портфеля</h1>
+<div class="meta">
+  Generated: 2026-06-20 18:45 MNE &nbsp;|&nbsp;
+  <a href="index.html">← на главную (ротации)</a> &nbsp;|&nbsp;
+  <a href="urgent.html">⚠ срочно</a> &nbsp;|&nbsp;
+  <a href="heatmap.html">heatmap</a>
+</div>
+
+<div class="summary-block">
+  <h3>Общая раскладка</h3>
+  <div class="stat-grid">
+    <div class="stat-card"><div class="label">Всего тикеров</div><div class="value">32</div></div>
+    <div class="stat-card"><div class="label">Total invested</div><div class="value">$92,926</div></div>
+    <div class="stat-card"><div class="label">Current value</div><div class="value">$47,575</div></div>
+    <div class="stat-card"><div class="label">Unrealized P/L</div><div class="value warn">$-45,351</div></div>
+  </div>
+</div>
+
+<div class="summary-block">
+  <h3>Распределение по effective_group</h3>
+  <table>
+    <thead><tr><th>Group</th><th>Метка</th><th>Кол-во</th><th>Тикеры</th></tr></thead>
+    <tbody><tr><td style="color:#3fb950;font-weight:bold">G1</td><td>Strong Buy</td><td>1</td><td style="font-size:0.85em">BTC</td></tr><tr><td style="color:#7ee787;font-weight:bold">G2</td><td>Buy / Quality</td><td>9</td><td style="font-size:0.85em">AAVE, ETH, HBAR, MORPHO, ONDO, PENDLE, RENDER, SKY, XRP</td></tr><tr><td style="color:#d29922;font-weight:bold">G3</td><td>HOLD / Selective</td><td>15</td><td style="font-size:0.85em">ARB, CFX, COMP, DOT, FIL, GRT, ICP, JUP, LDO, OP, PYTH, TIA, TON, W, ZK</td></tr><tr><td style="color:#f0883e;font-weight:bold">G4</td><td>HOLD with conditions</td><td>2</td><td style="font-size:0.85em">APT, STRK</td></tr><tr><td style="color:#a371f7;font-weight:bold">G6</td><td>💀 DEAD ZONE</td><td>5</td><td style="font-size:0.85em">FLOW, HFT, IMX, ROSE, XCH</td></tr></tbody>
+  </table>
+</div>
+
+<div class="filter-bar">
+  <span style="color:#8b949e;font-size:0.85em">Группа:</span>
+  <button class="grp-btn active" data-grp="all" onclick="filterGroup('all')">Все</button><button class="grp-btn" data-grp="6" onclick="filterGroup('6')">💀 G6 (5)</button><button class="grp-btn" data-grp="4" onclick="filterGroup('4')">G4 (2)</button><button class="grp-btn" data-grp="3" onclick="filterGroup('3')">G3 (15)</button><button class="grp-btn" data-grp="2" onclick="filterGroup('2')">G2 (9)</button><button class="grp-btn" data-grp="1" onclick="filterGroup('1')">G1 (1)</button>
+  <span class="sep"></span>
+  <span style="color:#8b949e;font-size:0.85em">Тег:</span>
+  <button class="tag-btn active" data-tag="all" onclick="filterTag('all')">Все теги</button><button class="tag-btn" data-tag="#dead" onclick="filterTag('#dead')">#dead (5)</button><button class="tag-btn" data-tag="#dying-narrative" onclick="filterTag('#dying-narrative')">#dying-narrative (3)</button><button class="tag-btn" data-tag="#governance-only" onclick="filterTag('#governance-only')">#governance-only (4)</button><button class="tag-btn" data-tag="#hacked" onclick="filterTag('#hacked')">#hacked (1)</button><button class="tag-btn" data-tag="#illiquid" onclick="filterTag('#illiquid')">#illiquid (3)</button><button class="tag-btn" data-tag="#regional" onclick="filterTag('#regional')">#regional (1)</button>
+</div>
+
+<table id="main-table">
+  <thead>
+    <tr>
+      <th onclick="sortTable(0, 'num')">#</th>
+      <th onclick="sortTable(1, 'str')">Тикер</th>
+      <th onclick="sortTable(2, 'num', 'data-score')">Score</th>
+      <th onclick="sortTable(3, 'num', 'data-group')">Group</th>
+      <th>Tags</th>
+      <th onclick="sortTable(5, 'num', 'data-value')" style="text-align:right">Value</th>
+      <th onclick="sortTable(6, 'num')" style="text-align:right">Invested</th>
+      <th onclick="sortTable(7, 'num', 'data-pnl')" style="text-align:right">P/L %</th>
+    </tr>
+  </thead>
+  <tbody id="main-tbody">
+<tr class="row-dead" data-ticker="FLOW" data-group="6" data-score="225" data-pnl="-95.51" data-value="34.55" data-tags="#dead #dying-narrative #hacked #illiquid"><td>1</td><td><b>FLOW</b></td><td><b>225</b> <span class="warn small">(-29)</span></td><td><span style="color:#a371f7;font-weight:bold">G6 💀 DEAD ZONE</span></td><td><code style="color:#f85149;background:#3a1818;padding:1px 5px;border-radius:3px;font-size:0.82em;margin-right:3px" title="агрегированный - не торговать, исключить из target">#dead</code><code style="color:#f0883e;background:#332a14;padding:1px 5px;border-radius:3px;font-size:0.82em;margin-right:3px" title="сектор/нарратив структурно мёртв">#dying-narrative</code><code style="color:#f0883e;background:#332a14;padding:1px 5px;border-radius:3px;font-size:0.82em;margin-right:3px" title="хак / эксплойт в последние 12 мес">#hacked</code><code style="color:#f0883e;background:#332a14;padding:1px 5px;border-radius:3px;font-size:0.82em;margin-right:3px" title="slippage $100k > 50%">#illiquid</code></td><td style="text-align:right">$35</td><td style="text-align:right">$770</td><td style="text-align:right"><span class="warn">-95.5%</span></td></tr>
+<tr class="row-dead" data-ticker="IMX" data-group="6" data-score="212" data-pnl="-85.95" data-value="190.27" data-tags="#dead #illiquid"><td>2</td><td><b>IMX</b></td><td><b>212</b> <span class="warn small">(-36)</span></td><td><span style="color:#a371f7;font-weight:bold">G6 💀 DEAD ZONE</span></td><td><code style="color:#f85149;background:#3a1818;padding:1px 5px;border-radius:3px;font-size:0.82em;margin-right:3px" title="агрегированный - не торговать, исключить из target">#dead</code><code style="color:#f0883e;background:#332a14;padding:1px 5px;border-radius:3px;font-size:0.82em;margin-right:3px" title="slippage $100k > 50%">#illiquid</code></td><td style="text-align:right">$190</td><td style="text-align:right">$1,354</td><td style="text-align:right"><span class="warn">-86.0%</span></td></tr>
+<tr class="row-dead" data-ticker="XCH" data-group="6" data-score="171" data-pnl="-90.21" data-value="78.32" data-tags="#dead #dying-narrative"><td>3</td><td><b>XCH</b></td><td><b>171</b> <span class="warn small">(-29)</span></td><td><span style="color:#a371f7;font-weight:bold">G6 💀 DEAD ZONE</span></td><td><code style="color:#f85149;background:#3a1818;padding:1px 5px;border-radius:3px;font-size:0.82em;margin-right:3px" title="агрегированный - не торговать, исключить из target">#dead</code><code style="color:#f0883e;background:#332a14;padding:1px 5px;border-radius:3px;font-size:0.82em;margin-right:3px" title="сектор/нарратив структурно мёртв">#dying-narrative</code></td><td style="text-align:right">$78</td><td style="text-align:right">$800</td><td style="text-align:right"><span class="warn">-90.2%</span></td></tr>
+<tr class="row-dead" data-ticker="ROSE" data-group="6" data-score="169" data-pnl="-74.78" data-value="42.25" data-tags="#dead #dying-narrative"><td>4</td><td><b>ROSE</b></td><td><b>169</b> <span class="warn small">(-45)</span></td><td><span style="color:#a371f7;font-weight:bold">G6 💀 DEAD ZONE</span></td><td><code style="color:#f85149;background:#3a1818;padding:1px 5px;border-radius:3px;font-size:0.82em;margin-right:3px" title="агрегированный - не торговать, исключить из target">#dead</code><code style="color:#f0883e;background:#332a14;padding:1px 5px;border-radius:3px;font-size:0.82em;margin-right:3px" title="сектор/нарратив структурно мёртв">#dying-narrative</code></td><td style="text-align:right">$42</td><td style="text-align:right">$168</td><td style="text-align:right"><span class="warn">-74.8%</span></td></tr>
+<tr class="row-dead" data-ticker="HFT" data-group="6" data-score="153" data-pnl="-89.11" data-value="23.06" data-tags="#dead #illiquid"><td>5</td><td><b>HFT</b></td><td><b>153</b> <span class="warn small">(-33)</span></td><td><span style="color:#a371f7;font-weight:bold">G6 💀 DEAD ZONE</span></td><td><code style="color:#f85149;background:#3a1818;padding:1px 5px;border-radius:3px;font-size:0.82em;margin-right:3px" title="агрегированный - не торговать, исключить из target">#dead</code><code style="color:#f0883e;background:#332a14;padding:1px 5px;border-radius:3px;font-size:0.82em;margin-right:3px" title="slippage $100k > 50%">#illiquid</code></td><td style="text-align:right">$23</td><td style="text-align:right">$212</td><td style="text-align:right"><span class="warn">-89.1%</span></td></tr>
+<tr class="row-grp-4" data-ticker="APT" data-group="4" data-score="208" data-pnl="-93.14" data-value="34.28" data-tags=""><td>6</td><td><b>APT</b></td><td><b>208</b> <span class="warn small">(-56)</span></td><td><span style="color:#f0883e">G4</span> <span class="muted small">HOLD with conditions</span></td><td><span class="muted">-</span></td><td style="text-align:right">$34</td><td style="text-align:right">$500</td><td style="text-align:right"><span class="warn">-93.1%</span></td></tr>
+<tr class="row-grp-4" data-ticker="STRK" data-group="4" data-score="203" data-pnl="-91.54" data-value="1724.33" data-tags="#governance-only"><td>7</td><td><b>STRK</b></td><td><b>203</b> <span class="warn small">(-45)</span></td><td><span style="color:#f0883e">G4</span> <span class="muted small">HOLD with conditions</span></td><td><code style="color:#d29922;background:#332a14;padding:1px 5px;border-radius:3px;font-size:0.82em;margin-right:3px" title="нет fee capture, чистый governance">#governance-only</code></td><td style="text-align:right">$1,724</td><td style="text-align:right">$20,377</td><td style="text-align:right"><span class="warn">-91.5%</span></td></tr>
+<tr class="row-grp-3" data-ticker="JUP" data-group="3" data-score="284" data-pnl="-73.07" data-value="299.9" data-tags=""><td>8</td><td><b>JUP</b></td><td><b>284</b> <span class="warn small">(-24)</span></td><td><span style="color:#d29922">G3</span> <span class="muted small">HOLD / Selective</span></td><td><span class="muted">-</span></td><td style="text-align:right">$300</td><td style="text-align:right">$1,114</td><td style="text-align:right"><span class="warn">-73.1%</span></td></tr>
+<tr class="row-grp-3" data-ticker="OP" data-group="3" data-score="273" data-pnl="-92.94" data-value="1260.55" data-tags="#governance-only"><td>9</td><td><b>OP</b></td><td><b>273</b> <span class="warn small">(-11)</span></td><td><span style="color:#d29922">G3</span> <span class="muted small">HOLD / Selective</span></td><td><code style="color:#d29922;background:#332a14;padding:1px 5px;border-radius:3px;font-size:0.82em;margin-right:3px" title="нет fee capture, чистый governance">#governance-only</code></td><td style="text-align:right">$1,261</td><td style="text-align:right">$17,857</td><td style="text-align:right"><span class="warn">-92.9%</span></td></tr>
+<tr class="row-grp-3" data-ticker="LDO" data-group="3" data-score="270" data-pnl="-40.66" data-value="909.48" data-tags=""><td>10</td><td><b>LDO</b></td><td><b>270</b> <span class="warn small">(-27)</span></td><td><span style="color:#d29922">G3</span> <span class="muted small">HOLD / Selective</span></td><td><span class="muted">-</span></td><td style="text-align:right">$909</td><td style="text-align:right">$1,533</td><td style="text-align:right"><span class="warn">-40.7%</span></td></tr>
+<tr class="row-grp-3" data-ticker="ICP" data-group="3" data-score="266" data-pnl="-74.02" data-value="350.87" data-tags=""><td>11</td><td><b>ICP</b></td><td><b>266</b> <span class="warn small">(-4)</span></td><td><span style="color:#d29922">G3</span> <span class="muted small">HOLD / Selective</span></td><td><span class="muted">-</span></td><td style="text-align:right">$351</td><td style="text-align:right">$1,350</td><td style="text-align:right"><span class="warn">-74.0%</span></td></tr>
+<tr class="row-grp-3" data-ticker="FIL" data-group="3" data-score="261" data-pnl="-78.09" data-value="83.22" data-tags=""><td>12</td><td><b>FIL</b></td><td><b>261</b> <span class="warn small">(-25)</span></td><td><span style="color:#d29922">G3</span> <span class="muted small">HOLD / Selective</span></td><td><span class="muted">-</span></td><td style="text-align:right">$83</td><td style="text-align:right">$380</td><td style="text-align:right"><span class="warn">-78.1%</span></td></tr>
+<tr class="row-grp-3" data-ticker="TIA" data-group="3" data-score="259" data-pnl="-92.01" data-value="47.81" data-tags=""><td>13</td><td><b>TIA</b></td><td><b>259</b> <span class="warn small">(-16)</span></td><td><span style="color:#d29922">G3</span> <span class="muted small">HOLD / Selective</span></td><td><span class="muted">-</span></td><td style="text-align:right">$48</td><td style="text-align:right">$599</td><td style="text-align:right"><span class="warn">-92.0%</span></td></tr>
+<tr class="row-grp-3" data-ticker="DOT" data-group="3" data-score="250" data-pnl="-82.79" data-value="1926.81" data-tags=""><td>14</td><td><b>DOT</b></td><td><b>250</b> <span class="warn small">(-23)</span></td><td><span style="color:#d29922">G3</span> <span class="muted small">HOLD / Selective</span></td><td><span class="muted">-</span></td><td style="text-align:right">$1,927</td><td style="text-align:right">$11,198</td><td style="text-align:right"><span class="warn">-82.8%</span></td></tr>
+<tr class="row-grp-3" data-ticker="GRT" data-group="3" data-score="249" data-pnl="-84.73" data-value="61.11" data-tags=""><td>15</td><td><b>GRT</b></td><td><b>249</b> <span class="warn small">(-12)</span></td><td><span style="color:#d29922">G3</span> <span class="muted small">HOLD / Selective</span></td><td><span class="muted">-</span></td><td style="text-align:right">$61</td><td style="text-align:right">$400</td><td style="text-align:right"><span class="warn">-84.7%</span></td></tr>
+<tr class="row-grp-3" data-ticker="ARB" data-group="3" data-score="246" data-pnl="-68.34" data-value="536.94" data-tags=""><td>16</td><td><b>ARB</b></td><td><b>246</b> <span class="warn small">(-23)</span></td><td><span style="color:#d29922">G3</span> <span class="muted small">HOLD / Selective</span></td><td><span class="muted">-</span></td><td style="text-align:right">$537</td><td style="text-align:right">$1,696</td><td style="text-align:right"><span class="warn">-68.3%</span></td></tr>
+<tr class="row-grp-3" data-ticker="COMP" data-group="3" data-score="242" data-pnl="-68.07" data-value="159.66" data-tags=""><td>17</td><td><b>COMP</b></td><td><b>242</b> <span class="warn small">(-23)</span></td><td><span style="color:#d29922">G3</span> <span class="muted small">HOLD / Selective</span></td><td><span class="muted">-</span></td><td style="text-align:right">$160</td><td style="text-align:right">$500</td><td style="text-align:right"><span class="warn">-68.1%</span></td></tr>
+<tr class="row-grp-3" data-ticker="TON" data-group="3" data-score="237" data-pnl="-62.79" data-value="221.02" data-tags=""><td>18</td><td><b>TON</b></td><td><b>237</b> <span class="warn small">(-60)</span></td><td><span style="color:#d29922">G3</span> <span class="muted small">HOLD / Selective</span></td><td><span class="muted">-</span></td><td style="text-align:right">$221</td><td style="text-align:right">$594</td><td style="text-align:right"><span class="warn">-62.8%</span></td></tr>
+<tr class="row-grp-3" data-ticker="W" data-group="3" data-score="230" data-pnl="-93.71" data-value="73.81" data-tags="#governance-only"><td>19</td><td><b>W</b></td><td><b>230</b> <span class="warn small">(-20)</span></td><td><span style="color:#d29922">G3</span> <span class="muted small">HOLD / Selective</span></td><td><code style="color:#d29922;background:#332a14;padding:1px 5px;border-radius:3px;font-size:0.82em;margin-right:3px" title="нет fee capture, чистый governance">#governance-only</code></td><td style="text-align:right">$74</td><td style="text-align:right">$1,174</td><td style="text-align:right"><span class="warn">-93.7%</span></td></tr>
+<tr class="row-grp-3" data-ticker="ZK" data-group="3" data-score="225" data-pnl="-89.5" data-value="63.06" data-tags="#governance-only"><td>20</td><td><b>ZK</b></td><td><b>225</b> <span class="warn small">(-43)</span></td><td><span style="color:#d29922">G3</span> <span class="muted small">HOLD / Selective</span></td><td><code style="color:#d29922;background:#332a14;padding:1px 5px;border-radius:3px;font-size:0.82em;margin-right:3px" title="нет fee capture, чистый governance">#governance-only</code></td><td style="text-align:right">$63</td><td style="text-align:right">$601</td><td style="text-align:right"><span class="warn">-89.5%</span></td></tr>
+<tr class="row-grp-3" data-ticker="PYTH" data-group="3" data-score="224" data-pnl="-87.39" data-value="157.57" data-tags=""><td>21</td><td><b>PYTH</b></td><td><b>224</b> <span class="warn small">(-44)</span></td><td><span style="color:#d29922">G3</span> <span class="muted small">HOLD / Selective</span></td><td><span class="muted">-</span></td><td style="text-align:right">$158</td><td style="text-align:right">$1,250</td><td style="text-align:right"><span class="warn">-87.4%</span></td></tr>
+<tr class="row-grp-3" data-ticker="CFX" data-group="3" data-score="222" data-pnl="-51.98" data-value="296.16" data-tags="#regional"><td>22</td><td><b>CFX</b></td><td><b>222</b> <span class="warn small">(-27)</span></td><td><span style="color:#d29922">G3</span> <span class="muted small">HOLD / Selective</span></td><td><code style="color:#d29922;background:#332a14;padding:1px 5px;border-radius:3px;font-size:0.82em;margin-right:3px" title="ограниченное гео adoption (региональный)">#regional</code></td><td style="text-align:right">$296</td><td style="text-align:right">$617</td><td style="text-align:right"><span class="warn">-52.0%</span></td></tr>
+<tr class="row-grp-2" data-ticker="MORPHO" data-group="2" data-score="339" data-pnl="-1.81" data-value="9.82" data-tags=""><td>23</td><td><b>MORPHO</b></td><td><b>339</b></td><td><span style="color:#7ee787">G2</span> <span class="muted small">Buy / Quality</span></td><td><span class="muted">-</span></td><td style="text-align:right">$10</td><td style="text-align:right">$10</td><td style="text-align:right"><span class="warn">-1.8%</span></td></tr>
+<tr class="row-grp-2" data-ticker="SKY" data-group="2" data-score="335" data-pnl="0.98" data-value="10.1" data-tags=""><td>24</td><td><b>SKY</b></td><td><b>335</b></td><td><span style="color:#7ee787">G2</span> <span class="muted small">Buy / Quality</span></td><td><span class="muted">-</span></td><td style="text-align:right">$10</td><td style="text-align:right">$10</td><td style="text-align:right"><span class="ok">+1.0%</span></td></tr>
+<tr class="row-grp-2" data-ticker="AAVE" data-group="2" data-score="326" data-pnl="4.01" data-value="10.4" data-tags=""><td>25</td><td><b>AAVE</b></td><td><b>326</b> <span class="warn small">(-16)</span></td><td><span style="color:#7ee787">G2</span> <span class="muted small">Buy / Quality</span></td><td><span class="muted">-</span></td><td style="text-align:right">$10</td><td style="text-align:right">$10</td><td style="text-align:right"><span class="ok">+4.0%</span></td></tr>
+<tr class="row-grp-2" data-ticker="PENDLE" data-group="2" data-score="317" data-pnl="1.42" data-value="10.14" data-tags=""><td>26</td><td><b>PENDLE</b></td><td><b>317</b></td><td><span style="color:#7ee787">G2</span> <span class="muted small">Buy / Quality</span></td><td><span class="muted">-</span></td><td style="text-align:right">$10</td><td style="text-align:right">$10</td><td style="text-align:right"><span class="ok">+1.4%</span></td></tr>
+<tr class="row-grp-2" data-ticker="RENDER" data-group="2" data-score="313" data-pnl="-40.42" data-value="552.33" data-tags=""><td>27</td><td><b>RENDER</b></td><td><b>313</b></td><td><span style="color:#7ee787">G2</span> <span class="muted small">Buy / Quality</span></td><td><span class="muted">-</span></td><td style="text-align:right">$552</td><td style="text-align:right">$927</td><td style="text-align:right"><span class="warn">-40.4%</span></td></tr>
+<tr class="row-grp-2" data-ticker="ETH" data-group="2" data-score="310" data-pnl="-10.74" data-value="9546.58" data-tags=""><td>28</td><td><b>ETH</b></td><td><b>310</b> <span class="warn small">(-28)</span></td><td><span style="color:#7ee787">G2</span> <span class="muted small">Buy / Quality</span></td><td><span class="muted">-</span></td><td style="text-align:right">$9,547</td><td style="text-align:right">$10,695</td><td style="text-align:right"><span class="warn">-10.7%</span></td></tr>
+<tr class="row-grp-2" data-ticker="XRP" data-group="2" data-score="303" data-pnl="127.64" data-value="22584.44" data-tags=""><td>29</td><td><b>XRP</b></td><td><b>303</b> <span class="warn small">(-7)</span></td><td><span style="color:#7ee787">G2</span> <span class="muted small">Buy / Quality</span></td><td><span class="muted">-</span></td><td style="text-align:right">$22,584</td><td style="text-align:right">$9,921</td><td style="text-align:right"><span class="ok">+127.6%</span></td></tr>
+<tr class="row-grp-2" data-ticker="HBAR" data-group="2" data-score="300" data-pnl="3.03" data-value="6177.72" data-tags=""><td>30</td><td><b>HBAR</b></td><td><b>300</b> <span class="warn small">(-32)</span></td><td><span style="color:#7ee787">G2</span> <span class="muted small">Buy / Quality</span></td><td><span class="muted">-</span></td><td style="text-align:right">$6,178</td><td style="text-align:right">$5,996</td><td style="text-align:right"><span class="ok">+3.0%</span></td></tr>
+<tr class="row-grp-2" data-ticker="ONDO" data-group="2" data-score="300" data-pnl="-68.93" data-value="93.13" data-tags=""><td>31</td><td><b>ONDO</b></td><td><b>300</b> <span class="warn small">(-41)</span></td><td><span style="color:#7ee787">G2</span> <span class="muted small">Buy / Quality</span></td><td><span class="muted">-</span></td><td style="text-align:right">$93</td><td style="text-align:right">$300</td><td style="text-align:right"><span class="warn">-68.9%</span></td></tr>
+<tr class="row-grp-1" data-ticker="BTC" data-group="1" data-score="400" data-pnl="-10.66" data-value="5.36" data-tags=""><td>32</td><td><b>BTC</b></td><td><b>400</b></td><td><span style="color:#3fb950">G1</span> <span class="muted small">Strong Buy</span></td><td><span class="muted">-</span></td><td style="text-align:right">$5</td><td style="text-align:right">$6</td><td style="text-align:right"><span class="warn">-10.7%</span></td></tr>
+
+  </tbody>
+</table>
+
+<script>
+let currentGroupFilter = 'all';
+let currentTagFilter = 'all';
+
+function applyFilters() {
+  const rows = document.querySelectorAll('#main-tbody tr');
+  rows.forEach(r => {
+    const grp = r.dataset.group;
+    const tags = r.dataset.tags.split(' ');
+    let visible = true;
+    if (currentGroupFilter !== 'all' && grp !== currentGroupFilter) visible = false;
+    if (currentTagFilter !== 'all' && !tags.includes(currentTagFilter)) visible = false;
+    r.classList.toggle('hidden', !visible);
+  });
+  // Renumber visible rows
+  let n = 1;
+  document.querySelectorAll('#main-tbody tr:not(.hidden) td:first-child').forEach(c => c.textContent = n++);
+}
+
+function filterGroup(g) {
+  currentGroupFilter = g;
+  document.querySelectorAll('.grp-btn').forEach(b => b.classList.toggle('active', b.dataset.grp === g));
+  applyFilters();
+}
+
+function filterTag(t) {
+  currentTagFilter = t;
+  document.querySelectorAll('.tag-btn').forEach(b => b.classList.toggle('active', b.dataset.tag === t));
+  applyFilters();
+}
+
+let sortState = { col: 2, dir: 'desc' };
+function sortTable(col, type='str', dataAttr=null) {
+  const tbody = document.getElementById('main-tbody');
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  if (sortState.col === col) sortState.dir = sortState.dir === 'asc' ? 'desc' : 'asc';
+  else { sortState.col = col; sortState.dir = 'desc'; }
+
+  rows.sort((a, b) => {
+    let av, bv;
+    if (dataAttr) {
+      av = parseFloat(a.dataset[dataAttr.replace('data-', '')]) || 0;
+      bv = parseFloat(b.dataset[dataAttr.replace('data-', '')]) || 0;
+    } else {
+      av = a.cells[col].textContent.trim();
+      bv = b.cells[col].textContent.trim();
+      if (type === 'num') { av = parseFloat(av.replace(/[$,%+]/g, '')) || 0; bv = parseFloat(bv.replace(/[$,%+]/g, '')) || 0; }
+    }
+    if (av < bv) return sortState.dir === 'asc' ? -1 : 1;
+    if (av > bv) return sortState.dir === 'asc' ? 1 : -1;
+    return 0;
+  });
+  rows.forEach(r => tbody.appendChild(r));
+  document.querySelectorAll('th').forEach((th, i) => {
+    th.classList.remove('sort-asc', 'sort-desc');
+    if (i === col) th.classList.add('sort-' + sortState.dir);
+  });
+  // Renumber visible
+  let n = 1;
+  document.querySelectorAll('#main-tbody tr:not(.hidden) td:first-child').forEach(c => c.textContent = n++);
+}
+</script>
+
+</body>
+</html>
