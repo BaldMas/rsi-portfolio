@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rotation Analyzer</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, 'Segoe UI', monospace;
+  background: #0d1117; color: #c9d1d9;
+  padding: 20px; min-height: 100vh;
+}
+h1 { color: #58a6ff; font-size: 1.4rem; margin-bottom: 4px; }
+.subtitle { color: #8b949e; font-size: 0.82rem; margin-bottom: 20px; }
+.search-wrap {
+  display: flex; gap: 10px; align-items: center;
+  margin-bottom: 24px; flex-wrap: wrap;
+}
+.search-wrap input {
+  background: #161b22; border: 1px solid #30363d;
+  color: #c9d1d9; padding: 10px 16px;
+  border-radius: 8px; font-size: 1.1rem; width: 160px;
+  text-transform: uppercase; outline: none;
+  transition: border-color .2s;
+}
+.search-wrap input:focus { border-color: #58a6ff; }
+.ticker-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  background: #21262d; border: 1px solid #30363d;
+  color: #8b949e; padding: 4px 10px; border-radius: 20px;
+  font-size: 0.75rem; cursor: pointer; transition: all .15s;
+  user-select: none;
+}
+.chip:hover { background: #30363d; color: #c9d1d9; border-color: #58a6ff; }
+.chip.g1 { border-color: #1f6feb; color: #58a6ff; }
+.chip.g2 { border-color: #238636; color: #3fb950; }
+.chip.g3 { border-color: #9e6a03; color: #d29922; }
+.chip.g4 { border-color: #da3633; color: #f85149; }
+.chip.g5,.chip.dead { border-color: #6e40c9; color: #a371f7; }
+/* Target card */
+#target-card {
+  background: #161b22; border: 1px solid #30363d;
+  border-radius: 10px; padding: 18px 20px; margin-bottom: 24px;
+  display: none;
+}
+#target-card.visible { display: block; }
+.target-header {
+  display: flex; align-items: baseline; gap: 12px; margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.target-ticker { font-size: 1.6rem; font-weight: 700; color: #58a6ff; }
+.target-score { font-size: 1rem; color: #3fb950; }
+.target-group { font-size: 0.85rem; padding: 3px 10px; border-radius: 12px; }
+.target-meta { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 10px; }
+.meta-item { font-size: 0.8rem; }
+.meta-label { color: #8b949e; }
+.meta-val { color: #c9d1d9; font-weight: 600; }
+.target-thesis { font-size: 0.82rem; color: #8b949e; line-height: 1.5; }
+.va-tag {
+  display: inline-block; background: #1f3d2e; border: 1px solid #238636;
+  color: #3fb950; padding: 2px 8px; border-radius: 10px;
+  font-size: 0.72rem; margin-top: 6px;
+}
+/* Results table */
+#results { display: none; }
+#results.visible { display: block; }
+.section-title {
+  color: #8b949e; font-size: 0.78rem; text-transform: uppercase;
+  letter-spacing: .08em; margin-bottom: 10px; margin-top: 20px;
+}
+table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+thead th {
+  background: #161b22; color: #8b949e; font-weight: 600;
+  padding: 8px 10px; text-align: left; border-bottom: 1px solid #21262d;
+  position: sticky; top: 0; z-index: 1; cursor: pointer; user-select: none;
+  white-space: nowrap;
+}
+thead th:hover { color: #c9d1d9; }
+thead th.sorted { color: #58a6ff; }
+tbody tr { border-bottom: 1px solid #21262d; transition: background .1s; }
+tbody tr:hover { background: #161b22; }
+td { padding: 8px 10px; vertical-align: middle; }
+.td-ticker { font-weight: 700; font-size: 0.9rem; }
+.td-value { font-variant-numeric: tabular-nums; }
+.pnl-pos { color: #3fb950; }
+.pnl-neg { color: #f85149; }
+.score-bar {
+  display: flex; align-items: center; gap: 6px;
+}
+.bar {
+  height: 6px; border-radius: 3px; background: #21262d; width: 60px; position: relative;
+}
+.bar-fill { height: 100%; border-radius: 3px; }
+.g1-c { color: #1f6feb; } .g1-b { background: #1f6feb; }
+.g2-c { color: #3fb950; } .g2-b { background: #3fb950; }
+.g3-c { color: #d29922; } .g3-b { background: #d29922; }
+.g4-c { color: #f85149; } .g4-b { background: #f85149; }
+.g5-c { color: #a371f7; } .g5-b { background: #a371f7; }
+.badge {
+  display: inline-block; padding: 1px 7px; border-radius: 10px;
+  font-size: 0.7rem; font-weight: 600; white-space: nowrap;
+}
+.badge-cut { background: #3d1c1c; color: #f85149; border: 1px solid #da3633; }
+.badge-hold { background: #1c2d1c; color: #3fb950; border: 1px solid #238636; }
+.badge-dead { background: #2d1c3d; color: #a371f7; border: 1px solid #6e40c9; }
+.badge-warn { background: #2d2200; color: #d29922; border: 1px solid #9e6a03; }
+.delta-pos { color: #3fb950; font-weight: 600; }
+.delta-neg { color: #f85149; font-weight: 600; }
+.td-screen { font-size: 0.72rem; color: #8b949e; }
+.td-va { font-size: 0.72rem; color: #3fb950; }
+.td-thesis { font-size: 0.72rem; color: #6e7681; max-width: 260px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.priority-star { color: #d29922; }
+.empty-state {
+  text-align: center; color: #6e7681; padding: 40px 0; font-size: 0.9rem;
+}
+.totals-bar {
+  background: #161b22; border: 1px solid #30363d; border-radius: 8px;
+  padding: 12px 16px; margin-bottom: 16px;
+  display: flex; gap: 24px; flex-wrap: wrap;
+}
+.total-item { font-size: 0.82rem; }
+.updated { color: #6e7681; font-size: 0.72rem; margin-top: 16px; }
+</style>
+</head>
+<body>
+<h1>Rotation Analyzer</h1>
+<p class="subtitle">Вводи целевой тикер - получи список позиций для перелива</p>
+
+<div class="search-wrap">
+  <input type="text" id="ticker-input" placeholder="AAVE..." maxlength="10"
+         autocomplete="off" spellcheck="false">
+  <div class="ticker-chips" id="chips"></div>
+</div>
+
+<div id="target-card">
+  <div class="target-header">
+    <span class="target-ticker" id="t-name"></span>
+    <span class="target-score" id="t-score"></span>
+    <span class="target-group badge" id="t-group"></span>
+  </div>
+  <div class="target-meta" id="t-meta"></div>
+  <div id="t-thesis" class="target-thesis"></div>
+  <div id="t-va"></div>
+</div>
+
+<div id="results">
+  <div id="totals-bar" class="totals-bar"></div>
+  <div class="section-title" id="results-title"></div>
+  <table id="rot-table">
+    <thead>
+      <tr>
+        <th data-col="priority">#</th>
+        <th data-col="ticker">Тикер</th>
+        <th data-col="value">Стоимость</th>
+        <th data-col="pnl_pct">P&amp;L %</th>
+        <th data-col="group">Группа</th>
+        <th data-col="score">Score</th>
+        <th data-col="delta">Δ Score</th>
+        <th data-col="rec">Статус</th>
+        <th data-col="screen">Скрининг</th>
+        <th data-col="value_accrual">Value accrual</th>
+        <th data-col="thesis">Тезис</th>
+      </tr>
+    </thead>
+    <tbody id="rot-body"></tbody>
+  </table>
+  <p class="updated" id="updated-ts"></p>
+</div>
+
+<script>
+const DATA = [{"ticker": "IMX", "value": 164.0, "invested": 1354.0, "pnl_pct": -87.9, "score": 245, "group": 4, "screen": "FAIL F1", "rec": "CUT (поэтапно)", "thesis": "", "value_accrual": "staking yield; fee distribution", "date": "2026-06-22", "fails": 7, "warns": 4, "tags": ["#gaming", "#l2", "#illiquid"], "is_dead": false, "rot_priority": 248.9}, {"ticker": "STRK", "value": 1460.0, "invested": 20377.0, "pnl_pct": -92.8, "score": 248, "group": 4, "screen": "FAIL F3", "rec": "CUT (частичный выход - 70-80% позиции)", "thesis": "", "value_accrual": "buyback есть; staking yield", "date": "2026-06-26", "fails": 4, "warns": 2, "tags": ["#ethereum-l2", "#l2", "#zk", "#governance-only"], "is_dead": false, "rot_priority": 248.4}, {"ticker": "CFX", "value": 264.0, "invested": 617.0, "pnl_pct": -57.2, "score": 249, "group": 4, "screen": "FAIL F1", "rec": "HOLD условно (небольшой лот, не добавлять)", "thesis": "", "value_accrual": "staking yield", "date": "2026-06-19", "fails": 3, "warns": 2, "tags": ["#regional", "#l1", "#china-eco"], "is_dead": false, "rot_priority": 179.6}, {"ticker": "W", "value": 63.0, "invested": 1174.0, "pnl_pct": -94.7, "score": 257, "group": 3, "screen": "FAIL F1+F3+F7", "rec": "CUT", "thesis": "", "value_accrual": "buyback есть; staking yield", "date": "2026-06-19", "fails": 6, "warns": 1, "tags": ["#illiquid", "#interop", "#bridge", "#governance-only"], "is_dead": false, "rot_priority": 140.3}, {"ticker": "GRT", "value": 143.0, "invested": 491.0, "pnl_pct": -70.9, "score": 254, "group": 3, "screen": "FAIL F1", "rec": "HOLD / CUT", "thesis": "", "value_accrual": "staking yield", "date": "2026-06-19", "fails": 3, "warns": 5, "tags": ["#indexing", "#data"], "is_dead": false, "rot_priority": 131.5}, {"ticker": "COMP", "value": 138.0, "invested": 500.0, "pnl_pct": -72.4, "score": 262, "group": 3, "screen": "FAIL F2+F4", "rec": "CUT при отскоке к $22-28", "thesis": "", "value_accrual": "buybacks) и Morpho ($10; staking yield", "date": "2026-06-20", "fails": 12, "warns": 1, "tags": ["#defi", "#lending", "#illiquid"], "is_dead": false, "rot_priority": 124.2}, {"ticker": "DOT", "value": 1640.0, "invested": 11198.0, "pnl_pct": -85.4, "score": 281, "group": 3, "screen": "WARN F4+F5", "rec": "CUT (полный или 80% выход)", "thesis": "", "value_accrual": "staking yield", "date": "2026-06-20", "fails": 4, "warns": 6, "tags": ["#l1", "#interop"], "is_dead": false, "rot_priority": 111.7}, {"ticker": "ZK", "value": 55.0, "invested": 601.0, "pnl_pct": -90.8, "score": 268, "group": 3, "screen": "FAIL F3+F7", "rec": "HOLD", "thesis": "ZKsync — технологически сильный лидер ZK-rollup сектора (Atlas 15000+ TPS, 58% ZK proof volume, tier-1 инвесторы a16z/Dragonfly, доксированная команда) с агрессивным пайплайном катализаторов на 2026: ", "value_accrual": "buyback&burn, native interop (v31) и институционал; staking yield", "date": "2026-06-26", "fails": 5, "warns": 2, "tags": ["#ethereum-l2", "#l2", "#zk", "#governance-only"], "is_dead": false, "rot_priority": 77.4}, {"ticker": "ICP", "value": 326.0, "invested": 1350.0, "pnl_pct": -75.9, "score": 263, "group": 3, "screen": "FAIL F3", "rec": "HOLD с жёсткими условиями", "thesis": "", "value_accrual": "staking yield", "date": "2026-06-22", "fails": 1, "warns": 5, "tags": ["#l1", "#compute"], "is_dead": false, "rot_priority": 74.9}, {"ticker": "OP", "value": 1283.0, "invested": 17857.0, "pnl_pct": -92.8, "score": 284, "group": 3, "screen": "WARN F4+F5", "rec": "HOLD без добавления", "thesis": "", "value_accrual": "buyback (50% sequencer fees, $8M; staking yield; fee distribution", "date": "2026-06-19", "fails": 4, "warns": 0, "tags": ["#ethereum-l2", "#l2", "#optimistic", "#governance-only"], "is_dead": false, "rot_priority": 62.4}, {"ticker": "ARB", "value": 705.0, "invested": 1950.0, "pnl_pct": -63.8, "score": 270, "group": 3, "screen": "WARN F4+F5", "rec": "HOLD с планом выхода", "thesis": "", "value_accrual": "staking yield", "date": "2026-06-26", "fails": 1, "warns": 5, "tags": ["#ethereum-l2", "#l2", "#optimistic"], "is_dead": false, "rot_priority": 61.9}, {"ticker": "FIL", "value": 76.0, "invested": 380.0, "pnl_pct": -80.0, "score": 282, "group": 3, "screen": "PASS", "rec": "HOLD (условно, до октября 2026)", "thesis": "", "value_accrual": "staking yield", "date": "2026-06-21", "fails": 1, "warns": 2, "tags": ["#depin", "#storage"], "is_dead": false, "rot_priority": 58.0}, {"ticker": "TON", "value": 213.0, "invested": 594.0, "pnl_pct": -64.2, "score": 275, "group": 3, "screen": "-", "rec": "н/д", "thesis": "- HOLD: Telegram-moat уникален, fundamental метрики растут (48.5M wallets +250%/год), entry на -80% от ATH", "value_accrual": "staking yield", "date": "2026-06-19", "fails": 0, "warns": 4, "tags": ["#l1", "#ton-eco"], "is_dead": false, "rot_priority": 57.1}, {"ticker": "LDO", "value": 794.0, "invested": 1533.0, "pnl_pct": -48.2, "score": 287, "group": 3, "screen": "WARN F4", "rec": "HOLD (лучшая позиция из 4 в портфеле)", "thesis": "", "value_accrual": "buyback есть; staking yield", "date": "2026-06-23", "fails": 1, "warns": 2, "tags": ["#defi", "#liquid-staking"], "is_dead": false, "rot_priority": 37.1}, {"ticker": "ONDO", "value": 83.0, "invested": 300.0, "pnl_pct": -72.2, "score": 322, "group": 3, "screen": "PASS", "rec": "HOLD", "thesis": "", "value_accrual": "staking yield", "date": "2026-06-24", "fails": 0, "warns": 2, "tags": ["#rwa", "#tokenized-treasuries"], "is_dead": false, "rot_priority": 14.1}, {"ticker": "RENDER", "value": 528.0, "invested": 987.0, "pnl_pct": -46.5, "score": 313, "group": 3, "screen": "PASS", "rec": "HOLD с условиями", "thesis": "", "value_accrual": "staking yield", "date": "2026-06-25", "fails": 0, "warns": 2, "tags": ["#ai", "#depin"], "is_dead": false, "rot_priority": 10.2}, {"ticker": "XRP", "value": 20120.0, "invested": 9921.0, "pnl_pct": 102.8, "score": 304, "group": 3, "screen": "PASS", "rec": "HOLD", "thesis": "", "value_accrual": "staking yield", "date": "2026-06-25", "fails": 5, "warns": 3, "tags": ["#payments", "#banking", "#l1"], "is_dead": false, "rot_priority": -4}, {"ticker": "ETH", "value": 8464.0, "invested": 10695.0, "pnl_pct": -20.9, "score": 337, "group": 3, "screen": "PASS (1W)", "rec": "HOLD с возможным ADD на $1,500-1,600", "thesis": "", "value_accrual": "staking yield", "date": "2026-06-20", "fails": 2, "warns": 2, "tags": ["#smart-contract", "#blue-chip", "#l1"], "is_dead": false, "rot_priority": -26.6}, {"ticker": "MORPHO", "value": 9.0, "invested": 10.0, "pnl_pct": -12.6, "score": 380, "group": 3, "screen": "-", "rec": "н/д", "thesis": "Morpho — институциональный лидер DeFi-кредитования с выдающимися фундаменталами: $6.93B TVL, ~$192M годовых fees, 1.4M юзеров (20x рост), tier-1 капитал (a16z/Paradigm/Ribbit, $175M раунд при оценке $", "value_accrual": "buyback есть; staking yield", "date": "2026-06-24", "fails": 4, "warns": 1, "tags": ["#defi", "#lending"], "is_dead": false, "rot_priority": -73.7}, {"ticker": "LINK", "value": 318.0, "invested": 1185.0, "pnl_pct": -73.1, "score": 344, "group": 2, "screen": "-", "rec": "н/д", "thesis": "Chainlink — фундаментальный лидер сектора оракулов (61-67% доли, TVS ~$93B, moat 5/5) с выдающимся институциональным и регуляторным позиционированием (SWIFT, DTCC, Mastercard, ETF, классификация LINK ", "value_accrual": "staking yield", "date": "2026-06-21", "fails": 3, "warns": 2, "tags": ["#oracle", "#blue-chip"], "is_dead": false, "rot_priority": -107.4}, {"ticker": "HBAR", "value": 5542.0, "invested": 5996.0, "pnl_pct": -7.6, "score": 313, "group": 2, "screen": "PASS", "rec": "HOLD", "thesis": "Hedera — наиболее институционально-обеспеченный L1 рынка: 30+ Fortune 500 в Governing Council (Google, IBM, FedEx, Fidelity), уникальный hashgraph consensus, первый цифровой commodity статус SEC-CFTC,", "value_accrual": "staking yield", "date": "2026-06-26", "fails": 3, "warns": 1, "tags": ["#l1", "#enterprise"], "is_dead": false, "rot_priority": -109.2}, {"ticker": "TAO", "value": 21.0, "invested": 22.0, "pnl_pct": -4.0, "score": 326, "group": 2, "screen": "-", "rec": "н/д", "thesis": "- Рекомендуемая аллокация: 3-5%", "value_accrual": "buyback есть; staking yield", "date": "2026-06-20", "fails": 0, "warns": 2, "tags": ["#ai", "#depin"], "is_dead": false, "rot_priority": -124.0}, {"ticker": "SKY", "value": 40.0, "invested": 42.0, "pnl_pct": -4.9, "score": 341, "group": 2, "screen": "-", "rec": "н/д", "thesis": "Sky (бывший MakerDAO) — фундаментально один из сильнейших DeFi-активов: 4-й по TVL ($5.74B), revenue $435M→$611M (+81%), доминирующий стейбл USDS ($8.7B+), дефляционный Smart Burn Engine и стейкинг 16", "value_accrual": "Buybacks $114.5M → 1.83B SKY сожжено (июнь 2026, v; staking yield", "date": "2026-06-23", "fails": 4, "warns": 1, "tags": ["#defi", "#cdp", "#stablecoin"], "is_dead": false, "rot_priority": -138.5}, {"ticker": "CC", "value": 10.0, "invested": 10.0, "pnl_pct": -1.7, "score": 354, "group": 2, "screen": "-", "rec": "н/д", "thesis": "Canton Network — институциональный RWA-L1 с выдающимся фундаменталом: $388B токенизированных активов, ~$9T месячного объёма, $65.5M комиссий/мес, доминирование в самом горячем нарративе 2025-2026 и па", "value_accrual": "staking yield", "date": "2026-06-21", "fails": 1, "warns": 2, "tags": ["#l1", "#rwa", "#institutional"], "is_dead": false, "rot_priority": -153.2}, {"ticker": "AAVE", "value": 11.0, "invested": 10.0, "pnl_pct": 14.5, "score": 354, "group": 2, "screen": "-", "rec": "н/д", "thesis": "AAVE — фундаментально элитный blue-chip DeFi: доминатор кредитования (50-60% доли, revenue 4x Morpho), безупречная токеномика (94.2% в обращении, нет анлоков), снятый регуляторный навес (SEC закрыла д", "value_accrual": "buyback, GHO). Главные слабости — техническая (цен; staking yield", "date": "2026-06-26", "fails": 3, "warns": 2, "tags": ["#defi", "#blue-chip", "#lending"], "is_dead": false, "rot_priority": -154}, {"ticker": "HYPE", "value": 370.0, "invested": 399.0, "pnl_pct": -7.3, "score": 386, "group": 2, "screen": "-", "rec": "н/д", "thesis": "HYPE — фундаментальный лидер сектора perp-DEX с лучшим в классе value accrual (97% fee → байбэк, $1B+ выкуплено, ~$65M/мес холдерам), доминирующей долей рынка ~70%, мощным потоком катализаторов (одобр", "value_accrual": "staking yield", "date": "2026-06-21", "fails": 2, "warns": 2, "tags": ["#defi", "#perp-dex"], "is_dead": false, "rot_priority": -182.3}, {"ticker": "BTC", "value": 5.0, "invested": 6.0, "pnl_pct": -17.0, "score": 410, "group": 2, "screen": "PASS (1W)", "rec": "Strong Buy при подтверждении разворота", "thesis": "", "value_accrual": "staking yield", "date": "2026-06-26", "fails": 0, "warns": 1, "tags": ["#blue-chip", "#l1", "#store-of-value"], "is_dead": false, "rot_priority": -201.5}];
+const GC = {1:'g1-c',2:'g2-c',3:'g3-c',4:'g4-c',5:'g5-c'};
+const GB = {1:'g1-b',2:'g2-b',3:'g3-b',4:'g4-b',5:'g5-b'};
+const GL = {1:'G1 Сильная',2:'G2 Надёжная',3:'G3 Нейтральная',4:'G4 Слабая',5:'G5 Опасная'};
+
+function fmt_usd(v) {
+  if (!v) return '$0';
+  return '$' + Math.round(v).toLocaleString('ru');
+}
+function pnl_html(v) {
+  const cls = v >= 0 ? 'pnl-pos' : 'pnl-neg';
+  const sign = v >= 0 ? '+' : '';
+  return `<span class="${cls}">${sign}${v.toFixed(1)}%</span>`;
+}
+function score_html(score, group) {
+  const pct = Math.round(score / 5);
+  return `<div class="score-bar"><span class="${GC[group]||'g3-c'}" style="min-width:28px">${score}</span>
+    <div class="bar"><div class="bar-fill ${GB[group]||'g3-b'}" style="width:${pct}%"></div></div></div>`;
+}
+function rec_badge(row) {
+  if (row.is_dead) return '<span class="badge badge-dead">💀 DEAD</span>';
+  const r = (row.rec || '').toUpperCase();
+  if (r.includes('CUT')) return '<span class="badge badge-cut">CUT</span>';
+  if (r.includes('HOLD')) return '<span class="badge badge-hold">HOLD</span>';
+  if (r.includes('WARN')) return '<span class="badge badge-warn">WARN</span>';
+  return `<span class="badge" style="background:#21262d">${row.rec||'?'}</span>`;
+}
+
+// Build lookup
+const byTicker = {};
+DATA.forEach(d => { byTicker[d.ticker] = d; });
+
+// Chips
+const input = document.getElementById('ticker-input');
+const chipsEl = document.getElementById('chips');
+// Sort chips: worst first
+const chipOrder = [...DATA].sort((a,b) => b.rot_priority - a.rot_priority);
+chipOrder.forEach(d => {
+  const chip = document.createElement('span');
+  const g = d.group;
+  const cls = d.is_dead ? 'dead' : `g${g}`;
+  chip.className = `chip ${cls}`;
+  chip.textContent = d.ticker;
+  chip.title = `G${g} Score:${d.score} ${d.pnl_pct > 0 ? '+' : ''}${d.pnl_pct}%`;
+  chip.onclick = () => { input.value = d.ticker; render(d.ticker); };
+  chipsEl.appendChild(chip);
+});
+
+input.addEventListener('input', () => { render(input.value.trim().toUpperCase()); });
+input.addEventListener('keydown', e => {
+  if (e.key === 'Enter') render(input.value.trim().toUpperCase());
+});
+
+let sortCol = 'priority', sortDir = 1;
+document.querySelectorAll('thead th').forEach(th => {
+  th.onclick = () => {
+    const col = th.dataset.col;
+    if (sortCol === col) sortDir *= -1; else { sortCol = col; sortDir = 1; }
+    document.querySelectorAll('thead th').forEach(t => t.classList.remove('sorted'));
+    th.classList.add('sorted');
+    const cur = input.value.trim().toUpperCase();
+    if (cur) render(cur);
+  };
+});
+
+function render(target) {
+  const card = document.getElementById('target-card');
+  const res = document.getElementById('results');
+  if (!target || target.length < 2) {
+    card.classList.remove('visible');
+    res.classList.remove('visible');
+    return;
+  }
+  const tgt = byTicker[target];
+
+  // Target card
+  card.classList.add('visible');
+  document.getElementById('t-name').textContent = target;
+  document.getElementById('t-score').textContent = tgt
+    ? `Score ${tgt.score}/500` : 'не в портфеле';
+  const tg = document.getElementById('t-group');
+  if (tgt) {
+    tg.textContent = GL[tgt.group] || `G${tgt.group}`;
+    tg.className = `target-group badge ${GC[tgt.group]||'g3-c'}`;
+    tg.style.background = {1:'#0d2940',2:'#0d2618',3:'#2d2200',4:'#3d1c1c',5:'#2d1c3d'}[tgt.group]||'#21262d';
+    tg.style.border = '1px solid currentColor';
+  } else {
+    tg.textContent = 'внешний'; tg.className = 'target-group badge';
+  }
+  const meta = document.getElementById('t-meta');
+  if (tgt) {
+    const items = [
+      {label:'Стоимость', val: fmt_usd(tgt.value)},
+      {label:'P&L', val: `${tgt.pnl_pct > 0 ? '+' : ''}${tgt.pnl_pct}%`},
+      {label:'Скрининг', val: tgt.screen || '-'},
+      {label:'Дата анализа', val: tgt.date || '-'},
+      {label:'Статус', val: tgt.rec || '-'},
+    ];
+    meta.innerHTML = items.map(i =>
+      `<div class="meta-item"><span class="meta-label">${i.label}: </span><span class="meta-val">${i.val}</span></div>`
+    ).join('');
+    document.getElementById('t-thesis').textContent = tgt.thesis || '';
+    const vaEl = document.getElementById('t-va');
+    if (tgt.value_accrual && tgt.value_accrual !== 'нет') {
+      vaEl.innerHTML = `<span class="va-tag">✓ ${tgt.value_accrual}</span>`;
+    } else {
+      vaEl.innerHTML = `<span style="color:#6e7681;font-size:.72rem">Value accrual: нет</span>`;
+    }
+  } else {
+    meta.innerHTML = '<span style="color:#6e7681">Тикер не найден в портфеле</span>';
+    document.getElementById('t-thesis').textContent = '';
+    document.getElementById('t-va').innerHTML = '';
+  }
+
+  // Candidates = all EXCEPT target, sorted by rotation priority
+  const candidates = DATA.filter(d => d.ticker !== target && d.value > 0);
+  const tScore = tgt ? tgt.score : 999;
+
+  // Sort
+  candidates.sort((a, b) => {
+    let va, vb;
+    switch(sortCol) {
+      case 'priority': va = b.rot_priority; vb = a.rot_priority; break;
+      case 'ticker': va = a.ticker; vb = b.ticker; break;
+      case 'value': va = b.value; vb = a.value; break;
+      case 'pnl_pct': va = a.pnl_pct; vb = b.pnl_pct; break;
+      case 'group': va = b.group; vb = a.group; break;
+      case 'score': va = a.score; vb = b.score; break;
+      case 'delta': va = (tScore - a.score); vb = (tScore - b.score); break;
+      case 'rec': va = a.rec; vb = b.rec; break;
+      default: va = b.rot_priority; vb = a.rot_priority;
+    }
+    if (typeof va === 'string') return sortDir * va.localeCompare(vb);
+    return sortDir * ((va < vb) ? 1 : (va > vb) ? -1 : 0);
+  });
+
+  // Summary totals
+  const totalVal = candidates.reduce((s,d) => s + d.value, 0);
+  const cutVal = candidates.filter(d => d.group >= 4 || d.is_dead || d.rec.toUpperCase().includes('CUT')).reduce((s,d) => s+d.value, 0);
+  document.getElementById('totals-bar').innerHTML = [
+    `<div class="total-item"><span class="meta-label">Всего в портфеле: </span><span class="meta-val">${fmt_usd(totalVal)}</span></div>`,
+    `<div class="total-item"><span class="meta-label">G4/5 + DEAD + CUT: </span><span style="color:#f85149;font-weight:600">${fmt_usd(cutVal)}</span></div>`,
+    `<div class="total-item"><span class="meta-label">Позиций: </span><span class="meta-val">${candidates.length}</span></div>`,
+  ].join('');
+
+  document.getElementById('results-title').textContent =
+    `Кандидаты на перелив в ${target} (${candidates.length} позиций, приоритет: хуже → выше)`;
+
+  // Table
+  const tbody = document.getElementById('rot-body');
+  tbody.innerHTML = '';
+  candidates.forEach((d, i) => {
+    const delta = tScore - d.score;
+    const deltaHtml = delta > 0
+      ? `<span class="delta-pos">+${delta}</span>`
+      : `<span class="delta-neg">${delta}</span>`;
+    const priority = d.group >= 4 || d.is_dead ? '🔴' : d.group === 3 && d.pnl_pct < -70 ? '🟡' : '⚪';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${priority} ${i+1}</td>
+      <td class="td-ticker ${GC[d.group]||'g3-c'}">${d.ticker}</td>
+      <td class="td-value">${fmt_usd(d.value)}</td>
+      <td>${pnl_html(d.pnl_pct)}</td>
+      <td class="${GC[d.group]||'g3-c'}">${GL[d.group]||`G${d.group}`}</td>
+      <td>${score_html(d.score, d.group)}</td>
+      <td>${tgt ? deltaHtml : '-'}</td>
+      <td>${rec_badge(d)}</td>
+      <td class="td-screen">${d.screen||'-'}</td>
+      <td class="td-va">${d.value_accrual !== 'нет' ? '✓ '+d.value_accrual : '<span style="color:#6e7681">—</span>'}</td>
+      <td class="td-thesis" title="${d.thesis}">${d.thesis||''}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  res.classList.add('visible');
+  document.getElementById('updated-ts').textContent =
+    'Данные: ' + '2026-06-26 03:48 UTC';
+}
+
+// Auto-render if hash
+const hashTicker = window.location.hash.replace('#','').toUpperCase();
+if (hashTicker && byTicker[hashTicker]) {
+  input.value = hashTicker;
+  render(hashTicker);
+}
+</script>
+</body>
+</html>
