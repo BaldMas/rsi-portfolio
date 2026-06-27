@@ -82,7 +82,15 @@ tr:hover td { background: #1c2128; }
 .chg-up   { color: #3fb950; }
 .chg-down { color: #f85149; }
 .chg-info { color: #e3b341; }
-.filter-bar { margin-bottom: 12px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.filter-bar { margin-bottom: 6px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.filter-bar.last { margin-bottom: 12px; }
+.src-grp-btn { padding: 3px 8px; border-radius: 4px; border: 1px solid #30363d; background: #161b22; color: #8b949e; cursor: pointer; font-size: 0.78em; }
+.src-grp-btn.active { border-color: #8b949e; color: #e6edf3; background: #21262d; }
+.src-grp-btn[data-src-grp-filter="1"].active { border-color: #3fb950; color: #3fb950; background: #0d2016; }
+.src-grp-btn[data-src-grp-filter="2"].active { border-color: #58a6ff; color: #58a6ff; background: #12283d; }
+.src-grp-btn[data-src-grp-filter="3"].active { border-color: #8b949e; color: #e6edf3; background: #21262d; }
+.src-grp-btn[data-src-grp-filter="4"].active { border-color: #d29922; color: #d29922; background: #2d2208; }
+.src-grp-btn[data-src-grp-filter="5"].active { border-color: #f85149; color: #f85149; background: #3d1212; }
 .filter-btn { padding: 4px 12px; border-radius: 4px; border: 1px solid #30363d; background: #161b22; color: #8b949e; cursor: pointer; font-size: 0.82em; text-decoration: none; }
 .filter-btn.active { border-color: #58a6ff; color: #58a6ff; }
 .filter-urgent { border-color: #ff7b00; color: #ff7b00; font-weight: 700; }
@@ -107,7 +115,7 @@ tr:hover td { background: #1c2128; }
 <body>
 <h1>RSI Portfolio Rotation Monitor</h1>
 <p class="subtitle timestamp" style="display:flex;justify-content:space-between;align-items:center;">
-  <span>Сгенерировано: 2026-06-27 14:15:56 (MNE)&ensp;<span id="loaded-at" style="color:#8b949e"></span></span>
+  <span>Сгенерировано: 2026-06-27 14:20:32 (MNE)&ensp;<span id="loaded-at" style="color:#8b949e"></span></span>
   <span style="display:flex;gap:14px;align-items:center;">
     <a href="rotation.html" target="_blank" style="color:#8b949e;font-size:0.85em;text-decoration:none;" onmouseover="this.style.color='#58a6ff'" onmouseout="this.style.color='#8b949e'">↗ ротация</a>
     <a href="https://dropstab.com/p/po-moim-myslam-fjkjsebo6f" target="_blank" style="color:#8b949e;font-size:0.85em;text-decoration:none;" onmouseover="this.style.color='#58a6ff'" onmouseout="this.style.color='#8b949e'">↗ dropstab</a>
@@ -116,8 +124,8 @@ tr:hover td { background: #1c2128; }
 
 <div class="macro">
   <div class="macro-item">
-    <div><span class="label">BTC Dominance: </span><span class="value ok">55.41%</span></div>
-    <div class="macro-chg">1д: <span class="ok">+0.1пп</span> &nbsp; 7д: <span class="warn">-0.2пп</span> &nbsp; 30д: <span class="warn">-3.8пп</span> &nbsp; 1г: <span class="warn">-11.3пп</span></div>
+    <div><span class="label">BTC Dominance: </span><span class="value ok">55.40%</span></div>
+    <div class="macro-chg">1д: <span class="ok">+0.1пп</span> &nbsp; 7д: <span class="warn">-0.2пп</span> &nbsp; 30д: <span class="warn">-3.9пп</span> &nbsp; 1г: <span class="warn">-11.3пп</span></div>
   </div>
   <div class="macro-item">
     <div><span class="label">Fear &amp; Greed: </span><span class="value warn">13 (Extreme Fear)</span></div>
@@ -160,7 +168,7 @@ tr:hover td { background: #1c2128; }
   </div>
 </div>
 
-<div class="macro-warn" style="border-color:#6e7681;background:#1c2128">🔻 БЕЗ РЕАЛЬНОЙ УТИЛИТЫ (5): структурно слабые, но не #dead<ul style="margin:6px 0 4px 0;padding-left:20px;color:#c9d1d9;font-size:0.95em"><li style="margin:3px 0"><b>W</b> ($71 <span class='warn'>P/L -93.9%</span>) - bridge token, governance-only, нет fee capture <code style="color:#d29922;background:#332a14;padding:1px 4px;border-radius:3px;font-size:0.82em">#governance-only</code></li><li style="margin:3px 0"><b>ZK</b> ($56 <span class='warn'>P/L -90.7%</span>) - governance-only токен, утилити нет <code style="color:#d29922;background:#332a14;padding:1px 4px;border-radius:3px;font-size:0.82em">#governance-only</code></li><li style="margin:3px 0"><b>STRK</b> ($1,465 <span class='warn'>P/L -92.8%</span>) - governance-only, голое голосование <code style="color:#d29922;background:#332a14;padding:1px 4px;border-radius:3px;font-size:0.82em">#governance-only</code></li><li style="margin:3px 0"><b>OP</b> ($1,296 <span class='warn'>P/L -92.7%</span>) - та же проблема что ZK/STRK <code style="color:#d29922;background:#332a14;padding:1px 4px;border-radius:3px;font-size:0.82em">#governance-only</code></li><li style="margin:3px 0"><b>CFX</b> ($266 <span class='warn'>P/L -56.9%</span>) - китайский L1 без глобального adoption <code style="color:#d29922;background:#332a14;padding:1px 4px;border-radius:3px;font-size:0.82em">#regional</code></li></ul><span style="font-size:0.85em;color:#8b949e">Manual разметка + auto-detected теги (#governance-only, #regional). Доступны как target ротации, но при сигнале CUT - в первой очереди.</span></div>
+<div class="macro-warn" style="border-color:#6e7681;background:#1c2128">🔻 БЕЗ РЕАЛЬНОЙ УТИЛИТЫ (5): структурно слабые, но не #dead<ul style="margin:6px 0 4px 0;padding-left:20px;color:#c9d1d9;font-size:0.95em"><li style="margin:3px 0"><b>W</b> ($72 <span class='warn'>P/L -93.9%</span>) - bridge token, governance-only, нет fee capture <code style="color:#d29922;background:#332a14;padding:1px 4px;border-radius:3px;font-size:0.82em">#governance-only</code></li><li style="margin:3px 0"><b>ZK</b> ($56 <span class='warn'>P/L -90.7%</span>) - governance-only токен, утилити нет <code style="color:#d29922;background:#332a14;padding:1px 4px;border-radius:3px;font-size:0.82em">#governance-only</code></li><li style="margin:3px 0"><b>STRK</b> ($1,467 <span class='warn'>P/L -92.8%</span>) - governance-only, голое голосование <code style="color:#d29922;background:#332a14;padding:1px 4px;border-radius:3px;font-size:0.82em">#governance-only</code></li><li style="margin:3px 0"><b>OP</b> ($1,296 <span class='warn'>P/L -92.7%</span>) - та же проблема что ZK/STRK <code style="color:#d29922;background:#332a14;padding:1px 4px;border-radius:3px;font-size:0.82em">#governance-only</code></li><li style="margin:3px 0"><b>CFX</b> ($266 <span class='warn'>P/L -56.9%</span>) - китайский L1 без глобального adoption <code style="color:#d29922;background:#332a14;padding:1px 4px;border-radius:3px;font-size:0.82em">#regional</code></li></ul><span style="font-size:0.85em;color:#8b949e">Manual разметка + auto-detected теги (#governance-only, #regional). Доступны как target ротации, но при сигнале CUT - в первой очереди.</span></div>
 <div class="macro-warn">⚠ МАКРОФИЛЬТР: Fear & Greed 13 (Extreme Fear) — рынок в страхе</div>
 
 <div class="macro-warn" style="border-color:#a371f7;background:#2d2240">⛔ ПЕРЕГРЕТЫЕ ТАРГЕТЫ (не использовать как куда-ротировать): <b>AAVE</b> (10x), <b>JTO</b> (9x)<br><span style="font-size:0.9em;color:#c9d1d9">Появляются ≥3 раз в топ-20 ЖДАТЬ - рынок видит их как переоценённые</span></div>
@@ -192,6 +200,15 @@ tr:hover td { background: #1c2128; }
   <button class="grp-btn" onclick="clearSearch()" id="clear-search-btn" style="display:none;border-color:#f85149;color:#f85149">✕</button>
   <span data-tid="97" style="cursor:help;color:#58a6ff;font-size:1.1em;padding:2px 8px;border:1px solid #30363d;border-radius:4px;background:#161b22">?</span>
 </div>
+<div class="filter-bar last">
+  <span style="color:#8b949e;font-size:.78rem;margin-right:2px">Сила монеты:</span>
+  <button class="src-grp-btn active" data-src-grp-filter="all" onclick="filterByCoinGrp('all')">Все</button>
+  <button class="src-grp-btn" data-src-grp-filter="1" onclick="filterByCoinGrp('1')" style="border-color:#3fb950;color:#3fb950">G1 Сильная</button>
+  <button class="src-grp-btn" data-src-grp-filter="2" onclick="filterByCoinGrp('2')" style="border-color:#58a6ff;color:#58a6ff">G2 Надёжная</button>
+  <button class="src-grp-btn" data-src-grp-filter="3" onclick="filterByCoinGrp('3')">G3 Нейтральная</button>
+  <button class="src-grp-btn" data-src-grp-filter="4" onclick="filterByCoinGrp('4')" style="border-color:#d29922;color:#d29922">G4 Слабая</button>
+  <button class="src-grp-btn" data-src-grp-filter="5" onclick="filterByCoinGrp('5')" style="border-color:#f85149;color:#f85149">G5 Опасная</button>
+</div>
 
 <table id="main-table" data-sort-col="-1" data-sort-dir="desc">
 <thead>
@@ -212,12 +229,12 @@ tr:hover td { background: #1c2128; }
 </thead>
 <tbody id="virt-tbody">
 
-<tr data-sig="rotate" data-grp="2" data-wl="1" data-coin="AAVE" data-ref="BNB" data-dead="0" data-warn="0" data-eye="1">
+<tr data-sig="rotate" data-grp="2" data-src-grp="2" data-wl="1" data-coin="AAVE" data-ref="BNB" data-dead="0" data-warn="0" data-eye="1">
   <td class="medal">🥇</td>
   <td class="pair">
     <div class="pair-main">
       <span class="pair-left">
-        <span class="ticker-line"><span>AAVE</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $71.66</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$95.61</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$13</span>&ensp;<span class="ok" style='font-size:0.82em'>+33.4%</span></span>
+        <span class="ticker-line"><span>AAVE</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $71.65</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$95.61</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$13</span>&ensp;<span class="ok" style='font-size:0.82em'>+33.4%</span></span>
         <span class="pair-sub"><span class="coin-tag g2" data-tid="21">G2 ★354→312</span><span class="ok">(+11)</span>&ensp;<span style='color:#8b949e'>#54</span><span class="ok">(↑3)</span>&ensp;<span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#blue-chip #defi #lending</span></span>
         <span class="pair-sub perf-row"><span class="ok" data-tid="0">1д&nbsp;+0%</span>&ensp;<span class="ok" data-tid="1">7д&nbsp;+26%</span>&ensp;<span class="ok" data-tid="2">30д&nbsp;+18%</span>&ensp;<span class="warn" data-tid="3">1г&nbsp;-63%</span>&ensp;<span class="ath-far" data-tid="4">-86%ATH</span></span>
         <span class="pair-extra"><span class="corr-lo" data-tid="55">↔BTC -0.25</span> <span class="vol-up" data-tid="15">vol×1.7▲</span></span>
@@ -244,12 +261,12 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-neu" data-tid="32" data-val="0.0094">+0.009%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="3" data-wl="0" data-coin="XRP" data-ref="DOT" data-dead="0" data-warn="0" data-eye="0">
+<tr data-sig="rotate" data-grp="3" data-src-grp="3" data-wl="0" data-coin="XRP" data-ref="DOT" data-dead="0" data-warn="0" data-eye="0">
   <td class="medal">🥈</td>
   <td class="pair">
     <div class="pair-main">
       <span class="pair-left">
-        <span class="ticker-line"><span>XRP</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.5045</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$1.06</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$9,921</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$20,831</span>&ensp;<span class="ok" style='font-size:0.82em'>+110.0%</span></span>
+        <span class="ticker-line"><span>XRP</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.5045</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$1.06</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$9,921</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$20,832</span>&ensp;<span class="ok" style='font-size:0.82em'>+110.0%</span></span>
         <span class="pair-sub"><span class="coin-tag g3" data-tid="133">G3 ★304→283</span><span title="S-тир: 151/250" style="display:inline-block;width:40px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:24px;height:8px;background:#58a6ff"></span></span><span title="A-тир: 74/140" style="display:inline-block;width:22px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:12px;height:8px;background:#3fb950"></span></span><span title="B-тир: 46/80" style="display:inline-block;width:13px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:7px;height:8px;background:#d29922"></span></span><span title="C-тир: 19/30" style="display:inline-block;width:5px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:3px;height:8px;background:#8b949e"></span></span><span class="ok">(+7)</span>&ensp;<span style='color:#8b949e'>#6</span>&ensp;<span class="narr-tag" style="background:#58a6ff22;color:#58a6ff;border:1px solid #58a6ff44" data-tid="134">платежи</span><span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#banking #l1 #payments</span></span>
         <span class="pair-sub perf-row"><span class="ok" data-tid="119">1д&nbsp;+1%</span>&ensp;<span class="warn" data-tid="120">7д&nbsp;-8%</span>&ensp;<span class="warn" data-tid="121">30д&nbsp;-19%</span>&ensp;<span class="warn" data-tid="122">1г&nbsp;-51%</span>&ensp;<span class="ath-far" data-tid="123">-71%ATH</span></span>
         <span class="pair-extra"><span class="corr-md" data-tid="131">↔BTC -0.65</span></span>
@@ -276,7 +293,7 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-neu" data-tid="32" data-val="-0.0077">-0.008%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="3" data-wl="0" data-coin="TON" data-ref="ARB" data-dead="0" data-warn="0" data-eye="0">
+<tr data-sig="rotate" data-grp="3" data-src-grp="3" data-wl="0" data-coin="TON" data-ref="ARB" data-dead="0" data-warn="0" data-eye="0">
   <td class="medal">🥉</td>
   <td class="pair">
     <div class="pair-main">
@@ -308,7 +325,7 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-hot" data-tid="170" data-val="0.3538">+0.354%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="3" data-wl="0" data-coin="TON" data-ref="DOT" data-dead="0" data-warn="0" data-eye="0">
+<tr data-sig="rotate" data-grp="3" data-src-grp="3" data-wl="0" data-coin="TON" data-ref="DOT" data-dead="0" data-warn="0" data-eye="0">
   <td class="medal">4</td>
   <td class="pair">
     <div class="pair-main">
@@ -340,12 +357,12 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-hot" data-tid="170" data-val="0.3538">+0.354%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="2" data-wl="1" data-coin="HYPE" data-ref="ETH" data-dead="0" data-warn="0" data-eye="1">
+<tr data-sig="rotate" data-grp="2" data-src-grp="2" data-wl="1" data-coin="HYPE" data-ref="ETH" data-dead="0" data-warn="0" data-eye="1">
   <td class="medal">5</td>
   <td class="pair">
     <div class="pair-main">
       <span class="pair-left">
-        <span class="ticker-line"><span>HYPE <span style="color:#58a6ff" title="Watchlist target (не в портфеле, кандидат на покупку)">👁</span></span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $68.05</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$63.33</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$399</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$372</span>&ensp;<span class="warn" style='font-size:0.82em'>-6.9%</span></span>
+        <span class="ticker-line"><span>HYPE <span style="color:#58a6ff" title="Watchlist target (не в портфеле, кандидат на покупку)">👁</span></span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $67.87</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$63.33</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$399</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$373</span>&ensp;<span class="warn" style='font-size:0.82em'>-6.7%</span></span>
         <span class="pair-sub"><span class="coin-tag g2" data-tid="179">G2 ★386→364</span><span class="warn">(-12)</span>&ensp;<span style='color:#8b949e'>#10</span>&ensp;<span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#defi #perp-dex</span></span>
         <span class="pair-sub perf-row"><span class="warn" data-tid="173">1д&nbsp;-2%</span>&ensp;<span class="warn" data-tid="174">7д&nbsp;-11%</span>&ensp;<span class="ok" data-tid="175">30д&nbsp;+3%</span>&ensp;<span class="ok" data-tid="176">1г&nbsp;+73%</span>&ensp;<span class="ok" data-tid="177">-17%ATH</span></span>
         <span class="pair-extra"><span class="corr-lo" data-tid="178">↔BTC -0.44</span> <span class="vol-dn" data-tid="114">vol×0.5</span></span>
@@ -353,7 +370,7 @@ tr:hover td { background: #1c2128; }
       </span>
       <span class="pair-arrow">→</span>
       <span class="pair-right">
-        <span class="ticker-line"><span>ETH</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $1,945</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$1,584</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10,695</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$8,710</span>&ensp;<span class="warn" style='font-size:0.82em'>-18.6%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-17.9%</span>&ensp;<span class="ok" style="font-size:0.9em">(+0.6%)</span></span>
+        <span class="ticker-line"><span>ETH</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $1,945</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$1,584</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10,695</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$8,711</span>&ensp;<span class="warn" style='font-size:0.82em'>-18.6%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-17.9%</span>&ensp;<span class="ok" style="font-size:0.9em">(+0.6%)</span></span>
         <span class="pair-sub"><span class="coin-tag g2" data-tid="22">G2 ★330</span><span class="ok">(+46)</span>&ensp;<span style='color:#8b949e'>#2</span>&ensp;<span class="narr-tag" style="background:#58a6ff22;color:#58a6ff;border:1px solid #58a6ff44" data-tid="23">L1</span><span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#blue-chip #l1 #smart-contract</span></span>
         <span class="pair-sub perf-row"><span class="ok" data-tid="5">1д&nbsp;+0%</span>&ensp;<span class="warn" data-tid="6">7д&nbsp;-9%</span>&ensp;<span class="warn" data-tid="7">30д&nbsp;-21%</span>&ensp;<span class="warn" data-tid="8">1г&nbsp;-35%</span>&ensp;<span class="ath-far" data-tid="9">-68%ATH</span></span>
         <span class="pair-extra"><span style="display:block;margin-top:2px">TVL&nbsp;<span class="tvl-dn" data-tid="16">1д&nbsp;-1%</span>&ensp;<span class="tvl-dn" data-tid="17">7д&nbsp;-4%</span>&ensp;<span class="tvl-dn" data-tid="18">30д&nbsp;-13%</span>&ensp;<span class="tvl-dn" data-tid="19">1г&nbsp;-39%</span></span> <span class="corr-hi" data-tid="20">бета BTC ▲▲</span></span>
@@ -372,12 +389,12 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-neu" data-tid="32" data-val="-0.0117">-0.012%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="3" data-wl="0" data-coin="ONDO" data-ref="DOT" data-dead="0" data-warn="0" data-eye="0">
+<tr data-sig="rotate" data-grp="3" data-src-grp="3" data-wl="0" data-coin="ONDO" data-ref="DOT" data-dead="0" data-warn="0" data-eye="0">
   <td class="medal">6</td>
   <td class="pair">
     <div class="pair-main">
       <span class="pair-left">
-        <span class="ticker-line"><span>ONDO</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $1.09</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.3171</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$300</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$87</span>&ensp;<span class="warn" style='font-size:0.82em'>-71.0%</span></span>
+        <span class="ticker-line"><span>ONDO</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $1.10</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.3171</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$300</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$87</span>&ensp;<span class="warn" style='font-size:0.82em'>-71.1%</span></span>
         <span class="pair-sub"><span class="coin-tag g3" data-tid="195">G3 ★322→273</span><span title="S-тир: 149/250" style="display:inline-block;width:40px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:24px;height:8px;background:#58a6ff"></span></span><span title="A-тир: 59/140" style="display:inline-block;width:22px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:9px;height:8px;background:#3fb950"></span></span><span title="B-тир: 54/80" style="display:inline-block;width:13px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:9px;height:8px;background:#d29922"></span></span><span title="C-тир: 23/30" style="display:inline-block;width:5px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:4px;height:8px;background:#8b949e"></span></span><span class="warn">(-8)</span>&ensp;<span style='color:#8b949e'>#49</span><span class="ok">(↑2)</span>&ensp;<span class="narr-tag" style="background:#d2992222;color:#d29922;border:1px solid #d2992244" data-tid="196">RWA</span><span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#rwa #tokenized-treasuries</span></span>
         <span class="pair-sub perf-row"><span class="warn" data-tid="184">1д&nbsp;-0%</span>&ensp;<span class="warn" data-tid="185">7д&nbsp;-8%</span>&ensp;<span class="warn" data-tid="186">30д&nbsp;-14%</span>&ensp;<span class="warn" data-tid="187">1г&nbsp;-58%</span>&ensp;<span class="ath-far" data-tid="188">-85%ATH</span></span>
         <span class="pair-extra"><span class="corr-md" data-tid="190">↔BTC -0.80</span> <span class="vol-dn" data-tid="154">vol×0.4▼</span> <span style="display:block;margin-top:2px">TVL&nbsp;<span class="tvl-up" data-tid="191">1д&nbsp;+0%</span>&ensp;<span class="tvl-dn" data-tid="192">7д&nbsp;-2%</span>&ensp;<span class="tvl-dn" data-tid="193">30д&nbsp;-4%</span>&ensp;<span class="tvl-up" data-tid="194">1г&nbsp;+85%</span></span></span>
@@ -385,7 +402,7 @@ tr:hover td { background: #1c2128; }
       </span>
       <span class="pair-arrow">→</span>
       <span class="pair-right">
-        <span class="ticker-line"><span>DOT</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $5.64</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.8440</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$11,198</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$1,676</span>&ensp;<span class="warn" style='font-size:0.82em'>-85.0%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-84.4%</span>&ensp;<span class="ok" style="font-size:0.9em">(+0.7%)</span></span>
+        <span class="ticker-line"><span>DOT</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $5.64</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.8440</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$11,198</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$1,676</span>&ensp;<span class="warn" style='font-size:0.82em'>-85.0%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-84.4%</span>&ensp;<span class="ok" style="font-size:0.9em">(+0.6%)</span></span>
         <span class="pair-sub"><span class="coin-tag g3" data-tid="135">G3 ★279</span><span class="ok">(+47)</span>&ensp;<span style='color:#8b949e'>#51</span><span class="ok">(↑1)</span>&ensp;<span class="narr-tag" style="background:#9b59b622;color:#9b59b6;border:1px solid #9b59b644" data-tid="136">L0</span><span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#interop #l1</span></span>
         <span class="pair-sub perf-row"><span class="warn" data-tid="124">1д&nbsp;-1%</span>&ensp;<span class="warn" data-tid="125">7д&nbsp;-13%</span>&ensp;<span class="warn" data-tid="126">30д&nbsp;-30%</span>&ensp;<span class="warn" data-tid="127">1г&nbsp;-75%</span>&ensp;<span class="ath-far" data-tid="128">-98%ATH</span></span>
         <span class="pair-extra"><span class="vol-dn" data-tid="132">vol×0.6</span> <span class="corr-hi" data-tid="115">бета BTC ▲▲</span></span>
@@ -404,7 +421,7 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-neu" data-tid="32" data-val="0.0034">+0.003%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="3" data-wl="0" data-coin="RENDER" data-ref="DOT" data-dead="0" data-warn="0" data-eye="0">
+<tr data-sig="rotate" data-grp="3" data-src-grp="3" data-wl="0" data-coin="RENDER" data-ref="DOT" data-dead="0" data-warn="0" data-eye="0">
   <td class="medal">7</td>
   <td class="pair">
     <div class="pair-main">
@@ -436,12 +453,12 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-neu" data-tid="32" data-val="0.0050">+0.005%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="2" data-wl="0" data-coin="CC" data-ref="ETH" data-dead="0" data-warn="0" data-eye="0">
+<tr data-sig="rotate" data-grp="2" data-src-grp="2" data-wl="0" data-coin="CC" data-ref="ETH" data-dead="0" data-warn="0" data-eye="0">
   <td class="medal">8</td>
   <td class="pair">
     <div class="pair-main">
       <span class="pair-left">
-        <span class="ticker-line"><span>CC</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.1505</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.1506</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10</span>&ensp;<span class="ok" style='font-size:0.82em'>+0.1%</span></span>
+        <span class="ticker-line"><span>CC</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.1504</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.1506</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10</span>&ensp;<span class="ok" style='font-size:0.82em'>+0.1%</span></span>
         <span class="pair-sub"><span class="coin-tag g2" data-tid="214">G2 ★354→352</span><span class="ok">(+8)</span>&ensp;<span style='color:#8b949e'>#19</span><span class="warn">(↓2)</span>&ensp;<span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#institutional #l1 #rwa</span></span>
         <span class="pair-sub perf-row"><span class="warn" data-tid="209">1д&nbsp;-1%</span>&ensp;<span class="warn" data-tid="210">7д&nbsp;-1%</span>&ensp;<span class="warn" data-tid="211">30д&nbsp;-3%</span>&ensp;<span style="color:#8b949e">1г&nbsp;н/д</span>&ensp;<span class="ok" data-tid="212">-22%ATH</span></span>
         <span class="pair-extra"><span class="corr-hi" data-tid="213">↔BTC -0.83</span> <span class="vol-dn" data-tid="132">vol×0.6</span></span>
@@ -449,7 +466,7 @@ tr:hover td { background: #1c2128; }
       </span>
       <span class="pair-arrow">→</span>
       <span class="pair-right">
-        <span class="ticker-line"><span>ETH</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $1,945</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$1,584</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10,695</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$8,710</span>&ensp;<span class="warn" style='font-size:0.82em'>-18.6%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-18.5%</span>&ensp;<span class="ok" style="font-size:0.9em">(+0.0%)</span></span>
+        <span class="ticker-line"><span>ETH</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $1,945</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$1,584</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10,695</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$8,711</span>&ensp;<span class="warn" style='font-size:0.82em'>-18.6%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-18.5%</span>&ensp;<span class="ok" style="font-size:0.9em">(+0.0%)</span></span>
         <span class="pair-sub"><span class="coin-tag g2" data-tid="22">G2 ★330</span><span class="ok">(+46)</span>&ensp;<span style='color:#8b949e'>#2</span>&ensp;<span class="narr-tag" style="background:#58a6ff22;color:#58a6ff;border:1px solid #58a6ff44" data-tid="23">L1</span><span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#blue-chip #l1 #smart-contract</span></span>
         <span class="pair-sub perf-row"><span class="ok" data-tid="5">1д&nbsp;+0%</span>&ensp;<span class="warn" data-tid="6">7д&nbsp;-9%</span>&ensp;<span class="warn" data-tid="7">30д&nbsp;-21%</span>&ensp;<span class="warn" data-tid="8">1г&nbsp;-35%</span>&ensp;<span class="ath-far" data-tid="9">-68%ATH</span></span>
         <span class="pair-extra"><span style="display:block;margin-top:2px">TVL&nbsp;<span class="tvl-dn" data-tid="16">1д&nbsp;-1%</span>&ensp;<span class="tvl-dn" data-tid="17">7д&nbsp;-4%</span>&ensp;<span class="tvl-dn" data-tid="18">30д&nbsp;-13%</span>&ensp;<span class="tvl-dn" data-tid="19">1г&nbsp;-39%</span></span> <span class="corr-hi" data-tid="20">бета BTC ▲▲</span></span>
@@ -468,12 +485,12 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-neu" data-tid="32" data-val="0.0050">+0.005%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="2" data-wl="1" data-coin="HYPE" data-ref="LINK" data-dead="0" data-warn="0" data-eye="1">
+<tr data-sig="rotate" data-grp="2" data-src-grp="2" data-wl="1" data-coin="HYPE" data-ref="LINK" data-dead="0" data-warn="0" data-eye="1">
   <td class="medal">9</td>
   <td class="pair">
     <div class="pair-main">
       <span class="pair-left">
-        <span class="ticker-line"><span>HYPE <span style="color:#58a6ff" title="Watchlist target (не в портфеле, кандидат на покупку)">👁</span></span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $68.05</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$63.33</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$399</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$372</span>&ensp;<span class="warn" style='font-size:0.82em'>-6.9%</span></span>
+        <span class="ticker-line"><span>HYPE <span style="color:#58a6ff" title="Watchlist target (не в портфеле, кандидат на покупку)">👁</span></span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $67.87</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$63.33</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$399</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$373</span>&ensp;<span class="warn" style='font-size:0.82em'>-6.7%</span></span>
         <span class="pair-sub"><span class="coin-tag g2" data-tid="179">G2 ★386→364</span><span class="warn">(-12)</span>&ensp;<span style='color:#8b949e'>#10</span>&ensp;<span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#defi #perp-dex</span></span>
         <span class="pair-sub perf-row"><span class="warn" data-tid="173">1д&nbsp;-2%</span>&ensp;<span class="warn" data-tid="174">7д&nbsp;-11%</span>&ensp;<span class="ok" data-tid="175">30д&nbsp;+3%</span>&ensp;<span class="ok" data-tid="176">1г&nbsp;+73%</span>&ensp;<span class="ok" data-tid="177">-17%ATH</span></span>
         <span class="pair-extra"><span class="corr-lo" data-tid="216">↔BTC -0.30</span> <span class="vol-dn" data-tid="114">vol×0.5</span></span>
@@ -481,7 +498,7 @@ tr:hover td { background: #1c2128; }
       </span>
       <span class="pair-arrow">→</span>
       <span class="pair-right">
-        <span class="ticker-line"><span>LINK</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $26.62</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$7.38</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$1,185</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$329</span>&ensp;<span class="warn" style='font-size:0.82em'>-72.3%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-55.0%</span>&ensp;<span class="ok" style="font-size:0.9em">(+17.3%)</span></span>
+        <span class="ticker-line"><span>LINK</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $26.63</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$7.38</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$1,185</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$329</span>&ensp;<span class="warn" style='font-size:0.82em'>-72.3%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-55.0%</span>&ensp;<span class="ok" style="font-size:0.9em">(+17.3%)</span></span>
         <span class="pair-sub"><span class="coin-tag g2" data-tid="38">G2 ★344→352</span><span class="ok">(+7)</span>&ensp;<span style='color:#8b949e'>#22</span><span class="warn">(↓2)</span>&ensp;<span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#blue-chip #oracle</span></span>
         <span class="pair-sub perf-row"><span class="ok" data-tid="33">1д&nbsp;+0%</span>&ensp;<span class="warn" data-tid="34">7д&nbsp;-8%</span>&ensp;<span class="warn" data-tid="35">30д&nbsp;-18%</span>&ensp;<span class="warn" data-tid="36">1г&nbsp;-43%</span>&ensp;<span class="ath-far" data-tid="4">-86%ATH</span></span>
         <span class="pair-extra"><span class="corr-hi" data-tid="20">бета BTC ▲▲</span></span>
@@ -500,7 +517,7 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-neu" data-tid="32" data-val="-0.0117">-0.012%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="3" data-wl="0" data-coin="TON" data-ref="GRT" data-dead="0" data-warn="0" data-eye="0">
+<tr data-sig="rotate" data-grp="3" data-src-grp="3" data-wl="0" data-coin="TON" data-ref="GRT" data-dead="0" data-warn="0" data-eye="0">
   <td class="medal">10</td>
   <td class="pair">
     <div class="pair-main">
@@ -513,7 +530,7 @@ tr:hover td { background: #1c2128; }
       </span>
       <span class="pair-arrow">→</span>
       <span class="pair-right">
-        <span class="ticker-line"><span>GRT</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.0602</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.0180</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$491</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$147</span>&ensp;<span class="warn" style='font-size:0.82em'>-70.2%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-48.8%</span>&ensp;<span class="ok" style="font-size:0.9em">(+21.3%)</span></span>
+        <span class="ticker-line"><span>GRT</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.0602</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.0180</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$491</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$146</span>&ensp;<span class="warn" style='font-size:0.82em'>-70.2%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-48.9%</span>&ensp;<span class="ok" style="font-size:0.9em">(+21.3%)</span></span>
         <span class="pair-sub"><span class="coin-tag g3" data-tid="226">G3 ★254</span><span class="ok">(+26)</span>&ensp;<span style='color:#8b949e'>#172</span><span class="warn">(↓1)</span>&ensp;<span class="narr-tag" style="background:#8b949e22;color:#8b949e;border:1px solid #8b949e44" data-tid="227">инфра</span><span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#data #indexing</span></span>
         <span class="pair-sub perf-row"><span class="warn" data-tid="218">1д&nbsp;-0%</span>&ensp;<span class="warn" data-tid="219">7д&nbsp;-10%</span>&ensp;<span class="warn" data-tid="220">30д&nbsp;-33%</span>&ensp;<span class="warn" data-tid="221">1г&nbsp;-78%</span>&ensp;<span class="ath-far" data-tid="222">-99%ATH</span></span>
         <span class="pair-extra"><span class="vol-dn" data-tid="132">vol×0.6</span> <span class="corr-hi" data-tid="225">бета BTC ▲▲</span></span>
@@ -532,7 +549,7 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-hot" data-tid="170" data-val="0.3538">+0.354%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="3" data-wl="0" data-coin="OP" data-ref="DOT" data-dead="0" data-warn="1" data-eye="0">
+<tr data-sig="rotate" data-grp="3" data-src-grp="3" data-wl="0" data-coin="OP" data-ref="DOT" data-dead="0" data-warn="1" data-eye="0">
   <td class="medal">11</td>
   <td class="pair">
     <div class="pair-main">
@@ -564,12 +581,12 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-neu" data-tid="32" data-val="0.0098">+0.010%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="3" data-wl="0" data-coin="FIL" data-ref="DOT" data-dead="0" data-warn="0" data-eye="0">
+<tr data-sig="rotate" data-grp="3" data-src-grp="3" data-wl="0" data-coin="FIL" data-ref="DOT" data-dead="0" data-warn="0" data-eye="0">
   <td class="medal">12</td>
   <td class="pair">
     <div class="pair-main">
       <span class="pair-left">
-        <span class="ticker-line"><span>FIL</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $3.63</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.7460</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$380</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$78</span>&ensp;<span class="warn" style='font-size:0.82em'>-79.5%</span></span>
+        <span class="ticker-line"><span>FIL</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $3.63</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.7460</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$380</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$78</span>&ensp;<span class="warn" style='font-size:0.82em'>-79.4%</span></span>
         <span class="pair-sub"><span class="coin-tag g3" data-tid="247">G3 ★282→272</span><span title="S-тир: 150/250" style="display:inline-block;width:40px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:24px;height:8px;background:#58a6ff"></span></span><span title="A-тир: 64/140" style="display:inline-block;width:22px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:10px;height:8px;background:#3fb950"></span></span><span title="B-тир: 48/80" style="display:inline-block;width:13px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:8px;height:8px;background:#d29922"></span></span><span title="C-тир: 19/30" style="display:inline-block;width:5px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:3px;height:8px;background:#8b949e"></span></span><span class="ok">(+20)</span>&ensp;<span style='color:#8b949e'>#95</span><span class="warn">(↓3)</span>&ensp;<span class="narr-tag" style="background:#c9510c22;color:#c9510c;border:1px solid #c9510c44" data-tid="207">DePIN</span><span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#depin #storage</span></span>
         <span class="pair-sub perf-row"><span class="ok" data-tid="241">1д&nbsp;+0%</span>&ensp;<span class="warn" data-tid="242">7д&nbsp;-5%</span>&ensp;<span class="warn" data-tid="243">30д&nbsp;-22%</span>&ensp;<span class="warn" data-tid="244">1г&nbsp;-66%</span>&ensp;<span class="ath-far" data-tid="245">-100%ATH</span></span>
         <span class="pair-extra"><span class="corr-lo" data-tid="216">↔BTC -0.30</span> <span class="vol-dn" data-tid="132">vol×0.6</span></span>
@@ -596,12 +613,12 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-neu" data-tid="32" data-val="0.0064">+0.006%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="2" data-wl="0" data-coin="CC" data-ref="LINK" data-dead="0" data-warn="0" data-eye="0">
+<tr data-sig="rotate" data-grp="2" data-src-grp="2" data-wl="0" data-coin="CC" data-ref="LINK" data-dead="0" data-warn="0" data-eye="0">
   <td class="medal">13</td>
   <td class="pair">
     <div class="pair-main">
       <span class="pair-left">
-        <span class="ticker-line"><span>CC</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.1505</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.1506</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10</span>&ensp;<span class="ok" style='font-size:0.82em'>+0.1%</span></span>
+        <span class="ticker-line"><span>CC</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.1504</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.1506</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10</span>&ensp;<span class="ok" style='font-size:0.82em'>+0.1%</span></span>
         <span class="pair-sub"><span class="coin-tag g2" data-tid="214">G2 ★354→352</span><span class="ok">(+8)</span>&ensp;<span style='color:#8b949e'>#19</span><span class="warn">(↓2)</span>&ensp;<span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#institutional #l1 #rwa</span></span>
         <span class="pair-sub perf-row"><span class="warn" data-tid="209">1д&nbsp;-1%</span>&ensp;<span class="warn" data-tid="210">7д&nbsp;-1%</span>&ensp;<span class="warn" data-tid="211">30д&nbsp;-3%</span>&ensp;<span style="color:#8b949e">1г&nbsp;н/д</span>&ensp;<span class="ok" data-tid="212">-22%ATH</span></span>
         <span class="pair-extra"><span class="corr-hi" data-tid="250">↔BTC -0.86</span> <span class="vol-dn" data-tid="132">vol×0.6</span></span>
@@ -609,7 +626,7 @@ tr:hover td { background: #1c2128; }
       </span>
       <span class="pair-arrow">→</span>
       <span class="pair-right">
-        <span class="ticker-line"><span>LINK</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $26.62</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$7.38</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$1,185</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$329</span>&ensp;<span class="warn" style='font-size:0.82em'>-72.3%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-71.7%</span>&ensp;<span class="ok" style="font-size:0.9em">(+0.6%)</span></span>
+        <span class="ticker-line"><span>LINK</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $26.63</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$7.38</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$1,185</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$329</span>&ensp;<span class="warn" style='font-size:0.82em'>-72.3%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-71.7%</span>&ensp;<span class="ok" style="font-size:0.9em">(+0.6%)</span></span>
         <span class="pair-sub"><span class="coin-tag g2" data-tid="38">G2 ★344→352</span><span class="ok">(+7)</span>&ensp;<span style='color:#8b949e'>#22</span><span class="warn">(↓2)</span>&ensp;<span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#blue-chip #oracle</span></span>
         <span class="pair-sub perf-row"><span class="ok" data-tid="33">1д&nbsp;+0%</span>&ensp;<span class="warn" data-tid="34">7д&nbsp;-8%</span>&ensp;<span class="warn" data-tid="35">30д&nbsp;-18%</span>&ensp;<span class="warn" data-tid="36">1г&nbsp;-43%</span>&ensp;<span class="ath-far" data-tid="4">-86%ATH</span></span>
         <span class="pair-extra"><span class="corr-hi" data-tid="20">бета BTC ▲▲</span></span>
@@ -628,7 +645,7 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-neu" data-tid="32" data-val="0.0050">+0.005%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="3" data-wl="0" data-coin="OP" data-ref="ARB" data-dead="0" data-warn="1" data-eye="0">
+<tr data-sig="rotate" data-grp="3" data-src-grp="3" data-wl="0" data-coin="OP" data-ref="ARB" data-dead="0" data-warn="1" data-eye="0">
   <td class="medal">14</td>
   <td class="pair">
     <div class="pair-main">
@@ -660,7 +677,7 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-neu" data-tid="32" data-val="0.0098">+0.010%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="3" data-wl="0" data-coin="TON" data-ref="LDO" data-dead="0" data-warn="0" data-eye="0">
+<tr data-sig="rotate" data-grp="3" data-src-grp="3" data-wl="0" data-coin="TON" data-ref="LDO" data-dead="0" data-warn="0" data-eye="0">
   <td class="medal">15</td>
   <td class="pair">
     <div class="pair-main">
@@ -673,7 +690,7 @@ tr:hover td { background: #1c2128; }
       </span>
       <span class="pair-arrow">→</span>
       <span class="pair-right">
-        <span class="ticker-line"><span>LDO</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.4655</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.2464</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$1,533</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$811</span>&ensp;<span class="warn" style='font-size:0.82em'>-47.1%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-41.3%</span>&ensp;<span class="ok" style="font-size:0.9em">(+5.8%)</span></span>
+        <span class="ticker-line"><span>LDO</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.4656</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.2464</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$1,533</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$811</span>&ensp;<span class="warn" style='font-size:0.82em'>-47.1%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-41.3%</span>&ensp;<span class="ok" style="font-size:0.9em">(+5.8%)</span></span>
         <span class="pair-sub"><span class="coin-tag g3" data-tid="262">G3 ★287→260</span><span class="warn">(-3)</span>&ensp;<span style='color:#8b949e'>#163</span><span class="warn">(↓2)</span>&ensp;<span class="narr-tag" style="background:#2ea44f22;color:#2ea44f;border:1px solid #2ea44f44" data-tid="263">LST</span><span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#defi #liquid-staking</span></span>
         <span class="pair-sub perf-row"><span class="warn" data-tid="254">1д&nbsp;-1%</span>&ensp;<span class="warn" data-tid="255">7д&nbsp;-11%</span>&ensp;<span class="warn" data-tid="256">30д&nbsp;-24%</span>&ensp;<span class="warn" data-tid="257">1г&nbsp;-65%</span>&ensp;<span class="ath-far" data-tid="150">-97%ATH</span></span>
         <span class="pair-extra"><span style="display:block;margin-top:2px">TVL&nbsp;<span class="tvl-up" data-tid="191">1д&nbsp;+0%</span>&ensp;<span class="tvl-dn" data-tid="260">7д&nbsp;-8%</span>&ensp;<span class="tvl-dn" data-tid="160">30д&nbsp;-21%</span>&ensp;<span class="tvl-dn" data-tid="261">1г&nbsp;-36%</span></span> <span class="corr-hi" data-tid="115">бета BTC ▲▲</span></span>
@@ -692,12 +709,12 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-hot" data-tid="170" data-val="0.3538">+0.354%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="3" data-wl="0" data-coin="ONDO" data-ref="ARB" data-dead="0" data-warn="0" data-eye="0">
+<tr data-sig="rotate" data-grp="3" data-src-grp="3" data-wl="0" data-coin="ONDO" data-ref="ARB" data-dead="0" data-warn="0" data-eye="0">
   <td class="medal">16</td>
   <td class="pair">
     <div class="pair-main">
       <span class="pair-left">
-        <span class="ticker-line"><span>ONDO</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $1.09</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.3171</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$300</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$87</span>&ensp;<span class="warn" style='font-size:0.82em'>-71.0%</span></span>
+        <span class="ticker-line"><span>ONDO</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $1.10</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.3171</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$300</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$87</span>&ensp;<span class="warn" style='font-size:0.82em'>-71.1%</span></span>
         <span class="pair-sub"><span class="coin-tag g3" data-tid="195">G3 ★322→273</span><span title="S-тир: 149/250" style="display:inline-block;width:40px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:24px;height:8px;background:#58a6ff"></span></span><span title="A-тир: 59/140" style="display:inline-block;width:22px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:9px;height:8px;background:#3fb950"></span></span><span title="B-тир: 54/80" style="display:inline-block;width:13px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:9px;height:8px;background:#d29922"></span></span><span title="C-тир: 23/30" style="display:inline-block;width:5px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:4px;height:8px;background:#8b949e"></span></span><span class="warn">(-8)</span>&ensp;<span style='color:#8b949e'>#49</span><span class="ok">(↑2)</span>&ensp;<span class="narr-tag" style="background:#d2992222;color:#d29922;border:1px solid #d2992244" data-tid="196">RWA</span><span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#rwa #tokenized-treasuries</span></span>
         <span class="pair-sub perf-row"><span class="warn" data-tid="184">1д&nbsp;-0%</span>&ensp;<span class="warn" data-tid="185">7д&nbsp;-8%</span>&ensp;<span class="warn" data-tid="186">30д&nbsp;-14%</span>&ensp;<span class="warn" data-tid="187">1г&nbsp;-58%</span>&ensp;<span class="ath-far" data-tid="188">-85%ATH</span></span>
         <span class="pair-extra"><span class="corr-md" data-tid="265">↔BTC -0.78</span> <span class="vol-dn" data-tid="154">vol×0.4▼</span> <span style="display:block;margin-top:2px">TVL&nbsp;<span class="tvl-up" data-tid="191">1д&nbsp;+0%</span>&ensp;<span class="tvl-dn" data-tid="192">7д&nbsp;-2%</span>&ensp;<span class="tvl-dn" data-tid="193">30д&nbsp;-4%</span>&ensp;<span class="tvl-up" data-tid="194">1г&nbsp;+85%</span></span></span>
@@ -724,7 +741,7 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-neu" data-tid="32" data-val="0.0034">+0.003%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="3" data-wl="0" data-coin="TON" data-ref="SKY" data-dead="0" data-warn="0" data-eye="0">
+<tr data-sig="rotate" data-grp="3" data-src-grp="3" data-wl="0" data-coin="TON" data-ref="SKY" data-dead="0" data-warn="0" data-eye="0">
   <td class="medal">17</td>
   <td class="pair">
     <div class="pair-main">
@@ -737,7 +754,7 @@ tr:hover td { background: #1c2128; }
       </span>
       <span class="pair-arrow">→</span>
       <span class="pair-right">
-        <span class="ticker-line"><span>SKY</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.0540</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.0486</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$42</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$38</span>&ensp;<span class="warn" style='font-size:0.82em'>-9.9%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-1.6%</span>&ensp;<span class="ok" style="font-size:0.9em">(+8.4%)</span></span>
+        <span class="ticker-line"><span>SKY</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.0540</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.0486</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$42</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$38</span>&ensp;<span class="warn" style='font-size:0.82em'>-10.0%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-1.6%</span>&ensp;<span class="ok" style="font-size:0.9em">(+8.4%)</span></span>
         <span class="pair-sub"><span class="coin-tag g3" data-tid="273">G3 ★341→297</span><span class="warn">(-8)</span>&ensp;<span style='color:#8b949e'>#59</span><span class="warn">(↓1)</span>&ensp;<span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#cdp #defi #stablecoin</span></span>
         <span class="pair-sub perf-row"><span class="warn" data-tid="267">1д&nbsp;-3%</span>&ensp;<span class="warn" data-tid="268">7д&nbsp;-16%</span>&ensp;<span class="warn" data-tid="269">30д&nbsp;-26%</span>&ensp;<span style="color:#8b949e">1г&nbsp;н/д</span>&ensp;<span class="ath-near" data-tid="270">-51%ATH</span></span>
         <span class="pair-extra"><span class="corr-md" data-tid="272">бета BTC ▲</span></span>
@@ -756,12 +773,12 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-hot" data-tid="170" data-val="0.3538">+0.354%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="2" data-wl="1" data-coin="HYPE" data-ref="TAO" data-dead="0" data-warn="0" data-eye="1">
+<tr data-sig="rotate" data-grp="2" data-src-grp="2" data-wl="1" data-coin="HYPE" data-ref="TAO" data-dead="0" data-warn="0" data-eye="1">
   <td class="medal">18</td>
   <td class="pair">
     <div class="pair-main">
       <span class="pair-left">
-        <span class="ticker-line"><span>HYPE <span style="color:#58a6ff" title="Watchlist target (не в портфеле, кандидат на покупку)">👁</span></span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $68.05</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$63.33</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$399</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$372</span>&ensp;<span class="warn" style='font-size:0.82em'>-6.9%</span></span>
+        <span class="ticker-line"><span>HYPE <span style="color:#58a6ff" title="Watchlist target (не в портфеле, кандидат на покупку)">👁</span></span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $67.87</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$63.33</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$399</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$373</span>&ensp;<span class="warn" style='font-size:0.82em'>-6.7%</span></span>
         <span class="pair-sub"><span class="coin-tag g2" data-tid="179">G2 ★386→364</span><span class="warn">(-12)</span>&ensp;<span style='color:#8b949e'>#10</span>&ensp;<span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#defi #perp-dex</span></span>
         <span class="pair-sub perf-row"><span class="warn" data-tid="173">1д&nbsp;-2%</span>&ensp;<span class="warn" data-tid="174">7д&nbsp;-11%</span>&ensp;<span class="ok" data-tid="175">30д&nbsp;+3%</span>&ensp;<span class="ok" data-tid="176">1г&nbsp;+73%</span>&ensp;<span class="ok" data-tid="177">-17%ATH</span></span>
         <span class="pair-extra"><span class="corr-lo" data-tid="275">↔BTC -0.31</span> <span class="vol-dn" data-tid="114">vol×0.5</span></span>
@@ -769,7 +786,7 @@ tr:hover td { background: #1c2128; }
       </span>
       <span class="pair-arrow">→</span>
       <span class="pair-right">
-        <span class="ticker-line"><span>TAO</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $218.87</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$213.00</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$22</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$21</span>&ensp;<span class="warn" style='font-size:0.82em'>-2.7%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-0.2%</span>&ensp;<span class="ok" style="font-size:0.9em">(+2.5%)</span></span>
+        <span class="ticker-line"><span>TAO</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $218.57</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$213.00</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$22</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$21</span>&ensp;<span class="warn" style='font-size:0.82em'>-2.5%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-0.2%</span>&ensp;<span class="ok" style="font-size:0.9em">(+2.3%)</span></span>
         <span class="pair-sub"><span class="coin-tag g2" data-tid="68">G2 ★326</span><span class="warn">(-8)</span>&ensp;<span style='color:#8b949e'>#41</span>&ensp;<span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#ai #depin</span></span>
         <span class="pair-sub perf-row"><span class="warn" data-tid="60">1д&nbsp;-1%</span>&ensp;<span class="warn" data-tid="61">7д&nbsp;-8%</span>&ensp;<span class="warn" data-tid="62">30д&nbsp;-18%</span>&ensp;<span class="warn" data-tid="63">1г&nbsp;-35%</span>&ensp;<span class="ath-far" data-tid="64">-72%ATH</span></span>
         <span class="pair-extra"><span class="vol-up" data-tid="66">vol×1.6▲</span> <span class="corr-md" data-tid="67">бета BTC ▲</span></span>
@@ -788,12 +805,12 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-neu" data-tid="32" data-val="-0.0117">-0.012%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="2" data-wl="0" data-coin="AAVE" data-ref="MORPHO" data-dead="0" data-warn="0" data-eye="0">
+<tr data-sig="rotate" data-grp="2" data-src-grp="2" data-wl="0" data-coin="AAVE" data-ref="MORPHO" data-dead="0" data-warn="0" data-eye="0">
   <td class="medal">19</td>
   <td class="pair">
     <div class="pair-main">
       <span class="pair-left">
-        <span class="ticker-line"><span>AAVE</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $71.66</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$95.61</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$13</span>&ensp;<span class="ok" style='font-size:0.82em'>+33.4%</span></span>
+        <span class="ticker-line"><span>AAVE</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $71.65</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$95.61</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$13</span>&ensp;<span class="ok" style='font-size:0.82em'>+33.4%</span></span>
         <span class="pair-sub"><span class="coin-tag g2" data-tid="21">G2 ★354→312</span><span class="ok">(+11)</span>&ensp;<span style='color:#8b949e'>#54</span><span class="ok">(↑3)</span>&ensp;<span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#blue-chip #defi #lending</span></span>
         <span class="pair-sub perf-row"><span class="ok" data-tid="0">1д&nbsp;+0%</span>&ensp;<span class="ok" data-tid="1">7д&nbsp;+26%</span>&ensp;<span class="ok" data-tid="2">30д&nbsp;+18%</span>&ensp;<span class="warn" data-tid="3">1г&nbsp;-63%</span>&ensp;<span class="ath-far" data-tid="4">-86%ATH</span></span>
         <span class="pair-extra"><span class="corr-lo" data-tid="281">↔BTC -0.23</span> <span class="vol-up" data-tid="15">vol×1.7▲</span></span>
@@ -801,7 +818,7 @@ tr:hover td { background: #1c2128; }
       </span>
       <span class="pair-arrow">→</span>
       <span class="pair-right">
-        <span class="ticker-line"><span>MORPHO</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $1.87</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$1.77</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$9</span>&ensp;<span class="warn" style='font-size:0.82em'>-5.5%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-2.4%</span>&ensp;<span class="ok" style="font-size:0.9em">(+3.2%)</span></span>
+        <span class="ticker-line"><span>MORPHO</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $1.87</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$1.77</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$9</span>&ensp;<span class="warn" style='font-size:0.82em'>-5.5%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-2.4%</span>&ensp;<span class="ok" style="font-size:0.9em">(+3.1%)</span></span>
         <span class="pair-sub"><span class="coin-tag g1" data-tid="282">G1 ★381</span><span class="ok">(+1)</span>&ensp;<span style='color:#8b949e'>#60</span><span class="ok">(↑1)</span>&ensp;<span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#defi #lending</span></span>
         <span class="pair-sub perf-row"><span class="warn" data-tid="277">1д&nbsp;-1%</span>&ensp;<span class="warn" data-tid="278">7д&nbsp;-3%</span>&ensp;<span class="warn" data-tid="279">30д&nbsp;-14%</span>&ensp;<span style="color:#8b949e">1г&nbsp;н/д</span>&ensp;<span class="ath-near" data-tid="280">-57%ATH</span></span>
         <span class="pair-extra"><span class="corr-md" data-tid="272">бета BTC ▲</span></span>
@@ -820,12 +837,12 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-neu" data-tid="32" data-val="0.0094">+0.009%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="2" data-wl="1" data-coin="HYPE" data-ref="BTC" data-dead="0" data-warn="0" data-eye="1">
+<tr data-sig="rotate" data-grp="2" data-src-grp="2" data-wl="1" data-coin="HYPE" data-ref="BTC" data-dead="0" data-warn="0" data-eye="1">
   <td class="medal">20</td>
   <td class="pair">
     <div class="pair-main">
       <span class="pair-left">
-        <span class="ticker-line"><span>HYPE <span style="color:#58a6ff" title="Watchlist target (не в портфеле, кандидат на покупку)">👁</span></span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $68.05</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$63.33</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$399</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$372</span>&ensp;<span class="warn" style='font-size:0.82em'>-6.9%</span></span>
+        <span class="ticker-line"><span>HYPE <span style="color:#58a6ff" title="Watchlist target (не в портфеле, кандидат на покупку)">👁</span></span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $67.87</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$63.33</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$399</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$373</span>&ensp;<span class="warn" style='font-size:0.82em'>-6.7%</span></span>
         <span class="pair-sub"><span class="coin-tag g2" data-tid="179">G2 ★386→364</span><span class="warn">(-12)</span>&ensp;<span style='color:#8b949e'>#10</span>&ensp;<span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#defi #perp-dex</span></span>
         <span class="pair-sub perf-row"><span class="warn" data-tid="173">1д&nbsp;-2%</span>&ensp;<span class="warn" data-tid="174">7д&nbsp;-11%</span>&ensp;<span class="ok" data-tid="175">30д&nbsp;+3%</span>&ensp;<span class="ok" data-tid="176">1г&nbsp;+73%</span>&ensp;<span class="ok" data-tid="177">-17%ATH</span></span>
         <span class="pair-extra"><span class="corr-lo" data-tid="285">↔BTC -0.22</span> <span class="vol-dn" data-tid="114">vol×0.5</span></span>
@@ -852,12 +869,12 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-neu" data-tid="32" data-val="-0.0117">-0.012%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="2" data-wl="0" data-coin="CC" data-ref="BTC" data-dead="0" data-warn="0" data-eye="0">
+<tr data-sig="rotate" data-grp="2" data-src-grp="2" data-wl="0" data-coin="CC" data-ref="BTC" data-dead="0" data-warn="0" data-eye="0">
   <td class="medal">21</td>
   <td class="pair">
     <div class="pair-main">
       <span class="pair-left">
-        <span class="ticker-line"><span>CC</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.1505</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.1506</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10</span>&ensp;<span class="ok" style='font-size:0.82em'>+0.1%</span></span>
+        <span class="ticker-line"><span>CC</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.1504</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.1506</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10</span>&ensp;<span class="ok" style='font-size:0.82em'>+0.1%</span></span>
         <span class="pair-sub"><span class="coin-tag g2" data-tid="214">G2 ★354→352</span><span class="ok">(+8)</span>&ensp;<span style='color:#8b949e'>#19</span><span class="warn">(↓2)</span>&ensp;<span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#institutional #l1 #rwa</span></span>
         <span class="pair-sub perf-row"><span class="warn" data-tid="209">1д&nbsp;-1%</span>&ensp;<span class="warn" data-tid="210">7д&nbsp;-1%</span>&ensp;<span class="warn" data-tid="211">30д&nbsp;-3%</span>&ensp;<span style="color:#8b949e">1г&nbsp;н/д</span>&ensp;<span class="ok" data-tid="212">-22%ATH</span></span>
         <span class="pair-extra"><span class="corr-hi" data-tid="287">↔BTC -0.84</span> <span class="vol-dn" data-tid="132">vol×0.6</span></span>
@@ -884,12 +901,12 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-neu" data-tid="32" data-val="0.0050">+0.005%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="3" data-wl="0" data-coin="W" data-ref="DOT" data-dead="0" data-warn="1" data-eye="0">
+<tr data-sig="rotate" data-grp="3" data-src-grp="3" data-wl="0" data-coin="W" data-ref="DOT" data-dead="0" data-warn="1" data-eye="0">
   <td class="medal">22</td>
   <td class="pair">
     <div class="pair-main">
       <span class="pair-left">
-        <span class="ticker-line"><span data-tid="238" style="cursor:help">W <span style="color:#f85149;font-weight:bold">❗</span></span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.1689</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.0103</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$1,174</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$71</span>&ensp;<span class="warn" style='font-size:0.82em'>-93.9%</span></span>
+        <span class="ticker-line"><span data-tid="238" style="cursor:help">W <span style="color:#f85149;font-weight:bold">❗</span></span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.1680</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.0103</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$1,174</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$72</span>&ensp;<span class="warn" style='font-size:0.82em'>-93.9%</span></span>
         <span class="pair-sub"><span class="coin-tag g3" data-tid="295">G3 ★243</span><span title="S-тир: 126/250" style="display:inline-block;width:40px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:20px;height:8px;background:#58a6ff"></span></span><span title="A-тир: 37/140" style="display:inline-block;width:22px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:6px;height:8px;background:#3fb950"></span></span><span title="B-тир: 42/80" style="display:inline-block;width:13px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:7px;height:8px;background:#d29922"></span></span><span title="C-тир: 18/30" style="display:inline-block;width:5px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:3px;height:8px;background:#8b949e"></span></span><span class="ok">(+6)</span>&ensp;<span style='color:#8b949e'>#372</span><span class="ok">(↑13)</span>&ensp;<span class="narr-tag" style="background:#8b949e22;color:#8b949e;border:1px solid #8b949e44" data-tid="296">мост</span><span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#bridge #interop</span></span>
         <span class="pair-sub perf-row"><span class="warn" data-tid="289">1д&nbsp;-2%</span>&ensp;<span class="warn" data-tid="290">7д&nbsp;-2%</span>&ensp;<span class="warn" data-tid="291">30д&nbsp;-11%</span>&ensp;<span class="warn" data-tid="292">1г&nbsp;-85%</span>&ensp;<span class="ath-far" data-tid="222">-99%ATH</span></span>
         <span class="pair-extra"><span class="corr-lo" data-tid="294">↔BTC -0.21</span> <span class="vol-up" data-tid="15">vol×1.7▲</span></span>
@@ -916,7 +933,7 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-neu" data-tid="32" data-val="0.0050">+0.005%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="3" data-wl="0" data-coin="HBAR" data-ref="DOT" data-dead="0" data-warn="0" data-eye="0">
+<tr data-sig="rotate" data-grp="3" data-src-grp="3" data-wl="0" data-coin="HBAR" data-ref="DOT" data-dead="0" data-warn="0" data-eye="0">
   <td class="medal">23</td>
   <td class="pair">
     <div class="pair-main">
@@ -948,7 +965,7 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-neu" data-tid="32" data-val="0.0011">+0.001%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="3" data-wl="0" data-coin="ICP" data-ref="DOT" data-dead="0" data-warn="0" data-eye="0">
+<tr data-sig="rotate" data-grp="3" data-src-grp="3" data-wl="0" data-coin="ICP" data-ref="DOT" data-dead="0" data-warn="0" data-eye="0">
   <td class="medal">24</td>
   <td class="pair">
     <div class="pair-main">
@@ -980,12 +997,12 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-neu" data-tid="32" data-val="0.0086">+0.009%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="3" data-wl="0" data-coin="FIL" data-ref="ARB" data-dead="0" data-warn="0" data-eye="0">
+<tr data-sig="rotate" data-grp="3" data-src-grp="3" data-wl="0" data-coin="FIL" data-ref="ARB" data-dead="0" data-warn="0" data-eye="0">
   <td class="medal">25</td>
   <td class="pair">
     <div class="pair-main">
       <span class="pair-left">
-        <span class="ticker-line"><span>FIL</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $3.63</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.7460</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$380</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$78</span>&ensp;<span class="warn" style='font-size:0.82em'>-79.5%</span></span>
+        <span class="ticker-line"><span>FIL</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $3.63</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.7460</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$380</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$78</span>&ensp;<span class="warn" style='font-size:0.82em'>-79.4%</span></span>
         <span class="pair-sub"><span class="coin-tag g3" data-tid="247">G3 ★282→272</span><span title="S-тир: 150/250" style="display:inline-block;width:40px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:24px;height:8px;background:#58a6ff"></span></span><span title="A-тир: 64/140" style="display:inline-block;width:22px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:10px;height:8px;background:#3fb950"></span></span><span title="B-тир: 48/80" style="display:inline-block;width:13px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:8px;height:8px;background:#d29922"></span></span><span title="C-тир: 19/30" style="display:inline-block;width:5px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:3px;height:8px;background:#8b949e"></span></span><span class="ok">(+20)</span>&ensp;<span style='color:#8b949e'>#95</span><span class="warn">(↓3)</span>&ensp;<span class="narr-tag" style="background:#c9510c22;color:#c9510c;border:1px solid #c9510c44" data-tid="207">DePIN</span><span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#depin #storage</span></span>
         <span class="pair-sub perf-row"><span class="ok" data-tid="241">1д&nbsp;+0%</span>&ensp;<span class="warn" data-tid="242">7д&nbsp;-5%</span>&ensp;<span class="warn" data-tid="243">30д&nbsp;-22%</span>&ensp;<span class="warn" data-tid="244">1г&nbsp;-66%</span>&ensp;<span class="ath-far" data-tid="245">-100%ATH</span></span>
         <span class="pair-extra"><span class="corr-lo" data-tid="320">↔BTC -0.42</span> <span class="vol-dn" data-tid="132">vol×0.6</span></span>
@@ -1012,7 +1029,7 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-neu" data-tid="32" data-val="0.0064">+0.006%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="3" data-wl="0" data-coin="RENDER" data-ref="GRT" data-dead="0" data-warn="0" data-eye="0">
+<tr data-sig="rotate" data-grp="3" data-src-grp="3" data-wl="0" data-coin="RENDER" data-ref="GRT" data-dead="0" data-warn="0" data-eye="0">
   <td class="medal">26</td>
   <td class="pair">
     <div class="pair-main">
@@ -1025,7 +1042,7 @@ tr:hover td { background: #1c2128; }
       </span>
       <span class="pair-arrow">→</span>
       <span class="pair-right">
-        <span class="ticker-line"><span>GRT</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.0602</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.0180</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$491</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$147</span>&ensp;<span class="warn" style='font-size:0.82em'>-70.2%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-32.5%</span>&ensp;<span class="ok" style="font-size:0.9em">(+37.7%)</span></span>
+        <span class="ticker-line"><span>GRT</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.0602</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.0180</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$491</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$146</span>&ensp;<span class="warn" style='font-size:0.82em'>-70.2%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-32.5%</span>&ensp;<span class="ok" style="font-size:0.9em">(+37.7%)</span></span>
         <span class="pair-sub"><span class="coin-tag g3" data-tid="226">G3 ★254</span><span class="ok">(+26)</span>&ensp;<span style='color:#8b949e'>#172</span><span class="warn">(↓1)</span>&ensp;<span class="narr-tag" style="background:#8b949e22;color:#8b949e;border:1px solid #8b949e44" data-tid="227">инфра</span><span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#data #indexing</span></span>
         <span class="pair-sub perf-row"><span class="warn" data-tid="218">1д&nbsp;-0%</span>&ensp;<span class="warn" data-tid="219">7д&nbsp;-10%</span>&ensp;<span class="warn" data-tid="220">30д&nbsp;-33%</span>&ensp;<span class="warn" data-tid="221">1г&nbsp;-78%</span>&ensp;<span class="ath-far" data-tid="222">-99%ATH</span></span>
         <span class="pair-extra"><span class="vol-dn" data-tid="132">vol×0.6</span> <span class="corr-hi" data-tid="225">бета BTC ▲▲</span></span>
@@ -1044,12 +1061,12 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-neu" data-tid="32" data-val="0.0050">+0.005%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="2" data-wl="1" data-coin="HYPE" data-ref="BNB" data-dead="0" data-warn="0" data-eye="1">
+<tr data-sig="rotate" data-grp="2" data-src-grp="2" data-wl="1" data-coin="HYPE" data-ref="BNB" data-dead="0" data-warn="0" data-eye="1">
   <td class="medal">27</td>
   <td class="pair">
     <div class="pair-main">
       <span class="pair-left">
-        <span class="ticker-line"><span>HYPE <span style="color:#58a6ff" title="Watchlist target (не в портфеле, кандидат на покупку)">👁</span></span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $68.05</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$63.33</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$399</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$372</span>&ensp;<span class="warn" style='font-size:0.82em'>-6.9%</span></span>
+        <span class="ticker-line"><span>HYPE <span style="color:#58a6ff" title="Watchlist target (не в портфеле, кандидат на покупку)">👁</span></span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $67.87</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$63.33</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$399</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$373</span>&ensp;<span class="warn" style='font-size:0.82em'>-6.7%</span></span>
         <span class="pair-sub"><span class="coin-tag g2" data-tid="179">G2 ★386→364</span><span class="warn">(-12)</span>&ensp;<span style='color:#8b949e'>#10</span>&ensp;<span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#defi #perp-dex</span></span>
         <span class="pair-sub perf-row"><span class="warn" data-tid="173">1д&nbsp;-2%</span>&ensp;<span class="warn" data-tid="174">7д&nbsp;-11%</span>&ensp;<span class="ok" data-tid="175">30д&nbsp;+3%</span>&ensp;<span class="ok" data-tid="176">1г&nbsp;+73%</span>&ensp;<span class="ok" data-tid="177">-17%ATH</span></span>
         <span class="pair-extra"><span class="corr-lo" data-tid="281">↔BTC -0.23</span> <span class="vol-dn" data-tid="114">vol×0.5</span></span>
@@ -1076,7 +1093,7 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-neu" data-tid="32" data-val="-0.0117">-0.012%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="3" data-wl="0" data-coin="TON" data-ref="CFX" data-dead="0" data-warn="0" data-eye="0">
+<tr data-sig="rotate" data-grp="3" data-src-grp="3" data-wl="0" data-coin="TON" data-ref="CFX" data-dead="0" data-warn="0" data-eye="0">
   <td class="medal">28</td>
   <td class="pair">
     <div class="pair-main">
@@ -1089,7 +1106,7 @@ tr:hover td { background: #1c2128; }
       </span>
       <span class="pair-arrow">→</span>
       <span class="pair-right">
-        <span class="ticker-line"><span data-tid="331" style="cursor:help">CFX <span style="color:#f85149;font-weight:bold">❗</span></span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.0990</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.0426</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$617</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$266</span>&ensp;<span class="warn" style='font-size:0.82em'>-56.9%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-42.3%</span>&ensp;<span class="ok" style="font-size:0.9em">(+14.7%)</span></span>
+        <span class="ticker-line"><span data-tid="331" style="cursor:help">CFX <span style="color:#f85149;font-weight:bold">❗</span></span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.0989</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.0426</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$617</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$266</span>&ensp;<span class="warn" style='font-size:0.82em'>-56.9%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-42.3%</span>&ensp;<span class="ok" style="font-size:0.9em">(+14.6%)</span></span>
         <span class="pair-sub"><span class="coin-tag g3" data-tid="332">G3 ★249</span><span class="ok">(+35)</span>&ensp;<span style='color:#8b949e'>#154</span><span class="warn">(↓3)</span>&ensp;<span class="narr-tag" style="background:#58a6ff22;color:#58a6ff;border:1px solid #58a6ff44" data-tid="23">L1</span><span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#china-eco #l1</span></span>
         <span class="pair-sub perf-row"><span class="warn" data-tid="325">1д&nbsp;-1%</span>&ensp;<span class="warn" data-tid="326">7д&nbsp;-10%</span>&ensp;<span class="warn" data-tid="327">30д&nbsp;-18%</span>&ensp;<span class="warn" data-tid="328">1г&nbsp;-40%</span>&ensp;<span class="ath-far" data-tid="150">-97%ATH</span></span>
         <span class="pair-extra"><span class="vol-dn" data-tid="114">vol×0.5</span> <span class="corr-hi" data-tid="330">бета BTC ▲▲</span></span>
@@ -1108,12 +1125,12 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-hot" data-tid="170" data-val="0.3538">+0.354%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="2" data-wl="0" data-coin="AAVE" data-ref="CC" data-dead="0" data-warn="0" data-eye="0">
+<tr data-sig="rotate" data-grp="2" data-src-grp="2" data-wl="0" data-coin="AAVE" data-ref="CC" data-dead="0" data-warn="0" data-eye="0">
   <td class="medal">29</td>
   <td class="pair">
     <div class="pair-main">
       <span class="pair-left">
-        <span class="ticker-line"><span>AAVE</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $71.66</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$95.61</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$13</span>&ensp;<span class="ok" style='font-size:0.82em'>+33.4%</span></span>
+        <span class="ticker-line"><span>AAVE</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $71.65</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$95.61</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$13</span>&ensp;<span class="ok" style='font-size:0.82em'>+33.4%</span></span>
         <span class="pair-sub"><span class="coin-tag g2" data-tid="21">G2 ★354→312</span><span class="ok">(+11)</span>&ensp;<span style='color:#8b949e'>#54</span><span class="ok">(↑3)</span>&ensp;<span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#blue-chip #defi #lending</span></span>
         <span class="pair-sub perf-row"><span class="ok" data-tid="0">1д&nbsp;+0%</span>&ensp;<span class="ok" data-tid="1">7д&nbsp;+26%</span>&ensp;<span class="ok" data-tid="2">30д&nbsp;+18%</span>&ensp;<span class="warn" data-tid="3">1г&nbsp;-63%</span>&ensp;<span class="ath-far" data-tid="4">-86%ATH</span></span>
         <span class="pair-extra"><span class="corr-lo" data-tid="334">↔BTC +0.18</span> <span class="vol-up" data-tid="15">vol×1.7▲</span></span>
@@ -1121,7 +1138,7 @@ tr:hover td { background: #1c2128; }
       </span>
       <span class="pair-arrow">→</span>
       <span class="pair-right">
-        <span class="ticker-line"><span>CC</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.1505</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.1506</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10</span>&ensp;<span class="ok" style='font-size:0.82em'>+0.1%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="ok" style='font-size:0.82em'>+0.0%</span>&ensp;<span class="warn" style="font-size:0.9em">(-0.0%)</span></span>
+        <span class="ticker-line"><span>CC</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.1504</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.1506</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10</span>&ensp;<span class="ok" style='font-size:0.82em'>+0.1%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="ok" style='font-size:0.82em'>+0.0%</span>&ensp;<span class="warn" style="font-size:0.9em">(-0.1%)</span></span>
         <span class="pair-sub"><span class="coin-tag g2" data-tid="214">G2 ★354→352</span><span class="ok">(+8)</span>&ensp;<span style='color:#8b949e'>#19</span><span class="warn">(↓2)</span>&ensp;<span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#institutional #l1 #rwa</span></span>
         <span class="pair-sub perf-row"><span class="warn" data-tid="209">1д&nbsp;-1%</span>&ensp;<span class="warn" data-tid="210">7д&nbsp;-1%</span>&ensp;<span class="warn" data-tid="211">30д&nbsp;-3%</span>&ensp;<span style="color:#8b949e">1г&nbsp;н/д</span>&ensp;<span class="ok" data-tid="212">-22%ATH</span></span>
         <span class="pair-extra"><span class="vol-dn" data-tid="132">vol×0.6</span> <span class="corr-lo" data-tid="335">бета BTC ~0</span></span>
@@ -1140,12 +1157,12 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-neu" data-tid="32" data-val="0.0094">+0.009%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="3" data-wl="0" data-coin="XRP" data-ref="ARB" data-dead="0" data-warn="0" data-eye="0">
+<tr data-sig="rotate" data-grp="3" data-src-grp="3" data-wl="0" data-coin="XRP" data-ref="ARB" data-dead="0" data-warn="0" data-eye="0">
   <td class="medal">30</td>
   <td class="pair">
     <div class="pair-main">
       <span class="pair-left">
-        <span class="ticker-line"><span>XRP</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.5045</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$1.06</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$9,921</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$20,831</span>&ensp;<span class="ok" style='font-size:0.82em'>+110.0%</span></span>
+        <span class="ticker-line"><span>XRP</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.5045</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$1.06</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$9,921</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$20,832</span>&ensp;<span class="ok" style='font-size:0.82em'>+110.0%</span></span>
         <span class="pair-sub"><span class="coin-tag g3" data-tid="133">G3 ★304→283</span><span title="S-тир: 151/250" style="display:inline-block;width:40px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:24px;height:8px;background:#58a6ff"></span></span><span title="A-тир: 74/140" style="display:inline-block;width:22px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:12px;height:8px;background:#3fb950"></span></span><span title="B-тир: 46/80" style="display:inline-block;width:13px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:7px;height:8px;background:#d29922"></span></span><span title="C-тир: 19/30" style="display:inline-block;width:5px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:3px;height:8px;background:#8b949e"></span></span><span class="ok">(+7)</span>&ensp;<span style='color:#8b949e'>#6</span>&ensp;<span class="narr-tag" style="background:#58a6ff22;color:#58a6ff;border:1px solid #58a6ff44" data-tid="134">платежи</span><span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#banking #l1 #payments</span></span>
         <span class="pair-sub perf-row"><span class="ok" data-tid="119">1д&nbsp;+1%</span>&ensp;<span class="warn" data-tid="120">7д&nbsp;-8%</span>&ensp;<span class="warn" data-tid="121">30д&nbsp;-19%</span>&ensp;<span class="warn" data-tid="122">1г&nbsp;-51%</span>&ensp;<span class="ath-far" data-tid="123">-71%ATH</span></span>
         <span class="pair-extra"><span class="corr-md" data-tid="224">↔BTC -0.70</span></span>
@@ -1172,7 +1189,7 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-neu" data-tid="32" data-val="-0.0077">-0.008%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="3" data-wl="0" data-coin="RENDER" data-ref="ARB" data-dead="0" data-warn="0" data-eye="0">
+<tr data-sig="rotate" data-grp="3" data-src-grp="3" data-wl="0" data-coin="RENDER" data-ref="ARB" data-dead="0" data-warn="0" data-eye="0">
   <td class="medal">31</td>
   <td class="pair">
     <div class="pair-main">
@@ -1204,12 +1221,12 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-neu" data-tid="32" data-val="0.0050">+0.005%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="2" data-wl="1" data-coin="CC" data-ref="BNB" data-dead="0" data-warn="0" data-eye="1">
+<tr data-sig="rotate" data-grp="2" data-src-grp="2" data-wl="1" data-coin="CC" data-ref="BNB" data-dead="0" data-warn="0" data-eye="1">
   <td class="medal">32</td>
   <td class="pair">
     <div class="pair-main">
       <span class="pair-left">
-        <span class="ticker-line"><span>CC</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.1505</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.1506</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10</span>&ensp;<span class="ok" style='font-size:0.82em'>+0.1%</span></span>
+        <span class="ticker-line"><span>CC</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.1504</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.1506</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10</span>&ensp;<span class="ok" style='font-size:0.82em'>+0.1%</span></span>
         <span class="pair-sub"><span class="coin-tag g2" data-tid="214">G2 ★354→352</span><span class="ok">(+8)</span>&ensp;<span style='color:#8b949e'>#19</span><span class="warn">(↓2)</span>&ensp;<span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#institutional #l1 #rwa</span></span>
         <span class="pair-sub perf-row"><span class="warn" data-tid="209">1д&nbsp;-1%</span>&ensp;<span class="warn" data-tid="210">7д&nbsp;-1%</span>&ensp;<span class="warn" data-tid="211">30д&nbsp;-3%</span>&ensp;<span style="color:#8b949e">1г&nbsp;н/д</span>&ensp;<span class="ok" data-tid="212">-22%ATH</span></span>
         <span class="pair-extra"><span class="corr-hi" data-tid="340">↔BTC -0.82</span> <span class="vol-dn" data-tid="132">vol×0.6</span></span>
@@ -1236,12 +1253,12 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-neu" data-tid="32" data-val="0.0050">+0.005%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="3" data-wl="0" data-coin="ONDO" data-ref="GRT" data-dead="0" data-warn="0" data-eye="0">
+<tr data-sig="rotate" data-grp="3" data-src-grp="3" data-wl="0" data-coin="ONDO" data-ref="GRT" data-dead="0" data-warn="0" data-eye="0">
   <td class="medal">33</td>
   <td class="pair">
     <div class="pair-main">
       <span class="pair-left">
-        <span class="ticker-line"><span>ONDO</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $1.09</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.3171</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$300</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$87</span>&ensp;<span class="warn" style='font-size:0.82em'>-71.0%</span></span>
+        <span class="ticker-line"><span>ONDO</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $1.10</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.3171</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$300</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$87</span>&ensp;<span class="warn" style='font-size:0.82em'>-71.1%</span></span>
         <span class="pair-sub"><span class="coin-tag g3" data-tid="195">G3 ★322→273</span><span title="S-тир: 149/250" style="display:inline-block;width:40px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:24px;height:8px;background:#58a6ff"></span></span><span title="A-тир: 59/140" style="display:inline-block;width:22px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:9px;height:8px;background:#3fb950"></span></span><span title="B-тир: 54/80" style="display:inline-block;width:13px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:9px;height:8px;background:#d29922"></span></span><span title="C-тир: 23/30" style="display:inline-block;width:5px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:4px;height:8px;background:#8b949e"></span></span><span class="warn">(-8)</span>&ensp;<span style='color:#8b949e'>#49</span><span class="ok">(↑2)</span>&ensp;<span class="narr-tag" style="background:#d2992222;color:#d29922;border:1px solid #d2992244" data-tid="196">RWA</span><span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#rwa #tokenized-treasuries</span></span>
         <span class="pair-sub perf-row"><span class="warn" data-tid="184">1д&nbsp;-0%</span>&ensp;<span class="warn" data-tid="185">7д&nbsp;-8%</span>&ensp;<span class="warn" data-tid="186">30д&nbsp;-14%</span>&ensp;<span class="warn" data-tid="187">1г&nbsp;-58%</span>&ensp;<span class="ath-far" data-tid="188">-85%ATH</span></span>
         <span class="pair-extra"><span class="corr-md" data-tid="342">↔BTC -0.74</span> <span class="vol-dn" data-tid="154">vol×0.4▼</span> <span style="display:block;margin-top:2px">TVL&nbsp;<span class="tvl-up" data-tid="191">1д&nbsp;+0%</span>&ensp;<span class="tvl-dn" data-tid="192">7д&nbsp;-2%</span>&ensp;<span class="tvl-dn" data-tid="193">30д&nbsp;-4%</span>&ensp;<span class="tvl-up" data-tid="194">1г&nbsp;+85%</span></span></span>
@@ -1249,7 +1266,7 @@ tr:hover td { background: #1c2128; }
       </span>
       <span class="pair-arrow">→</span>
       <span class="pair-right">
-        <span class="ticker-line"><span>GRT</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.0602</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.0180</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$491</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$147</span>&ensp;<span class="warn" style='font-size:0.82em'>-70.2%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-59.6%</span>&ensp;<span class="ok" style="font-size:0.9em">(+10.6%)</span></span>
+        <span class="ticker-line"><span>GRT</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.0602</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.0180</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$491</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$146</span>&ensp;<span class="warn" style='font-size:0.82em'>-70.2%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-59.6%</span>&ensp;<span class="ok" style="font-size:0.9em">(+10.5%)</span></span>
         <span class="pair-sub"><span class="coin-tag g3" data-tid="226">G3 ★254</span><span class="ok">(+26)</span>&ensp;<span style='color:#8b949e'>#172</span><span class="warn">(↓1)</span>&ensp;<span class="narr-tag" style="background:#8b949e22;color:#8b949e;border:1px solid #8b949e44" data-tid="227">инфра</span><span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#data #indexing</span></span>
         <span class="pair-sub perf-row"><span class="warn" data-tid="218">1д&nbsp;-0%</span>&ensp;<span class="warn" data-tid="219">7д&nbsp;-10%</span>&ensp;<span class="warn" data-tid="220">30д&nbsp;-33%</span>&ensp;<span class="warn" data-tid="221">1г&nbsp;-78%</span>&ensp;<span class="ath-far" data-tid="222">-99%ATH</span></span>
         <span class="pair-extra"><span class="vol-dn" data-tid="132">vol×0.6</span> <span class="corr-hi" data-tid="225">бета BTC ▲▲</span></span>
@@ -1268,7 +1285,7 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-neu" data-tid="32" data-val="0.0034">+0.003%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="3" data-wl="0" data-coin="TON" data-ref="ETH" data-dead="0" data-warn="0" data-eye="0">
+<tr data-sig="rotate" data-grp="3" data-src-grp="3" data-wl="0" data-coin="TON" data-ref="ETH" data-dead="0" data-warn="0" data-eye="0">
   <td class="medal">34</td>
   <td class="pair">
     <div class="pair-main">
@@ -1281,7 +1298,7 @@ tr:hover td { background: #1c2128; }
       </span>
       <span class="pair-arrow">→</span>
       <span class="pair-right">
-        <span class="ticker-line"><span>ETH</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $1,945</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$1,584</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10,695</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$8,710</span>&ensp;<span class="warn" style='font-size:0.82em'>-18.6%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-18.2%</span>&ensp;<span class="ok" style="font-size:0.9em">(+0.4%)</span></span>
+        <span class="ticker-line"><span>ETH</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $1,945</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$1,584</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10,695</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$8,711</span>&ensp;<span class="warn" style='font-size:0.82em'>-18.6%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-18.2%</span>&ensp;<span class="ok" style="font-size:0.9em">(+0.4%)</span></span>
         <span class="pair-sub"><span class="coin-tag g2" data-tid="22">G2 ★330</span><span class="ok">(+46)</span>&ensp;<span style='color:#8b949e'>#2</span>&ensp;<span class="narr-tag" style="background:#58a6ff22;color:#58a6ff;border:1px solid #58a6ff44" data-tid="23">L1</span><span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#blue-chip #l1 #smart-contract</span></span>
         <span class="pair-sub perf-row"><span class="ok" data-tid="5">1д&nbsp;+0%</span>&ensp;<span class="warn" data-tid="6">7д&nbsp;-9%</span>&ensp;<span class="warn" data-tid="7">30д&nbsp;-21%</span>&ensp;<span class="warn" data-tid="8">1г&nbsp;-35%</span>&ensp;<span class="ath-far" data-tid="9">-68%ATH</span></span>
         <span class="pair-extra"><span style="display:block;margin-top:2px">TVL&nbsp;<span class="tvl-dn" data-tid="16">1д&nbsp;-1%</span>&ensp;<span class="tvl-dn" data-tid="17">7д&nbsp;-4%</span>&ensp;<span class="tvl-dn" data-tid="18">30д&nbsp;-13%</span>&ensp;<span class="tvl-dn" data-tid="19">1г&nbsp;-39%</span></span> <span class="corr-hi" data-tid="20">бета BTC ▲▲</span></span>
@@ -1300,7 +1317,7 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-hot" data-tid="170" data-val="0.3538">+0.354%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="3" data-wl="0" data-coin="OP" data-ref="GRT" data-dead="0" data-warn="1" data-eye="0">
+<tr data-sig="rotate" data-grp="3" data-src-grp="3" data-wl="0" data-coin="OP" data-ref="GRT" data-dead="0" data-warn="1" data-eye="0">
   <td class="medal">35</td>
   <td class="pair">
     <div class="pair-main">
@@ -1313,7 +1330,7 @@ tr:hover td { background: #1c2128; }
       </span>
       <span class="pair-arrow">→</span>
       <span class="pair-right">
-        <span class="ticker-line"><span>GRT</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.0602</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.0180</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$491</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$147</span>&ensp;<span class="warn" style='font-size:0.82em'>-70.2%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-19.3%</span>&ensp;<span class="ok" style="font-size:0.9em">(+50.9%)</span></span>
+        <span class="ticker-line"><span>GRT</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.0602</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.0180</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$491</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$146</span>&ensp;<span class="warn" style='font-size:0.82em'>-70.2%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-19.3%</span>&ensp;<span class="ok" style="font-size:0.9em">(+50.9%)</span></span>
         <span class="pair-sub"><span class="coin-tag g3" data-tid="226">G3 ★254</span><span class="ok">(+26)</span>&ensp;<span style='color:#8b949e'>#172</span><span class="warn">(↓1)</span>&ensp;<span class="narr-tag" style="background:#8b949e22;color:#8b949e;border:1px solid #8b949e44" data-tid="227">инфра</span><span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#data #indexing</span></span>
         <span class="pair-sub perf-row"><span class="warn" data-tid="218">1д&nbsp;-0%</span>&ensp;<span class="warn" data-tid="219">7д&nbsp;-10%</span>&ensp;<span class="warn" data-tid="220">30д&nbsp;-33%</span>&ensp;<span class="warn" data-tid="221">1г&nbsp;-78%</span>&ensp;<span class="ath-far" data-tid="222">-99%ATH</span></span>
         <span class="pair-extra"><span class="vol-dn" data-tid="132">vol×0.6</span> <span class="corr-hi" data-tid="225">бета BTC ▲▲</span></span>
@@ -1332,7 +1349,7 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-neu" data-tid="32" data-val="0.0098">+0.010%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="2" data-wl="0" data-coin="BTC" data-ref="ETH" data-dead="0" data-warn="0" data-eye="0">
+<tr data-sig="rotate" data-grp="2" data-src-grp="2" data-wl="0" data-coin="BTC" data-ref="ETH" data-dead="0" data-warn="0" data-eye="0">
   <td class="medal">36</td>
   <td class="pair">
     <div class="pair-main">
@@ -1345,7 +1362,7 @@ tr:hover td { background: #1c2128; }
       </span>
       <span class="pair-arrow">→</span>
       <span class="pair-right">
-        <span class="ticker-line"><span>ETH</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $1,945</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$1,584</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10,695</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$8,710</span>&ensp;<span class="warn" style='font-size:0.82em'>-18.6%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-18.6%</span>&ensp;<span class="ok" style="font-size:0.9em">(+0.0%)</span></span>
+        <span class="ticker-line"><span>ETH</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $1,945</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$1,584</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10,695</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$8,711</span>&ensp;<span class="warn" style='font-size:0.82em'>-18.6%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-18.5%</span>&ensp;<span class="ok" style="font-size:0.9em">(+0.0%)</span></span>
         <span class="pair-sub"><span class="coin-tag g2" data-tid="22">G2 ★330</span><span class="ok">(+46)</span>&ensp;<span style='color:#8b949e'>#2</span>&ensp;<span class="narr-tag" style="background:#58a6ff22;color:#58a6ff;border:1px solid #58a6ff44" data-tid="23">L1</span><span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#blue-chip #l1 #smart-contract</span></span>
         <span class="pair-sub perf-row"><span class="ok" data-tid="5">1д&nbsp;+0%</span>&ensp;<span class="warn" data-tid="6">7д&nbsp;-9%</span>&ensp;<span class="warn" data-tid="7">30д&nbsp;-21%</span>&ensp;<span class="warn" data-tid="8">1г&nbsp;-35%</span>&ensp;<span class="ath-far" data-tid="9">-68%ATH</span></span>
         <span class="pair-extra"><span style="display:block;margin-top:2px">TVL&nbsp;<span class="tvl-dn" data-tid="16">1д&nbsp;-1%</span>&ensp;<span class="tvl-dn" data-tid="17">7д&nbsp;-4%</span>&ensp;<span class="tvl-dn" data-tid="18">30д&nbsp;-13%</span>&ensp;<span class="tvl-dn" data-tid="19">1г&nbsp;-39%</span></span> <span class="corr-hi" data-tid="20">бета BTC ▲▲</span></span>
@@ -1364,7 +1381,7 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-neu" data-tid="32" data-val="0.0043">+0.004%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="3" data-wl="0" data-coin="ICP" data-ref="ARB" data-dead="0" data-warn="0" data-eye="0">
+<tr data-sig="rotate" data-grp="3" data-src-grp="3" data-wl="0" data-coin="ICP" data-ref="ARB" data-dead="0" data-warn="0" data-eye="0">
   <td class="medal">37</td>
   <td class="pair">
     <div class="pair-main">
@@ -1396,7 +1413,7 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-neu" data-tid="32" data-val="0.0086">+0.009%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="3" data-wl="0" data-coin="OP" data-ref="LDO" data-dead="0" data-warn="1" data-eye="0">
+<tr data-sig="rotate" data-grp="3" data-src-grp="3" data-wl="0" data-coin="OP" data-ref="LDO" data-dead="0" data-warn="1" data-eye="0">
   <td class="medal">38</td>
   <td class="pair">
     <div class="pair-main">
@@ -1409,7 +1426,7 @@ tr:hover td { background: #1c2128; }
       </span>
       <span class="pair-arrow">→</span>
       <span class="pair-right">
-        <span class="ticker-line"><span>LDO</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.4655</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.2464</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$1,533</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$811</span>&ensp;<span class="warn" style='font-size:0.82em'>-47.1%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-25.5%</span>&ensp;<span class="ok" style="font-size:0.9em">(+21.6%)</span></span>
+        <span class="ticker-line"><span>LDO</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.4656</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.2464</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$1,533</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$811</span>&ensp;<span class="warn" style='font-size:0.82em'>-47.1%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-25.5%</span>&ensp;<span class="ok" style="font-size:0.9em">(+21.6%)</span></span>
         <span class="pair-sub"><span class="coin-tag g3" data-tid="262">G3 ★287→260</span><span class="warn">(-3)</span>&ensp;<span style='color:#8b949e'>#163</span><span class="warn">(↓2)</span>&ensp;<span class="narr-tag" style="background:#2ea44f22;color:#2ea44f;border:1px solid #2ea44f44" data-tid="263">LST</span><span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#defi #liquid-staking</span></span>
         <span class="pair-sub perf-row"><span class="warn" data-tid="254">1д&nbsp;-1%</span>&ensp;<span class="warn" data-tid="255">7д&nbsp;-11%</span>&ensp;<span class="warn" data-tid="256">30д&nbsp;-24%</span>&ensp;<span class="warn" data-tid="257">1г&nbsp;-65%</span>&ensp;<span class="ath-far" data-tid="150">-97%ATH</span></span>
         <span class="pair-extra"><span style="display:block;margin-top:2px">TVL&nbsp;<span class="tvl-up" data-tid="191">1д&nbsp;+0%</span>&ensp;<span class="tvl-dn" data-tid="260">7д&nbsp;-8%</span>&ensp;<span class="tvl-dn" data-tid="160">30д&nbsp;-21%</span>&ensp;<span class="tvl-dn" data-tid="261">1г&nbsp;-36%</span></span> <span class="corr-hi" data-tid="115">бета BTC ▲▲</span></span>
@@ -1428,12 +1445,12 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-neu" data-tid="32" data-val="0.0098">+0.010%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="3" data-wl="0" data-coin="W" data-ref="SKY" data-dead="0" data-warn="1" data-eye="0">
+<tr data-sig="rotate" data-grp="3" data-src-grp="3" data-wl="0" data-coin="W" data-ref="SKY" data-dead="0" data-warn="1" data-eye="0">
   <td class="medal">39</td>
   <td class="pair">
     <div class="pair-main">
       <span class="pair-left">
-        <span class="ticker-line"><span data-tid="238" style="cursor:help">W <span style="color:#f85149;font-weight:bold">❗</span></span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.1689</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.0103</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$1,174</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$71</span>&ensp;<span class="warn" style='font-size:0.82em'>-93.9%</span></span>
+        <span class="ticker-line"><span data-tid="238" style="cursor:help">W <span style="color:#f85149;font-weight:bold">❗</span></span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.1680</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.0103</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$1,174</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$72</span>&ensp;<span class="warn" style='font-size:0.82em'>-93.9%</span></span>
         <span class="pair-sub"><span class="coin-tag g3" data-tid="295">G3 ★243</span><span title="S-тир: 126/250" style="display:inline-block;width:40px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:20px;height:8px;background:#58a6ff"></span></span><span title="A-тир: 37/140" style="display:inline-block;width:22px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:6px;height:8px;background:#3fb950"></span></span><span title="B-тир: 42/80" style="display:inline-block;width:13px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:7px;height:8px;background:#d29922"></span></span><span title="C-тир: 18/30" style="display:inline-block;width:5px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:3px;height:8px;background:#8b949e"></span></span><span class="ok">(+6)</span>&ensp;<span style='color:#8b949e'>#372</span><span class="ok">(↑13)</span>&ensp;<span class="narr-tag" style="background:#8b949e22;color:#8b949e;border:1px solid #8b949e44" data-tid="296">мост</span><span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#bridge #interop</span></span>
         <span class="pair-sub perf-row"><span class="warn" data-tid="289">1д&nbsp;-2%</span>&ensp;<span class="warn" data-tid="290">7д&nbsp;-2%</span>&ensp;<span class="warn" data-tid="291">30д&nbsp;-11%</span>&ensp;<span class="warn" data-tid="292">1г&nbsp;-85%</span>&ensp;<span class="ath-far" data-tid="222">-99%ATH</span></span>
         <span class="pair-extra"><span class="corr-lo" data-tid="352">↔BTC +0.04</span> <span class="vol-up" data-tid="15">vol×1.7▲</span></span>
@@ -1441,7 +1458,7 @@ tr:hover td { background: #1c2128; }
       </span>
       <span class="pair-arrow">→</span>
       <span class="pair-right">
-        <span class="ticker-line"><span>SKY</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.0540</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.0486</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$42</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$38</span>&ensp;<span class="warn" style='font-size:0.82em'>-9.9%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-3.6%</span>&ensp;<span class="ok" style="font-size:0.9em">(+6.4%)</span></span>
+        <span class="ticker-line"><span>SKY</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.0540</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.0486</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$42</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$38</span>&ensp;<span class="warn" style='font-size:0.82em'>-10.0%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-3.6%</span>&ensp;<span class="ok" style="font-size:0.9em">(+6.4%)</span></span>
         <span class="pair-sub"><span class="coin-tag g3" data-tid="273">G3 ★341→297</span><span class="warn">(-8)</span>&ensp;<span style='color:#8b949e'>#59</span><span class="warn">(↓1)</span>&ensp;<span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#cdp #defi #stablecoin</span></span>
         <span class="pair-sub perf-row"><span class="warn" data-tid="267">1д&nbsp;-3%</span>&ensp;<span class="warn" data-tid="268">7д&nbsp;-16%</span>&ensp;<span class="warn" data-tid="269">30д&nbsp;-26%</span>&ensp;<span style="color:#8b949e">1г&nbsp;н/д</span>&ensp;<span class="ath-near" data-tid="270">-51%ATH</span></span>
         <span class="pair-extra"><span class="corr-md" data-tid="272">бета BTC ▲</span></span>
@@ -1460,12 +1477,12 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-neu" data-tid="32" data-val="0.0050">+0.005%</span></td>
   <td><span class="tag-rotate">▶ РОТИРОВАТЬ</span></td>
 </tr>
-<tr data-sig="rotate" data-grp="3" data-wl="0" data-coin="FIL" data-ref="GRT" data-dead="0" data-warn="0" data-eye="0">
+<tr data-sig="rotate" data-grp="3" data-src-grp="3" data-wl="0" data-coin="FIL" data-ref="GRT" data-dead="0" data-warn="0" data-eye="0">
   <td class="medal">40</td>
   <td class="pair">
     <div class="pair-main">
       <span class="pair-left">
-        <span class="ticker-line"><span>FIL</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $3.63</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.7460</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$380</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$78</span>&ensp;<span class="warn" style='font-size:0.82em'>-79.5%</span></span>
+        <span class="ticker-line"><span>FIL</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $3.63</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.7460</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$380</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$78</span>&ensp;<span class="warn" style='font-size:0.82em'>-79.4%</span></span>
         <span class="pair-sub"><span class="coin-tag g3" data-tid="247">G3 ★282→272</span><span title="S-тир: 150/250" style="display:inline-block;width:40px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:24px;height:8px;background:#58a6ff"></span></span><span title="A-тир: 64/140" style="display:inline-block;width:22px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:10px;height:8px;background:#3fb950"></span></span><span title="B-тир: 48/80" style="display:inline-block;width:13px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:8px;height:8px;background:#d29922"></span></span><span title="C-тир: 19/30" style="display:inline-block;width:5px;height:8px;background:#21262d;vertical-align:middle;border-radius:1px;margin-right:1px;overflow:hidden"><span style="display:block;width:3px;height:8px;background:#8b949e"></span></span><span class="ok">(+20)</span>&ensp;<span style='color:#8b949e'>#95</span><span class="warn">(↓3)</span>&ensp;<span class="narr-tag" style="background:#c9510c22;color:#c9510c;border:1px solid #c9510c44" data-tid="207">DePIN</span><span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#depin #storage</span></span>
         <span class="pair-sub perf-row"><span class="ok" data-tid="241">1д&nbsp;+0%</span>&ensp;<span class="warn" data-tid="242">7д&nbsp;-5%</span>&ensp;<span class="warn" data-tid="243">30д&nbsp;-22%</span>&ensp;<span class="warn" data-tid="244">1г&nbsp;-66%</span>&ensp;<span class="ath-far" data-tid="245">-100%ATH</span></span>
         <span class="pair-extra"><span class="corr-md" data-tid="354">↔BTC -0.58</span> <span class="vol-dn" data-tid="132">vol×0.6</span></span>
@@ -1473,7 +1490,7 @@ tr:hover td { background: #1c2128; }
       </span>
       <span class="pair-arrow">→</span>
       <span class="pair-right">
-        <span class="ticker-line"><span>GRT</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.0602</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.0180</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$491</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$147</span>&ensp;<span class="warn" style='font-size:0.82em'>-70.2%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-60.5%</span>&ensp;<span class="ok" style="font-size:0.9em">(+9.6%)</span></span>
+        <span class="ticker-line"><span>GRT</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.0602</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.0180</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$491</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$146</span>&ensp;<span class="warn" style='font-size:0.82em'>-70.2%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-60.5%</span>&ensp;<span class="ok" style="font-size:0.9em">(+9.7%)</span></span>
         <span class="pair-sub"><span class="coin-tag g3" data-tid="226">G3 ★254</span><span class="ok">(+26)</span>&ensp;<span style='color:#8b949e'>#172</span><span class="warn">(↓1)</span>&ensp;<span class="narr-tag" style="background:#8b949e22;color:#8b949e;border:1px solid #8b949e44" data-tid="227">инфра</span><span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#data #indexing</span></span>
         <span class="pair-sub perf-row"><span class="warn" data-tid="218">1д&nbsp;-0%</span>&ensp;<span class="warn" data-tid="219">7д&nbsp;-10%</span>&ensp;<span class="warn" data-tid="220">30д&nbsp;-33%</span>&ensp;<span class="warn" data-tid="221">1г&nbsp;-78%</span>&ensp;<span class="ath-far" data-tid="222">-99%ATH</span></span>
         <span class="pair-extra"><span class="vol-dn" data-tid="132">vol×0.6</span> <span class="corr-hi" data-tid="225">бета BTC ▲▲</span></span>
@@ -1622,9 +1639,10 @@ function sortTable(col) {
 let _activeGrp = 'all';
 let _activeWl = false;   // только watchlist пары
 let _activeDead = false; // 💀 только #dead монеты
-let _activeWarn = false; // ❗ только монеты с risk-тегами
-let _activeEye  = false; // 👁 только watchlist тикеры
-let _searchQuery = '';   // substring по тикеру (lowercase)
+let _activeWarn   = false; // ❗ только монеты с risk-тегами
+let _activeEye    = false; // 👁 только watchlist тикеры
+let _activeSrcGrp = 'all'; // фильтр по группе силы монеты (portfolio group)
+let _searchQuery  = '';    // substring по тикеру (lowercase)
 
 function _applyFilters(type, grp) {
   const q = _searchQuery;
@@ -1633,31 +1651,33 @@ function _applyFilters(type, grp) {
     _VIRT.visibleIdx = [];
     for (let i = 0; i < _VIRT.meta.length; i++) {
       const m = _VIRT.meta[i];
-      const sigOk  = (type === 'all' || m[0] === type);
-      const grpOk  = (grp === 'all' || String(m[1]) === grp);
-      const wlOk   = (!_activeWl   || m[2]  === 1);
-      const deadOk = (!_activeDead || m[14] === 1);
-      const warnOk = (!_activeWarn || m[15] === 1);
-      const eyeOk  = (!_activeEye  || m[16] === 1);
+      const sigOk    = (type === 'all' || m[0] === type);
+      const grpOk    = (grp === 'all' || String(m[1]) === grp);
+      const srcGrpOk = (_activeSrcGrp === 'all' || String(m[17]) === _activeSrcGrp);
+      const wlOk     = (!_activeWl   || m[2]  === 1);
+      const deadOk   = (!_activeDead || m[14] === 1);
+      const warnOk   = (!_activeWarn || m[15] === 1);
+      const eyeOk    = (!_activeEye  || m[16] === 1);
       const coin = (m[12] || '').toLowerCase();
       const ref  = (m[13] || '').toLowerCase();
       const qOk  = (!q || coin.includes(q) || ref.includes(q));
-      if (sigOk && grpOk && wlOk && deadOk && warnOk && eyeOk && qOk) _VIRT.visibleIdx.push(i);
+      if (sigOk && grpOk && srcGrpOk && wlOk && deadOk && warnOk && eyeOk && qOk) _VIRT.visibleIdx.push(i);
     }
     _virtRebuild();
     return;
   }
   document.querySelectorAll('#main-table tbody tr').forEach(r => {
-    const sigOk  = (type === 'all' || r.dataset.sig  === type);
-    const grpOk  = (grp === 'all'  || r.dataset.grp  === grp);
-    const wlOk   = (!_activeWl   || r.dataset.wl   === '1');
-    const deadOk = (!_activeDead || r.dataset.dead  === '1');
-    const warnOk = (!_activeWarn || r.dataset.warn  === '1');
-    const eyeOk  = (!_activeEye  || r.dataset.eye   === '1');
+    const sigOk    = (type === 'all' || r.dataset.sig    === type);
+    const grpOk    = (grp === 'all'  || r.dataset.grp    === grp);
+    const srcGrpOk = (_activeSrcGrp === 'all' || r.dataset.srcGrp === _activeSrcGrp);
+    const wlOk     = (!_activeWl   || r.dataset.wl   === '1');
+    const deadOk   = (!_activeDead || r.dataset.dead  === '1');
+    const warnOk   = (!_activeWarn || r.dataset.warn  === '1');
+    const eyeOk    = (!_activeEye  || r.dataset.eye   === '1');
     const coin = (r.dataset.coin || '').toLowerCase();
     const ref  = (r.dataset.ref  || '').toLowerCase();
     const qOk  = (!q || coin.includes(q) || ref.includes(q));
-    r.style.display = (sigOk && grpOk && wlOk && deadOk && warnOk && eyeOk && qOk) ? '' : 'none';
+    r.style.display = (sigOk && grpOk && srcGrpOk && wlOk && deadOk && warnOk && eyeOk && qOk) ? '' : 'none';
   });
 }
 
@@ -1692,6 +1712,13 @@ function filterByGroup(g) {
   _activeGrp = g;
   const type = (document.querySelector('.filter-btn.active') || {}).dataset?.filter || 'all';
   _applyFilters(type, g);
+}
+function filterByCoinGrp(g) {
+  document.querySelectorAll('.src-grp-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('[data-src-grp-filter="'+g+'"]').classList.add('active');
+  _activeSrcGrp = g;
+  const type = (document.querySelector('.filter-btn.active') || {}).dataset?.filter || 'all';
+  _applyFilters(type, _activeGrp);
 }
 function filterByWatchlist(mode) {
   const btn = document.querySelector('[data-wl-filter]');
@@ -1776,7 +1803,7 @@ if (document.getElementById('rows-data')) {
   const ts = now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())+' '+pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
   const el = document.getElementById('loaded-at');
   if (el) el.textContent = 'Обновлено: ' + ts;
-  const refreshAt = 1782562556813 + 17*60*1000;
+  const refreshAt = 1782562832135 + 17*60*1000;
   const delay = Math.max(30000, refreshAt - Date.now());
   setTimeout(() => location.reload(), delay);
 })();
