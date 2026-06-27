@@ -86,11 +86,11 @@ tr:hover td { background: #1c2128; }
 .filter-bar.last { margin-bottom: 12px; }
 .src-grp-btn { padding: 3px 8px; border-radius: 4px; border: 1px solid #30363d; background: #161b22; color: #8b949e; cursor: pointer; font-size: 0.78em; }
 .src-grp-btn.active { border-color: #8b949e; color: #e6edf3; background: #21262d; }
-.src-grp-btn[data-src-grp-filter="1"].active { border-color: #3fb950; color: #3fb950; background: #0d2016; }
-.src-grp-btn[data-src-grp-filter="2"].active { border-color: #58a6ff; color: #58a6ff; background: #12283d; }
-.src-grp-btn[data-src-grp-filter="3"].active { border-color: #8b949e; color: #e6edf3; background: #21262d; }
-.src-grp-btn[data-src-grp-filter="4"].active { border-color: #d29922; color: #d29922; background: #2d2208; }
-.src-grp-btn[data-src-grp-filter="5"].active { border-color: #f85149; color: #f85149; background: #3d1212; }
+.src-grp-btn[data-src-grp-filter="1"].active { border-color: #58a6ff; color: #58a6ff; background: #12283d; }
+.src-grp-btn[data-src-grp-filter="2"].active { border-color: #3fb950; color: #3fb950; background: #0d2016; }
+.src-grp-btn[data-src-grp-filter="3"].active { border-color: #d29922; color: #d29922; background: #2d2208; }
+.src-grp-btn[data-src-grp-filter="4"].active { border-color: #f85149; color: #f85149; background: #3d1212; }
+.src-grp-btn[data-src-grp-filter="5"].active { border-color: #a371f7; color: #a371f7; background: #1e1d3a; }
 .filter-btn { padding: 4px 12px; border-radius: 4px; border: 1px solid #30363d; background: #161b22; color: #8b949e; cursor: pointer; font-size: 0.82em; text-decoration: none; }
 .filter-btn.active { border-color: #58a6ff; color: #58a6ff; }
 .filter-urgent { border-color: #ff7b00; color: #ff7b00; font-weight: 700; }
@@ -115,7 +115,7 @@ tr:hover td { background: #1c2128; }
 <body>
 <h1>RSI Portfolio Rotation Monitor</h1>
 <p class="subtitle timestamp" style="display:flex;justify-content:space-between;align-items:center;">
-  <span>Сгенерировано: 2026-06-27 14:45:26 (MNE)&ensp;<span id="loaded-at" style="color:#8b949e"></span></span>
+  <span>Сгенерировано: 2026-06-27 14:46:13 (MNE)&ensp;<span id="loaded-at" style="color:#8b949e"></span></span>
   <span style="display:flex;gap:14px;align-items:center;">
     <a href="rotation.html" target="_blank" style="color:#8b949e;font-size:0.85em;text-decoration:none;" onmouseover="this.style.color='#58a6ff'" onmouseout="this.style.color='#8b949e'">↗ ротация</a>
     <a href="https://dropstab.com/p/po-moim-myslam-fjkjsebo6f" target="_blank" style="color:#8b949e;font-size:0.85em;text-decoration:none;" onmouseover="this.style.color='#58a6ff'" onmouseout="this.style.color='#8b949e'">↗ dropstab</a>
@@ -204,11 +204,11 @@ tr:hover td { background: #1c2128; }
   <span style="color:#8b949e;font-size:.78rem;margin-right:2px">Сила монеты:</span>
   <button class="src-grp-btn active" data-src-grp-filter="all" onclick="filterByCoinGrp('all')">Все</button>
   <span class="filter-sep">|</span>
-  <button class="src-grp-btn" data-src-grp-filter="1" onclick="filterByCoinGrp('1')" style="border-color:#3fb950;color:#3fb950">G1 Сильная (0)</button>
-  <button class="src-grp-btn" data-src-grp-filter="2" onclick="filterByCoinGrp('2')" style="border-color:#58a6ff;color:#58a6ff">G2 Надёжная (4)</button>
-  <button class="src-grp-btn" data-src-grp-filter="3" onclick="filterByCoinGrp('3')">G3 Нейтральная (15)</button>
-  <button class="src-grp-btn" data-src-grp-filter="4" onclick="filterByCoinGrp('4')" style="border-color:#d29922;color:#d29922">G4 Слабая (4)</button>
-  <button class="src-grp-btn" data-src-grp-filter="5" onclick="filterByCoinGrp('5')" style="border-color:#f85149;color:#f85149">G5 Опасная (0)</button>
+  <button class="src-grp-btn" data-src-grp-filter="1" onclick="filterByCoinGrp('1')" style="border-color:#58a6ff;color:#58a6ff">G1 Сильная (0)</button>
+  <button class="src-grp-btn" data-src-grp-filter="2" onclick="filterByCoinGrp('2')" style="border-color:#3fb950;color:#3fb950">G2 Надёжная (4)</button>
+  <button class="src-grp-btn" data-src-grp-filter="3" onclick="filterByCoinGrp('3')" style="border-color:#d29922;color:#d29922">G3 Нейтральная (15)</button>
+  <button class="src-grp-btn" data-src-grp-filter="4" onclick="filterByCoinGrp('4')" style="border-color:#f85149;color:#f85149">G4 Слабая (4)</button>
+  <button class="src-grp-btn" data-src-grp-filter="5" onclick="filterByCoinGrp('5')" style="border-color:#a371f7;color:#a371f7">G5 Опасная (0)</button>
 </div>
 
 <table id="main-table" data-sort-col="-1" data-sort-dir="desc">
@@ -4140,7 +4140,7 @@ if (document.getElementById('rows-data')) {
   const ts = now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())+' '+pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
   const el = document.getElementById('loaded-at');
   if (el) el.textContent = 'Обновлено: ' + ts;
-  const refreshAt = 1782564326684 + 17*60*1000;
+  const refreshAt = 1782564373262 + 17*60*1000;
   const delay = Math.max(30000, refreshAt - Date.now());
   setTimeout(() => location.reload(), delay);
 })();
