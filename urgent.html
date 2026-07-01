@@ -95,6 +95,11 @@ tr:hover td { background: #1c2128; }
 .grp-btn[data-grp-filter="3"].active { border-color: #d29922; color: #d29922; background: #2d2208; }
 .grp-btn[data-grp-filter="4"].active { border-color: #f85149; color: #f85149; background: #3d1212; }
 .grp-btn[data-grp-filter="5"].active { border-color: #a371f7; color: #a371f7; background: #1e1d3a; }
+.grp-btn[data-refgrp-filter="1"].active { border-color: #58a6ff; color: #58a6ff; background: #12283d; }
+.grp-btn[data-refgrp-filter="2"].active { border-color: #3fb950; color: #3fb950; background: #0d2016; }
+.grp-btn[data-refgrp-filter="3"].active { border-color: #d29922; color: #d29922; background: #2d2208; }
+.grp-btn[data-refgrp-filter="4"].active { border-color: #f85149; color: #f85149; background: #3d1212; }
+.grp-btn[data-refgrp-filter="5"].active { border-color: #a371f7; color: #a371f7; background: #1e1d3a; }
 .grp-btn[data-dead-filter].active { border-color: #f85149; color: #f85149; }
 .grp-btn[data-warn-filter].active { border-color: #ff7b00; color: #ff7b00; }
 .grp-btn[data-eye-filter].active  { border-color: #58a6ff; color: #58a6ff; }
@@ -107,7 +112,7 @@ tr:hover td { background: #1c2128; }
 <body>
 <h1>RSI Portfolio Rotation Monitor</h1>
 <p class="subtitle timestamp" style="display:flex;justify-content:space-between;align-items:center;">
-  <span>Сгенерировано: 2026-07-01 14:15:40 (MNE)&ensp;<span id="loaded-at" style="color:#8b949e"></span></span>
+  <span>Сгенерировано: 2026-07-01 14:30:26 (MNE)&ensp;<span id="loaded-at" style="color:#8b949e"></span></span>
   <span style="display:flex;gap:14px;align-items:center;">
     <a href="rotation.html" target="_blank" style="color:#8b949e;font-size:0.85em;text-decoration:none;" onmouseover="this.style.color='#58a6ff'" onmouseout="this.style.color='#8b949e'">↗ ротация</a>
     <a href="https://dropstab.com/p/po-moim-myslam-fjkjsebo6f" target="_blank" style="color:#8b949e;font-size:0.85em;text-decoration:none;" onmouseover="this.style.color='#58a6ff'" onmouseout="this.style.color='#8b949e'">↗ dropstab</a>
@@ -160,7 +165,7 @@ tr:hover td { background: #1c2128; }
   </div>
 </div>
 
-<div class="macro-warn" style="border-color:#6e7681;background:#1c2128">🔻 БЕЗ РЕАЛЬНОЙ УТИЛИТЫ (5): структурно слабые, но не #dead<ul style="margin:6px 0 4px 0;padding-left:20px;color:#c9d1d9;font-size:0.95em"><li style="margin:3px 0"><b>W</b> ($66 <span class='warn'>P/L -94.4%</span>) - bridge token, governance-only, нет fee capture <code style="color:#d29922;background:#332a14;padding:1px 4px;border-radius:3px;font-size:0.82em">#governance-only</code> <code style="color:#d29922;background:#332a14;padding:1px 4px;border-radius:3px;font-size:0.82em">#illiquid</code></li><li style="margin:3px 0"><b>ZK</b> ($53 <span class='warn'>P/L -91.2%</span>) - governance-only токен, утилити нет <code style="color:#d29922;background:#332a14;padding:1px 4px;border-radius:3px;font-size:0.82em">#governance-only</code></li><li style="margin:3px 0"><b>STRK</b> ($1,478 <span class='warn'>P/L -92.7%</span>) - governance-only, голое голосование <code style="color:#d29922;background:#332a14;padding:1px 4px;border-radius:3px;font-size:0.82em">#governance-only</code></li><li style="margin:3px 0"><b>OP</b> ($1,182 <span class='warn'>P/L -93.4%</span>) - та же проблема что ZK/STRK <code style="color:#d29922;background:#332a14;padding:1px 4px;border-radius:3px;font-size:0.82em">#governance-only</code></li><li style="margin:3px 0"><b>CFX</b> ($267 <span class='warn'>P/L -56.8%</span>) - китайский L1 без глобального adoption <code style="color:#d29922;background:#332a14;padding:1px 4px;border-radius:3px;font-size:0.82em">#regional</code></li></ul><span style="font-size:0.85em;color:#8b949e">Manual разметка + auto-detected теги (#governance-only, #regional). Доступны как target ротации, но при сигнале CUT - в первой очереди.</span></div>
+<div class="macro-warn" style="border-color:#6e7681;background:#1c2128">🔻 БЕЗ РЕАЛЬНОЙ УТИЛИТЫ (5): структурно слабые, но не #dead<ul style="margin:6px 0 4px 0;padding-left:20px;color:#c9d1d9;font-size:0.95em"><li style="margin:3px 0"><b>W</b> ($65 <span class='warn'>P/L -94.5%</span>) - bridge token, governance-only, нет fee capture <code style="color:#d29922;background:#332a14;padding:1px 4px;border-radius:3px;font-size:0.82em">#governance-only</code> <code style="color:#d29922;background:#332a14;padding:1px 4px;border-radius:3px;font-size:0.82em">#illiquid</code></li><li style="margin:3px 0"><b>ZK</b> ($53 <span class='warn'>P/L -91.2%</span>) - governance-only токен, утилити нет <code style="color:#d29922;background:#332a14;padding:1px 4px;border-radius:3px;font-size:0.82em">#governance-only</code></li><li style="margin:3px 0"><b>STRK</b> ($1,483 <span class='warn'>P/L -92.7%</span>) - governance-only, голое голосование <code style="color:#d29922;background:#332a14;padding:1px 4px;border-radius:3px;font-size:0.82em">#governance-only</code></li><li style="margin:3px 0"><b>OP</b> ($1,182 <span class='warn'>P/L -93.4%</span>) - та же проблема что ZK/STRK <code style="color:#d29922;background:#332a14;padding:1px 4px;border-radius:3px;font-size:0.82em">#governance-only</code></li><li style="margin:3px 0"><b>CFX</b> ($267 <span class='warn'>P/L -56.8%</span>) - китайский L1 без глобального adoption <code style="color:#d29922;background:#332a14;padding:1px 4px;border-radius:3px;font-size:0.82em">#regional</code></li></ul><span style="font-size:0.85em;color:#8b949e">Manual разметка + auto-detected теги (#governance-only, #regional). Доступны как target ротации, но при сигнале CUT - в первой очереди.</span></div>
 <div class="macro-warn">⚠ МАКРОФИЛЬТР: Fear & Greed 15 (Extreme Fear) — рынок в страхе</div>
 
 <div class="macro-warn" style="border-color:#a371f7;background:#2d2240">⛔ ПЕРЕГРЕТЫЕ ТАРГЕТЫ (не использовать как куда-ротировать): <b>SOL</b> (9x), <b>MORPHO</b> (5x), <b>AAVE</b> (4x)<br><span style="font-size:0.9em;color:#c9d1d9">Появляются ≥3 раз в топ-20 ЖДАТЬ - рынок видит их как переоценённые</span></div>
@@ -171,7 +176,7 @@ tr:hover td { background: #1c2128; }
   <a class="filter-btn" href="index.html" data-tid="51">▶ Ротировать (19&thinsp;/&thinsp;17)</a>
   <a class="filter-btn" href="watch.html" data-tid="52">▷ Смотреть (41&thinsp;/&thinsp;25)</a>
   <a class="filter-btn" href="neutral.html" data-tid="53">- Нейтрально (138&thinsp;/&thinsp;29)</a>
-  <a class="filter-btn" href="wait.html" data-tid="54">◀ Ждать (224&thinsp;/&thinsp;30)</a>
+  <a class="filter-btn" href="wait.html" data-tid="54">◀ Ждать (223&thinsp;/&thinsp;30)</a>
   <a class="filter-btn" href="all.html" data-tid="55">Все (573&thinsp;/&thinsp;30)</a>
   <span class="filter-sep">|</span>
   <a class="filter-btn" href="groups.html" data-tid="56" style="border-color:#a371f7;color:#a371f7">📋 Группы</a>
@@ -211,12 +216,12 @@ tr:hover td { background: #1c2128; }
 </thead>
 <tbody id="virt-tbody">
 
-<tr data-sig="urgent" data-grp="2" data-wl="0" data-coin="MORPHO" data-ref="LINK" data-dead="0" data-warn="0" data-eye="0">
+<tr data-sig="urgent" data-grp="2" data-refgrp="2" data-wl="0" data-coin="MORPHO" data-ref="LINK" data-dead="0" data-warn="0" data-eye="0">
   <td class="medal">🥇</td>
   <td class="pair">
     <div class="pair-main">
       <span class="pair-left">
-        <span class="ticker-line"><span>MORPHO</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $1.86</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$1.98</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$11</span>&ensp;<span class="ok" style='font-size:0.82em'>+6.1%</span></span>
+        <span class="ticker-line"><span>MORPHO</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $1.87</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$1.98</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$11</span>&ensp;<span class="ok" style='font-size:0.82em'>+5.8%</span></span>
         <span class="pair-sub"><span class="coin-tag g2" data-tid="15">G2 ★364</span><span class="ok">(+7)</span>&ensp;<span style='color:#8b949e'>#58</span><span class="ok">(↑3)</span>&ensp;<span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#defi #lending</span></span>
         <span class="pair-sub perf-row"><span class="ok" data-tid="0">1д&nbsp;+4%</span>&ensp;<span class="ok" data-tid="1">7д&nbsp;+14%</span>&ensp;<span class="warn" data-tid="2">30д&nbsp;-5%</span>&ensp;<span style="color:#8b949e">1г&nbsp;н/д</span>&ensp;<span class="ath-near" data-tid="3">-54%ATH</span></span>
         <span class="pair-extra"><span class="corr-lo" data-tid="12">↔BTC -0.40</span></span>
@@ -224,7 +229,7 @@ tr:hover td { background: #1c2128; }
       </span>
       <span class="pair-arrow">→</span>
       <span class="pair-right">
-        <span class="ticker-line"><span>LINK</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $26.71</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$7.26</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$1,185</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$322</span>&ensp;<span class="warn" style='font-size:0.82em'>-72.8%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-72.2%</span>&ensp;<span class="ok" style="font-size:0.9em">(+0.7%)</span></span>
+        <span class="ticker-line"><span>LINK</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $26.68</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$7.26</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$1,185</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$322</span>&ensp;<span class="warn" style='font-size:0.82em'>-72.8%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-72.2%</span>&ensp;<span class="ok" style="font-size:0.9em">(+0.6%)</span></span>
         <span class="pair-sub"><span class="coin-tag g2" data-tid="16">G2 ★360→351</span><span class="ok">(+5)</span>&ensp;<span style='color:#8b949e'>#21</span><span class="warn">(↓1)</span>&ensp;<span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#blue-chip #oracle</span></span>
         <span class="pair-sub perf-row"><span class="ok" data-tid="4">1д&nbsp;+1%</span>&ensp;<span class="warn" data-tid="5">7д&nbsp;-2%</span>&ensp;<span class="warn" data-tid="6">30д&nbsp;-20%</span>&ensp;<span class="warn" data-tid="7">1г&nbsp;-44%</span>&ensp;<span class="ath-far" data-tid="8">-86%ATH</span></span>
         <span class="pair-extra"><span class="vol-dn" data-tid="13">vol×0.7</span> <span class="corr-hi" data-tid="14">бета BTC ▲▲</span></span>
@@ -243,12 +248,12 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-neu" data-tid="24" data-val="0.0028">+0.003%</span></td>
   <td><span class="tag-urgent">⚠ СРОЧНО</span></td>
 </tr>
-<tr data-sig="urgent" data-grp="2" data-wl="0" data-coin="MORPHO" data-ref="BTC" data-dead="0" data-warn="0" data-eye="0">
+<tr data-sig="urgent" data-grp="2" data-refgrp="2" data-wl="0" data-coin="MORPHO" data-ref="BTC" data-dead="0" data-warn="0" data-eye="0">
   <td class="medal">🥈</td>
   <td class="pair">
     <div class="pair-main">
       <span class="pair-left">
-        <span class="ticker-line"><span>MORPHO</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $1.86</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$1.98</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$11</span>&ensp;<span class="ok" style='font-size:0.82em'>+6.1%</span></span>
+        <span class="ticker-line"><span>MORPHO</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $1.87</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$1.98</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$11</span>&ensp;<span class="ok" style='font-size:0.82em'>+5.8%</span></span>
         <span class="pair-sub"><span class="coin-tag g2" data-tid="15">G2 ★364</span><span class="ok">(+7)</span>&ensp;<span style='color:#8b949e'>#58</span><span class="ok">(↑3)</span>&ensp;<span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#defi #lending</span></span>
         <span class="pair-sub perf-row"><span class="ok" data-tid="0">1д&nbsp;+4%</span>&ensp;<span class="ok" data-tid="1">7д&nbsp;+14%</span>&ensp;<span class="warn" data-tid="2">30д&nbsp;-5%</span>&ensp;<span style="color:#8b949e">1г&nbsp;н/д</span>&ensp;<span class="ath-near" data-tid="3">-54%ATH</span></span>
         <span class="pair-extra"><span class="corr-lo" data-tid="31">↔BTC -0.24</span></span>
@@ -256,7 +261,7 @@ tr:hover td { background: #1c2128; }
       </span>
       <span class="pair-arrow">→</span>
       <span class="pair-right">
-        <span class="ticker-line"><span>BTC</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $71,634</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$58,468</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$6</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$5</span>&ensp;<span class="warn" style='font-size:0.82em'>-18.4%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-6.6%</span>&ensp;<span class="ok" style="font-size:0.9em">(+11.8%)</span></span>
+        <span class="ticker-line"><span>BTC</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $71,626</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$58,468</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$6</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$5</span>&ensp;<span class="warn" style='font-size:0.82em'>-18.4%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-6.6%</span>&ensp;<span class="ok" style="font-size:0.9em">(+11.7%)</span></span>
         <span class="pair-sub"><span class="coin-tag g2" data-tid="33">G2 ★389→355</span><span class="ok">(+5)</span>&ensp;<span style='color:#8b949e'>#1</span>&ensp;<span class="narr-tag" style="background:#e6a81722;color:#e6a817;border:1px solid #e6a81744" data-tid="34">SoV</span><span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#blue-chip #l1 #store-of-value</span></span>
         <span class="pair-sub perf-row"><span class="warn" data-tid="25">1д&nbsp;-0%</span>&ensp;<span class="warn" data-tid="26">7д&nbsp;-4%</span>&ensp;<span class="warn" data-tid="27">30д&nbsp;-18%</span>&ensp;<span class="warn" data-tid="28">1г&nbsp;-45%</span>&ensp;<span class="ath-near" data-tid="29">-53%ATH</span></span>
         <span class="pair-extra"><span class="corr-hi" data-tid="32">бета BTC ▲▲</span></span>
@@ -275,12 +280,12 @@ tr:hover td { background: #1c2128; }
   <td><span class="fn-neu" data-tid="24" data-val="0.0028">+0.003%</span></td>
   <td><span class="tag-urgent">⚠ СРОЧНО</span></td>
 </tr>
-<tr data-sig="urgent" data-grp="2" data-wl="0" data-coin="MORPHO" data-ref="TAO" data-dead="0" data-warn="0" data-eye="0">
+<tr data-sig="urgent" data-grp="2" data-refgrp="2" data-wl="0" data-coin="MORPHO" data-ref="TAO" data-dead="0" data-warn="0" data-eye="0">
   <td class="medal">🥉</td>
   <td class="pair">
     <div class="pair-main">
       <span class="pair-left">
-        <span class="ticker-line"><span>MORPHO</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $1.86</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$1.98</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$11</span>&ensp;<span class="ok" style='font-size:0.82em'>+6.1%</span></span>
+        <span class="ticker-line"><span>MORPHO</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $1.87</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$1.98</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$10</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$11</span>&ensp;<span class="ok" style='font-size:0.82em'>+5.8%</span></span>
         <span class="pair-sub"><span class="coin-tag g2" data-tid="15">G2 ★364</span><span class="ok">(+7)</span>&ensp;<span style='color:#8b949e'>#58</span><span class="ok">(↑3)</span>&ensp;<span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#defi #lending</span></span>
         <span class="pair-sub perf-row"><span class="ok" data-tid="0">1д&nbsp;+4%</span>&ensp;<span class="ok" data-tid="1">7д&nbsp;+14%</span>&ensp;<span class="warn" data-tid="2">30д&nbsp;-5%</span>&ensp;<span style="color:#8b949e">1г&nbsp;н/д</span>&ensp;<span class="ath-near" data-tid="3">-54%ATH</span></span>
         <span class="pair-extra"><span class="corr-md" data-tid="41">↔BTC -0.55</span></span>
@@ -288,7 +293,7 @@ tr:hover td { background: #1c2128; }
       </span>
       <span class="pair-arrow">→</span>
       <span class="pair-right">
-        <span class="ticker-line"><span>TAO</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $218.39</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$197.60</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$22</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$20</span>&ensp;<span class="warn" style='font-size:0.82em'>-9.5%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-7.1%</span>&ensp;<span class="ok" style="font-size:0.9em">(+2.4%)</span></span>
+        <span class="ticker-line"><span>TAO</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $218.20</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$197.60</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$22</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$20</span>&ensp;<span class="warn" style='font-size:0.82em'>-9.4%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-7.1%</span>&ensp;<span class="ok" style="font-size:0.9em">(+2.4%)</span></span>
         <span class="pair-sub"><span class="coin-tag g2" data-tid="44">G2 ★328→321</span><span class="ok">(+9)</span>&ensp;<span style='color:#8b949e'>#41</span>&ensp;<span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#ai #depin</span></span>
         <span class="pair-sub perf-row"><span class="warn" data-tid="36">1д&nbsp;-2%</span>&ensp;<span class="warn" data-tid="37">7д&nbsp;-10%</span>&ensp;<span class="warn" data-tid="38">30д&nbsp;-22%</span>&ensp;<span class="warn" data-tid="39">1г&nbsp;-38%</span>&ensp;<span class="ath-far" data-tid="40">-73%ATH</span></span>
         <span class="pair-extra"><span class="vol-dn" data-tid="42">vol×0.4▼</span> <span class="corr-md" data-tid="43">бета BTC ▲</span></span>
@@ -435,6 +440,7 @@ function sortTable(col) {
 }
 
 let _activeGrp = 'all';
+let _activeRefGrps = new Set();  // мультивыбор: в какую группу(ы) переливаем (target, правая сторона)
 let _activeWl = false;   // только watchlist пары
 let _activeDead = false; // 💀 только #dead монеты
 let _activeWarn   = false; // ❗ только монеты с risk-тегами
@@ -454,10 +460,11 @@ function _applyFilters(type, grp) {
       const deadOk   = (!_activeDead || m[14] === 1);
       const warnOk   = (!_activeWarn || m[15] === 1);
       const eyeOk    = (!_activeEye  || m[16] === 1);
+      const refGrpOk = (_activeRefGrps.size === 0 || _activeRefGrps.has(String(m[17])));
       const coin = (m[12] || '').toLowerCase();
       const ref  = (m[13] || '').toLowerCase();
       const qOk  = (!q || coin.includes(q) || ref.includes(q));
-      if (sigOk && grpOk && wlOk && deadOk && warnOk && eyeOk && qOk) _VIRT.visibleIdx.push(i);
+      if (sigOk && grpOk && wlOk && deadOk && warnOk && eyeOk && refGrpOk && qOk) _VIRT.visibleIdx.push(i);
     }
     _virtRebuild();
     return;
@@ -469,10 +476,11 @@ function _applyFilters(type, grp) {
     const deadOk   = (!_activeDead || r.dataset.dead  === '1');
     const warnOk   = (!_activeWarn || r.dataset.warn  === '1');
     const eyeOk    = (!_activeEye  || r.dataset.eye   === '1');
+    const refGrpOk = (_activeRefGrps.size === 0 || _activeRefGrps.has(r.dataset.refgrp));
     const coin = (r.dataset.coin || '').toLowerCase();
     const ref  = (r.dataset.ref  || '').toLowerCase();
     const qOk  = (!q || coin.includes(q) || ref.includes(q));
-    r.style.display = (sigOk && grpOk && wlOk && deadOk && warnOk && eyeOk && qOk) ? '' : 'none';
+    r.style.display = (sigOk && grpOk && wlOk && deadOk && warnOk && eyeOk && refGrpOk && qOk) ? '' : 'none';
   });
 }
 
@@ -507,6 +515,19 @@ function filterByGroup(g) {
   _activeGrp = g;
   const type = (document.querySelector('.filter-btn.active') || {}).dataset?.filter || 'all';
   _applyFilters(type, g);
+}
+function filterByRefGroup(g) {
+  const btn = document.querySelector('[data-refgrp-filter="'+g+'"]');
+  if (_activeRefGrps.has(g)) { _activeRefGrps.delete(g); btn.classList.remove('active'); }
+  else                       { _activeRefGrps.add(g);    btn.classList.add('active'); }
+  const type = (document.querySelector('.filter-btn.active') || {}).dataset?.filter || 'all';
+  _applyFilters(type, _activeGrp);
+}
+function clearRefGroups() {
+  _activeRefGrps.clear();
+  document.querySelectorAll('[data-refgrp-filter]').forEach(b => b.classList.remove('active'));
+  const type = (document.querySelector('.filter-btn.active') || {}).dataset?.filter || 'all';
+  _applyFilters(type, _activeGrp);
 }
 function filterByWatchlist(mode) {
   const btn = document.querySelector('[data-wl-filter]');
@@ -591,7 +612,7 @@ if (document.getElementById('rows-data')) {
   const ts = now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())+' '+pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
   const el = document.getElementById('loaded-at');
   if (el) el.textContent = 'Обновлено: ' + ts;
-  const refreshAt = 1782908140599 + 17*60*1000;
+  const refreshAt = 1782909026785 + 17*60*1000;
   const delay = Math.max(30000, refreshAt - Date.now());
   setTimeout(() => location.reload(), delay);
 })();
