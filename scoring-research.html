@@ -89,7 +89,7 @@ tr:hover td { background: #1c2128; }
 <body>
 
 <h1>🔬 Исследование систем скоринга монет</h1>
-<div class="subtitle">Анализ двух систем · академические источники · рекомендации по оптимизации · 2026-08-01</div>
+<div class="subtitle">Анализ двух систем · академические источники · рекомендации по оптимизации · обновлено 2026-08-01 (v2)</div>
 
 <!-- ═══════════════════ АНАЛИЗИРУЕМЫЕ СИСТЕМЫ ═══════════════════ -->
 <h2>Анализируемые системы</h2>
@@ -392,6 +392,90 @@ tr:hover td { background: #1c2128; }
   </div>
 </div>
 
+<h3>8. Критически недооценённые факторы (новые исследования 2024–2026)</h3>
+<div class="note">Источники: SSRN, arxiv, Keyrock, DWF Labs, Frontiers in Blockchain, ACM SIGMETRICS 2026. Все выводы подкреплены реальными работами — без домыслов.</div>
+
+<table>
+<thead><tr>
+  <th>Фактор</th><th>Эмпирический факт</th><th>Рекомендуемый вес</th><th>Источник</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td class="td-name">Vesting Cliff Timing<br><span class="td-dim">дата + размер конкретного клиффа</span></td>
+  <td>Keyrock: 16 000+ unlock-событий — <strong>90% создают негативное давление на цену</strong>. SSRN Kim 2025 (52 события на Binance): 88.5% (46/52) показали negative returns за 72ч (p=2.2×10⁻⁹). Ценовое давление начинается <strong>за ~30 дней до cliff</strong>. Team unlocks = падение до 25%</td>
+  <td><span class="b b-blue">×5</span></td>
+  <td class="td-dim">SSRN 6632838 · Keyrock 2024</td>
+</tr>
+<tr>
+  <td class="td-name">MC/FDV Supply Overhang<br><span class="td-dim">circulating market cap / fully diluted</span></td>
+  <td>MC/FDV &lt;40% = 60%+ supply «нависает» над рынком = структурное разводнение. Frontiers in Blockchain 2026: token unlocks β=−0.22 на цену ETH. Токен с 10% circulating — «медленный rug pull» даже без новых покупателей</td>
+  <td><span class="b b-blue">×4</span></td>
+  <td class="td-dim">Frontiers fbloc.2026.1817622 · CoinGecko</td>
+</tr>
+<tr>
+  <td class="td-name">Incentive vs Organic Growth<br><span class="td-dim">TVR, D30 wallet retention</span></td>
+  <td>arxiv:2404.11745 «Piercing the Veil of TVL» (UCL/NTU): TVL раздут ~2x на пике — гэп TVL−TVR достиг $139.87B. Castle Labs (Compound/Arbitrum LTIPP 2024): органические пользователи вносили $154K vs $9K у инцентивных (17x разница). D30 retention = 1 повторный депозит в месяц, затем исчезновение</td>
+  <td><span class="b b-blue">×4</span></td>
+  <td class="td-dim">arxiv:2404.11745 · Castle Labs 2024</td>
+</tr>
+<tr>
+  <td class="td-name">Narrative Lifecycle Positioning<br><span class="td-dim">фаза нарратива: early/growing/peak/declining</span></td>
+  <td>Sharpe.ai отслеживает 30 нарративов × 25+ таймфреймов. Ключевой сигнал — <strong>Mindshare delta week-over-week</strong>: растущий при низкой абсолютной доле = early entry. Mainstream coverage (Bloomberg) + Google Trends spike = peak (риск). Гартнер Hype Cycle for Web3 2024 подтверждает цикличность</td>
+  <td><span class="b b-blue">×4</span></td>
+  <td class="td-dim">Sharpe.ai Mindshare · Gartner Web3 2024</td>
+</tr>
+<tr>
+  <td class="td-name">Protocol Revenue Retention<br><span class="td-dim">buyback quality vs treasury dump</span></td>
+  <td>DWF Labs 2025: holder revenue вырос >5x, достиг $800M в Q3 2025. Hyperliquid направляет <strong>91% комиссий на buybacks</strong> — один из лучших ценовых перформансов. Keyrock: buyback эффективен только при низком P/S; при высоком P/S разрушает treasury (один протокол потерял $86.3M на неоптимальных buybacks)</td>
+  <td><span class="b b-yellow">×3</span></td>
+  <td class="td-dim">DWF Labs 2025 · Keyrock · Token Terminal</td>
+</tr>
+<tr>
+  <td class="td-name">Token Velocity (V = txvol/supply)<br><span class="td-dim">скорость обращения по уравнению MV=PQ</span></td>
+  <td>arxiv:2403.04914: из уравнения обмена P = (Q×kPQ) / (M×V). Низкая velocity (Ethereum 3.6%) = токен держат, не продают = бычий. Velocity sinks: стейкинг, buyback-burn, veToken-локи. «Hot potato effect» — токен берут только чтобы сразу продать → цена стремится к нулю</td>
+  <td><span class="b b-yellow">×3</span></td>
+  <td class="td-dim">arxiv:2403.04914 · Burniske 2017</td>
+</tr>
+<tr>
+  <td class="td-name">Metcalfe Ratio (сетевые эффекты)<br><span class="td-dim">actual price / Metcalfe fair value</span></td>
+  <td>arxiv:1803.05663 (Bitcoin 2010–2018, 2782 точки): стоимость сети ∝ N², slope β=1.69, <strong>R²=0.95</strong>. SSRN Peterson: «exceptional fit» для Bitcoin. Metcalfe Ratio &gt;2 = пузырь, &lt;0.5 = недооценён. Ограничение: применимо только к монетам с длинной историей active addresses</td>
+  <td><span class="b b-yellow">×3</span></td>
+  <td class="td-dim">arxiv:1803.05663 · SSRN 3078248</td>
+</tr>
+<tr>
+  <td class="td-name">Social Sentiment Velocity<br><span class="td-dim">d(mentions)/dt, не абсолютный уровень</span></td>
+  <td>Santiment 2025: комбо social+on-chain предсказывает направление BTC с <strong>64% точностью</strong> на 30d. Lead time: сентимент опережает цену на 24–48ч. Ловушка: абсолютный sentiment часто лагирует — к моменту когда он bullish, цена уже выросла 10–20%. ACM 2025: CNN-LSTM с sentiment улучшает F1-score на 12%</td>
+  <td><span class="b b-yellow">×3</span></td>
+  <td class="td-dim">ACM 2025 · SSRN 4806394 · LunarCrush</td>
+</tr>
+<tr>
+  <td class="td-name">Protocol Bad Debt / VaR<br><span class="td-dim">только для lending-протоколов</span></td>
+  <td>arxiv:2605.05145 (Institutional DeFi Risk, 9 dimensions): composability risk, temporal risk, comprehension debt как новые измерения. Aave V3 (2023–2025): $2M lifetime bad debt при $1T+ займах = 0.0002% (отличный). Gauntlet/Chaos Labs: VaR@95% и LaR@95% для stress-testing параметров. DefiLlama публикует bad debt tracker</td>
+  <td><span class="b b-yellow">×3</span></td>
+  <td class="td-dim">arxiv:2605.05145 · arxiv:2506.12855 · Gauntlet</td>
+</tr>
+<tr>
+  <td class="td-name">Options IV Skew<br><span class="td-dim">только BTC/ETH — Deribit 90%+ объёма</span></td>
+  <td>ScienceDirect 2024 (тик-тик данные Deribit сентябрь 2020 – август 2023): IV slope связана с инвестиционным сентиментом. 25-delta Risk Reversal (RR25) = IV(25d call) − IV(25d put). Положительный RR25 = call skew (bullish), отрицательный = put skew (demand на защиту). IV backwardation = stress signal. DVOL = аналог VIX для BTC</td>
+  <td><span class="b b-yellow">×2</span></td>
+  <td class="td-dim">ScienceDirect S0167637724000713 · Deribit</td>
+</tr>
+<tr>
+  <td class="td-name">Revenue Concentration (HHI)<br><span class="td-dim">индекс Херфиндаля-Хиршмана по источникам revenue</span></td>
+  <td>CryptoBriefing: 10 протоколов генерируют 87% holder revenue, 3 протокола = 71% — высокая системная концентрация. HHI &lt;1500 = норма, &gt;2500 = красный флаг. Применение: если 80% revenue протокола от 1 dApp/use case — это single point of failure</td>
+  <td><span class="b b-gray">×2</span></td>
+  <td class="td-dim">arxiv:2601.08540 · FSB DeFi 2023 · CryptoBriefing</td>
+</tr>
+<tr>
+  <td class="td-name">Bridge Flows (active, не structural)<br><span class="td-dim">realized interoperability, не наличие мостов</span></td>
+  <td>ACM SIGMETRICS 2026 (arxiv:2604.03083, 20 блокчейнов, 16 мостов, 2022–2025): <strong>«connectivity alone does not imply economically meaningful integration»</strong>. Spike inflows + спад через 30 дней = инцентивная программа закончилась. Sustained net inflows 3+ месяца + рост active addresses = органическое расширение</td>
+  <td><span class="b b-gray">×2</span></td>
+  <td class="td-dim">arxiv:2604.03083 · DefiLlama bridges</td>
+</tr>
+</tbody>
+</table>
+<div class="source">Исследование проводилось по материалам на русском, английском, корейском. Примечание: корейских и китайских академических работ по scoring framework в открытом доступе фактически нет — исследования сосредоточены на market efficiency и регуляторике.</div>
+
 <hr class="sep">
 
 <!-- ═══════════════════ РЕКОМЕНДАЦИИ ═══════════════════ -->
@@ -633,6 +717,100 @@ tr:hover td { background: #1c2128; }
 </tbody>
 </table>
 
+<h3>Е. Дополнительные критерии (из новых исследований)</h3>
+<div class="note">Приоритизированы по соотношению сигнал/сложность внедрения. MC/FDV и Revenue Retention реализуются за несколько часов (данные уже есть). Cliff Timing требует Tokenomist.ai. Metcalfe и Bad Debt — только для подходящих типов активов.</div>
+<table>
+<thead><tr>
+  <th>Новый критерий</th><th>Вес</th><th>Источник данных</th><th>Применимость</th><th>Обоснование</th>
+</tr></thead>
+<tbody>
+<tr class="act-add">
+  <td class="td-name">Vesting Cliff Timing (дата + % circulating)</td>
+  <td><span class="b b-blue">×5</span></td>
+  <td class="td-mono">Tokenomist.ai · Unlocks.app</td>
+  <td>все токены</td>
+  <td>90% unlock-событий = негативное давление. Давление начинается за 30 дней. Cliff >15% circulating = красный флаг. Лучший предсказуемый риск-фактор из всех</td>
+</tr>
+<tr class="act-add">
+  <td class="td-name">MC/FDV Supply Overhang</td>
+  <td><span class="b b-blue">×4</span></td>
+  <td class="td-mono">CoinGecko API (уже подключён)</td>
+  <td>все токены</td>
+  <td>MC/FDV &lt;40% = структурное разводнение. Очень простой в реализации — данные уже есть в CoinGecko</td>
+</tr>
+<tr class="act-add">
+  <td class="td-name">Incentive vs Organic (D30 retention / TVR)</td>
+  <td><span class="b b-blue">×4</span></td>
+  <td class="td-mono">DeFiLlama · Dune Analytics</td>
+  <td>DeFi, L1/L2</td>
+  <td>Organic users вносят 17x больше инцентивных. TVR = реальный TVL без левериджной накрутки. Blast упал −97% после окончания airdrop</td>
+</tr>
+<tr class="act-add">
+  <td class="td-name">Narrative Lifecycle (Mindshare delta)</td>
+  <td><span class="b b-blue">×4</span></td>
+  <td class="td-mono">Sharpe.ai · Google Trends · Santiment</td>
+  <td>все токены</td>
+  <td>Фаза нарратива определяет risk-reward сильнее технических факторов. Early entry = максимальный upside. Sharpe.ai: 30 нарративов × 25+ таймфреймов</td>
+</tr>
+<tr class="act-add">
+  <td class="td-name">Protocol Revenue Retention Quality</td>
+  <td><span class="b b-yellow">×3</span></td>
+  <td class="td-mono">Token Terminal · DefiLlama /fees</td>
+  <td>DeFi протоколы</td>
+  <td>Разница: buyback при низком P/S (эффективно) vs treasury dump vs buyback при высоком P/S (разрушает стоимость). Holder Revenue = ключевая метрика Token Terminal</td>
+</tr>
+<tr class="act-add">
+  <td class="td-name">Token Velocity (txvol / circulating supply)</td>
+  <td><span class="b b-yellow">×3</span></td>
+  <td class="td-mono">Glassnode · CryptoQuant · Messari</td>
+  <td>utility-токены</td>
+  <td>Velocity &lt;5% = holders не продают (бычий). Velocity sinks (staking, veToken, burn) снижают velocity и поддерживают цену. Менее применимо к pure governance токенам</td>
+</tr>
+<tr class="act-add">
+  <td class="td-name">Social Sentiment Velocity (rate of change)</td>
+  <td><span class="b b-yellow">×3</span></td>
+  <td class="td-mono">LunarCrush · Santiment</td>
+  <td>все токены</td>
+  <td>64% accuracy предсказания направления BTC при комбо social+on-chain. Lead time 24–48ч. Важен именно delta (ускорение), не абсолютный уровень — который лагирует</td>
+</tr>
+<tr class="act-add">
+  <td class="td-name">Metcalfe Ratio (network value / Metcalfe estimate)</td>
+  <td><span class="b b-yellow">×3</span></td>
+  <td class="td-mono">Glassnode /active_addresses</td>
+  <td>BTC, ETH, SOL — крупные с историей</td>
+  <td>R²=0.95 на Bitcoin 2010–2018. Ratio &gt;2 = пузырь, &lt;0.5 = value zone. Не применимо к молодым проектам без длинной истории active addresses</td>
+</tr>
+<tr class="act-add">
+  <td class="td-name">Protocol Bad Debt / VaR@95%</td>
+  <td><span class="b b-yellow">×3</span></td>
+  <td class="td-mono">DefiLlama bad debt · Gauntlet dashboard</td>
+  <td>lending протоколы (Aave, Compound, Morpho)</td>
+  <td>Bad debt / TVL &lt;0.001% = excellent (Aave). VaR@95% по Gauntlet. Для не-lending протоколов — ×1</td>
+</tr>
+<tr class="act-add">
+  <td class="td-name">Options IV Skew (RR25)</td>
+  <td><span class="b b-yellow">×2</span></td>
+  <td class="td-mono">Deribit API (публичный)</td>
+  <td>BTC и ETH — где есть опционный рынок</td>
+  <td>25-delta Risk Reversal: положительный = call skew (bullish demand). IV backwardation = stress. Для альткоинов опционного рынка нет</td>
+</tr>
+<tr class="act-add">
+  <td class="td-name">Revenue Concentration HHI</td>
+  <td><span class="b b-gray">×2</span></td>
+  <td class="td-mono">DefiLlama /fees breakdown</td>
+  <td>middleware, bridge, L2</td>
+  <td>HHI &gt;2500 = 80%+ revenue от 1 use case = single point of failure. Ethereum (тысячи dApps) vs LINK (зависимость от DeFi сектора)</td>
+</tr>
+<tr class="act-add">
+  <td class="td-name">Active Bridge Flows (не structural)</td>
+  <td><span class="b b-gray">×2</span></td>
+  <td class="td-mono">DefiLlama /bridges API</td>
+  <td>L1/L2 экосистемы</td>
+  <td>Наличие мостов ≠ рост экосистемы (SIGMETRICS 2026). Нужен sustained net inflow 3+ мес. Spike + спад через 30 дней = конец инцентивной программы</td>
+</tr>
+</tbody>
+</table>
+
 <hr class="sep">
 
 <!-- ═══════════════════ ДВА ДОПОЛНИТЕЛЬНЫХ ВОПРОСА ═══════════════════ -->
@@ -797,16 +975,28 @@ tr:hover td { background: #1c2128; }
 <div class="card">
   <p style="margin-bottom:10px">Ни одна из систем не оптимальна по отдельности. Система 1 слишком проста и пропускает ключевые quant-сигналы (деривативы, RS, URPD). Система 2 слишком перегружена низковесными критериями (7 критериев с весом ×1) с высокой взаимной корреляцией.</p>
   <p style="margin-bottom:10px">Академические исследования однозначно указывают: <strong>ликвидность + momentum + carry — три ортогональных фактора, дающих Sharpe ≈ 2.5</strong>. Они уже присутствуют в системе 2, но «размыты» среди 29 критериев.</p>
-  <p><strong>Оптимум: 18 критериев</strong>, из которых 14 считаются алгоритмически без AI, 4 — через AI раз в 3–4 дня. ETF flow, OI/McAp и revenue acceleration добавить как новые API-сигналы. Дифференцировать TTL кэша по типу данных.</p>
+  <p style="margin-bottom:10px"><strong>Оптимум: 18 критериев</strong>, из которых 14 считаются алгоритмически без AI, 4 — через AI раз в 3–4 дня. ETF flow, OI/McAp и revenue acceleration добавить как новые API-сигналы. Дифференцировать TTL кэша по типу данных.</p>
+  <p><strong>Новое исследование (раздел 8 и Е):</strong> самый важный gap — <strong>Vesting Cliff Timing</strong> (90% unlock-событий негативны, давление за 30 дней до — два независимых академических исследования). <strong>MC/FDV &lt;40%</strong> — структурное разводнение, данные уже в CoinGecko. <strong>Organic vs incentive growth</strong> — ключевой для оценки DeFi/L2 (TVR формула, arxiv:2404.11745). <strong>Narrative Lifecycle</strong> определяет risk-reward сильнее большинства технических факторов. Из 12 новых критериев 7 реализуются на уже подключённых данных.</p>
 </div>
 
 <div style="margin-top:32px; color:#484f58; font-size:0.75em;">
-  Источники: <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5225612" style="color:#484f58">SSRN 5225612</a> ·
+  Источники первой волны: <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5225612" style="color:#484f58">SSRN 5225612</a> ·
   <a href="https://www.sparklinecapital.com/post/crypto-factor-investing" style="color:#484f58">Sparkline Capital</a> ·
   <a href="https://blog.aperiodic.io/p/cross-sectional-alpha-factors-in" style="color:#484f58">aperiodic.io</a> ·
   <a href="https://www.mdpi.com/2227-7390/12/9/1351" style="color:#484f58">MDPI Mathematics</a> ·
   <a href="https://medium.com/@centicio/all-about-token-health-a-comprehensive-scoring-system-for-cryptocurrency-4e3fc8cb2122" style="color:#484f58">Centic Token Health</a> ·
   <a href="https://arxiv.org/html/2604.26747v1" style="color:#484f58">arxiv 2604.26747</a>
+  <br style="margin-top:6px">
+  Новые источники (раздел 8): <a href="https://arxiv.org/abs/2404.11745" style="color:#484f58">arxiv:2404.11745 (TVR)</a> ·
+  <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6632838" style="color:#484f58">SSRN 6632838 (Vesting Cliffs)</a> ·
+  <a href="https://arxiv.org/abs/2403.04914" style="color:#484f58">arxiv:2403.04914 (Token Velocity)</a> ·
+  <a href="https://arxiv.org/abs/1803.05663" style="color:#484f58">arxiv:1803.05663 (Metcalfe)</a> ·
+  <a href="https://arxiv.org/abs/2604.03083" style="color:#484f58">arxiv:2604.03083 (Bridge Flows)</a> ·
+  <a href="https://arxiv.org/abs/2605.05145" style="color:#484f58">arxiv:2605.05145 (DeFi Risk 9D)</a> ·
+  <a href="https://arxiv.org/abs/2602.03874" style="color:#484f58">arxiv:2602.03874 (ASRI)</a> ·
+  <a href="https://www.frontiersin.org/journals/blockchain/articles/10.3389/fbloc.2026.1817622/full" style="color:#484f58">Frontiers Blockchain 2026</a> ·
+  <a href="https://keyrock.com/designing-token-buybacks/" style="color:#484f58">Keyrock Buybacks</a> ·
+  <a href="https://www.dwf-labs.com/research/547-token-buybacks-in-web3" style="color:#484f58">DWF Labs 2025</a>
 </div>
 
 </body>
