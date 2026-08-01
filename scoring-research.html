@@ -628,6 +628,164 @@ tr:hover td { background: #1c2128; }
 
 <hr class="sep">
 
+<!-- ═══════════════════ ДВА ДОПОЛНИТЕЛЬНЫХ ВОПРОСА ═══════════════════ -->
+<h2>Дополнительные вопросы по системе</h2>
+
+<h3>1. Есть ли разделение на фундаментал и рыночные данные?</h3>
+<div class="note">В предложенной системе из 18 критериев такого разделения <strong>нет явно</strong> — все смешаны в единый итоговый балл. Это проблема: монета может быть фундаментально сильной, но сейчас не время покупать, и наоборот.</div>
+
+<p>Правильная архитектура — <strong>два отдельных независимых блока</strong> с отдельными итоговыми оценками:</p>
+
+<div class="vs-box">
+  <div class="vs-col">
+    <h4>Блок A — Сила монеты (фундаментал)</h4>
+    <p style="font-size:0.8em;color:#8b949e;margin-bottom:8px">Пересчёт раз в 1–2 недели. Отвечает на вопрос: <em>«Хороший ли это актив?»</em></p>
+    <ul>
+      <li>Токеномика и анлоки</li>
+      <li>Фундаментал (TVL, revenue, users)</li>
+      <li>Real yield / value accrual</li>
+      <li>Команда + конкурентный ров</li>
+      <li>Безопасность</li>
+      <li>Регуляторные риски</li>
+      <li>Dev activity</li>
+      <li>On-chain + концентрация холдеров</li>
+    </ul>
+  </div>
+  <div class="vs-col">
+    <h4>Блок B — Рыночный сигнал (тайминг)</h4>
+    <p style="font-size:0.8em;color:#8b949e;margin-bottom:8px">Пересчёт каждые 4–8ч. Отвечает на вопрос: <em>«Сейчас покупать, держать или выходить?»</em></p>
+    <ul>
+      <li>RS / Momentum к BTC (30d)</li>
+      <li>Деривативы: funding, OI, L/S, basis</li>
+      <li>Технический анализ (RSI, MA200, MVRV)</li>
+      <li>OI / Market Cap ratio</li>
+      <li>ETF flow (BTC/ETH)</li>
+      <li>USDT.D trend</li>
+      <li>Exit liquidity</li>
+      <li>URPD / cost basis</li>
+    </ul>
+  </div>
+</div>
+
+<p>Итог — не одно число, а <strong>матрица 2×2</strong>:</p>
+<table>
+<thead><tr>
+  <th></th>
+  <th>Рыночный сигнал: ПОКУПАТЬ</th>
+  <th>Рыночный сигнал: ДЕРЖАТЬ</th>
+  <th>Рыночный сигнал: ВЫХОДИТЬ</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td><strong>Фундаментал: СИЛЬНЫЙ</strong></td>
+  <td style="background:#1f3a24;color:#3fb950">Агрессивный вход / докупка</td>
+  <td style="background:#1a2e4a;color:#58a6ff">Держать полную позицию</td>
+  <td style="background:#252018;color:#d29922">Держать, стоп подтянуть</td>
+</tr>
+<tr>
+  <td><strong>Фундаментал: СЛАБЫЙ</strong></td>
+  <td style="background:#252018;color:#d29922">Спекулятивный вход (малая доля)</td>
+  <td style="background:#1a1e24;color:#8b949e">Сокращать постепенно</td>
+  <td style="background:#2d1517;color:#f85149">Выходить немедленно</td>
+</tr>
+</tbody>
+</table>
+<p style="margin-top:10px">Ни одна из двух существующих систем (psv044581 и baldmas) эту матрицу не реализует — обе выдают единый итоговый балл, который смешивает медленные и быстрые сигналы.</p>
+
+<h3>2. Рекомендации по срокам обновления данных</h3>
+<p>Не все данные одинаково нуждаются в обновлении. Текущие системы используют единый кэш (7 или 14 дней для AI-части), что создаёт два противоположных сбоя: быстрые данные протухают, медленные обновляются слишком часто (лишние расходы).</p>
+
+<table>
+<thead><tr>
+  <th>Данные / критерий</th>
+  <th>Рекомендуемая частота</th>
+  <th>Обоснование</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td><strong>Funding rate, L/S ratio</strong><br><span class="td-dim">Binance Futures</span></td>
+  <td><span class="b b-red">каждые 8ч</span></td>
+  <td>Funding rate сбрасывается каждые 8ч на Binance; кэш дольше = устаревший сигнал</td>
+</tr>
+<tr>
+  <td><strong>RS к BTC, объём (30d)</strong><br><span class="td-dim">Binance Spot klines</span></td>
+  <td><span class="b b-red">каждые 4ч</span></td>
+  <td>Импульс затухает быстро; скользящее окно 30d обновляется непрерывно</td>
+</tr>
+<tr>
+  <td><strong>OI, OI/McAp ratio</strong><br><span class="td-dim">Binance Futures</span></td>
+  <td><span class="b b-red">каждые 4ч</span></td>
+  <td>Ликвидации накапливаются резко; запоздалое обнаружение перегрева критично</td>
+</tr>
+<tr>
+  <td><strong>TA: RSI, MA200, MVRV</strong><br><span class="td-dim">Дневные свечи</span></td>
+  <td><span class="b b-yellow">1 раз в день</span></td>
+  <td>Дневные свечи закрываются раз в сутки; пересчёт чаще не имеет смысла</td>
+</tr>
+<tr>
+  <td><strong>ETF flow (BTC/ETH Spot)</strong><br><span class="td-dim">SoSoValue</span></td>
+  <td><span class="b b-yellow">1 раз в день</span></td>
+  <td>Данные публикуются с суточной задержкой; обновление чаще ничего не добавляет</td>
+</tr>
+<tr>
+  <td><strong>USDT.D trend</strong><br><span class="td-dim">DeFiLlama / CoinGlass</span></td>
+  <td><span class="b b-yellow">1 раз в день</span></td>
+  <td>Суточное изменение стейблкоин-доминанса — достаточная гранулярность</td>
+</tr>
+<tr>
+  <td><strong>TVL, revenue, fees (DeFi)</strong><br><span class="td-dim">DeFiLlama</span></td>
+  <td><span class="b b-yellow">1 раз в день</span></td>
+  <td>DeFiLlama обновляет данные ежедневно; чаще — нет смысла</td>
+</tr>
+<tr>
+  <td><strong>URPD / cost basis</strong><br><span class="td-dim">Binance klines → VPVR</span></td>
+  <td><span class="b b-yellow">1 раз в день</span></td>
+  <td>Распределение объёма меняется медленно; ежедневного обновления достаточно</td>
+</tr>
+<tr>
+  <td><strong>Нарратив + катализаторы</strong><br><span class="td-dim">AI + web_search</span></td>
+  <td><span class="b b-blue">каждые 3–4 дня</span></td>
+  <td>Нарративы в крипте разворачиваются за 2–3 дня; 7–14-дневный кэш слишком долго</td>
+</tr>
+<tr>
+  <td><strong>On-chain метрики, холдеры</strong><br><span class="td-dim">Arkham, Ethplorer</span></td>
+  <td><span class="b b-blue">раз в неделю</span></td>
+  <td>Распределение холдеров и on-chain потоки меняются медленно</td>
+</tr>
+<tr>
+  <td><strong>Токеномика / расписание анлоков</strong><br><span class="td-dim">AI + tokenomist.ai</span></td>
+  <td><span class="b b-gray">раз в 2 недели</span></td>
+  <td>Вестинг-расписание известно заранее и меняется редко</td>
+</tr>
+<tr>
+  <td><strong>Команда, конкуренты</strong><br><span class="td-dim">AI + web_search</span></td>
+  <td><span class="b b-gray">раз в месяц</span></td>
+  <td>Ключевые люди и конкурентная позиция меняются очень редко; частые AI-вызовы — пустая трата токенов</td>
+</tr>
+<tr>
+  <td><strong>Регуляторные риски</strong><br><span class="td-dim">AI + news</span></td>
+  <td><span class="b b-gray">раз в месяц</span></td>
+  <td>Регуляторные события редки; мониторинг новостей через incident-скрипт перекрывает срочные случаи</td>
+</tr>
+<tr>
+  <td><strong>Dev activity (GitHub commits)</strong><br><span class="td-dim">GitHub API</span></td>
+  <td><span class="b b-gray">раз в неделю</span></td>
+  <td>30-дневное скользящее окно; еженедельного обновления достаточно</td>
+</tr>
+<tr>
+  <td><strong>Безопасность (хаки, аудиты)</strong><br><span class="td-dim">внутренняя база</span></td>
+  <td><span class="b b-purple">по событию</span></td>
+  <td>Плановый ресcan не нужен — хак или новый аудит = триггер от incident-монитора</td>
+</tr>
+</tbody>
+</table>
+
+<div class="card" style="margin-top:16px">
+  <p><strong>Главный вывод по срокам:</strong> быстрые сигналы (funding, RS, OI) должны обновляться каждые 4–8ч без AI и без кэша. Медленные качественные данные (команда, регуляторика) — раз в месяц, это экономит ~80% AI-токенов по этим критериям. Единый кэш для всего — системная ошибка обеих существующих реализаций.</p>
+</div>
+
+<hr class="sep">
+
 <h2>Итог</h2>
 <div class="card">
   <p style="margin-bottom:10px">Ни одна из систем не оптимальна по отдельности. Система 1 слишком проста и пропускает ключевые quant-сигналы (деривативы, RS, URPD). Система 2 слишком перегружена низковесными критериями (7 критериев с весом ×1) с высокой взаимной корреляцией.</p>
