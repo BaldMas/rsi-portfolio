@@ -112,7 +112,7 @@ tr:hover td { background: #1c2128; }
 <body>
 <h1>RSI Portfolio Rotation Monitor</h1>
 <p class="subtitle timestamp" style="display:flex;justify-content:space-between;align-items:center;">
-  <span>Сгенерировано: 2026-08-01 14:15:34 (MNE)&ensp;<span id="loaded-at" style="color:#8b949e"></span></span>
+  <span>Сгенерировано: 2026-08-01 14:30:25 (MNE)&ensp;<span id="loaded-at" style="color:#8b949e"></span></span>
   <span style="display:flex;gap:14px;align-items:center;">
     <a href="rotation.html" target="_blank" style="color:#8b949e;font-size:0.85em;text-decoration:none;" onmouseover="this.style.color='#58a6ff'" onmouseout="this.style.color='#8b949e'">↗ ротация</a>
     <a href="https://baldmas.github.io/revert/ranges.html" target="_blank" style="color:#8b949e;font-size:0.85em;text-decoration:none;" onmouseover="this.style.color='#58a6ff'" onmouseout="this.style.color='#8b949e'">↗ LP ranges</a>
@@ -270,7 +270,7 @@ tr:hover td { background: #1c2128; }
       </span>
       <span class="pair-arrow">→</span>
       <span class="pair-right">
-        <span class="ticker-line"><span data-tid="18" style="cursor:help">GRT <span style="color:#f85149;font-weight:bold">❗</span></span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.0282</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.0143</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$878</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$444</span>&ensp;<span class="warn" style='font-size:0.82em'>-49.4%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-7.0%</span>&ensp;<span class="ok" style="font-size:0.9em">(+42.5%)</span></span>
+        <span class="ticker-line"><span data-tid="18" style="cursor:help">GRT <span style="color:#f85149;font-weight:bold">❗</span></span>&ensp;<span style='color:#8b949e;font-size:0.84em'>avg $0.0282</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$0.0143</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$878</span>&ensp;<span style='color:#8b949e;font-size:0.82em'>$444</span>&ensp;<span class="warn" style='font-size:0.82em'>-49.4%</span>&ensp;<span style='color:#8b949e;font-size:0.84em'>-&gt;</span>&ensp;<span class="warn" style='font-size:0.82em'>-7.0%</span>&ensp;<span class="ok" style="font-size:0.9em">(+42.4%)</span></span>
         <span class="pair-sub"><span class="coin-tag g3" data-tid="19">G3 ★250→243</span><span class="warn">(-16)</span>&ensp;<span style='color:#8b949e'>#192</span><span class="warn">(↓10)</span>&ensp;<span class="narr-tag" style="background:#8b949e22;color:#8b949e;border:1px solid #8b949e44" data-tid="20">инфра</span><span class="cat-tags" style="font-size:0.7em;color:#6e7681;margin-left:4px">#data #indexing</span></span>
         <span class="pair-sub perf-row"><span class="warn" data-tid="5">1д&nbsp;-0%</span>&ensp;<span class="warn" data-tid="6">7д&nbsp;-12%</span>&ensp;<span class="warn" data-tid="7">30д&nbsp;-21%</span>&ensp;<span class="warn" data-tid="8">1г&nbsp;-84%</span>&ensp;<span class="ath-far" data-tid="9">-99%ATH</span></span>
         <span class="pair-extra"><span class="corr-lo" data-tid="15">бета BTC ~0</span></span>
@@ -606,7 +606,7 @@ if (document.getElementById('rows-data')) {
   const ts = now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())+' '+pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
   const el = document.getElementById('loaded-at');
   if (el) el.textContent = 'Обновлено: ' + ts;
-  const refreshAt = 1785586534828 + 17*60*1000;
+  const refreshAt = 1785587425844 + 17*60*1000;
   const delay = Math.max(30000, refreshAt - Date.now());
   setTimeout(() => location.reload(), delay);
 })();
