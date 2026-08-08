@@ -2,12 +2,13 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 <title>RSI Portfolio Rotation</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='5' fill='%230d1117'/><path d='M7 16 A9 9 0 0 1 25 16' fill='none' stroke='%233fb950' stroke-width='3' stroke-linecap='round'/><polyline points='22,11 25,16 20,17' fill='none' stroke='%233fb950' stroke-width='2.5' stroke-linejoin='round' stroke-linecap='round'/><path d='M25 16 A9 9 0 0 1 7 16' fill='none' stroke='%23f85149' stroke-width='3' stroke-linecap='round'/><polyline points='10,21 7,16 12,15' fill='none' stroke='%23f85149' stroke-width='2.5' stroke-linejoin='round' stroke-linecap='round'/></svg>">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Segoe UI', sans-serif; background: #0d1117; color: #e6edf3; padding: 20px; }
+body { font-family: 'Segoe UI', sans-serif; background: #0d1117; color: #e6edf3; padding: 20px; min-width: 600px; }
+html { overflow-x: auto; }
 h1 { font-size: 1.4em; margin-bottom: 4px; color: #58a6ff; }
 .subtitle { color: #8b949e; font-size: 0.85em; margin-bottom: 16px; }
 .macro { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; display: flex; gap: 32px; flex-wrap: wrap; }
@@ -118,7 +119,7 @@ tr:hover td { background: #1c2128; }
 <body>
 <h1>RSI Portfolio Rotation Monitor</h1>
 <p class="subtitle timestamp" style="display:flex;justify-content:space-between;align-items:center;">
-  <span>Сгенерировано: 2026-08-08 08:45:25 (MNE)&ensp;<span id="loaded-at" style="color:#8b949e"></span></span>
+  <span>Сгенерировано: 2026-08-08 08:46:09 (MNE)&ensp;<span id="loaded-at" style="color:#8b949e"></span></span>
   <span style="display:flex;gap:14px;align-items:center;">
     <a href="rotation.html" target="_blank" style="color:#8b949e;font-size:0.85em;text-decoration:none;" onmouseover="this.style.color='#58a6ff'" onmouseout="this.style.color='#8b949e'">↗ ротация</a>
     <a href="https://baldmas.github.io/revert/ranges.html" target="_blank" style="color:#8b949e;font-size:0.85em;text-decoration:none;" onmouseover="this.style.color='#58a6ff'" onmouseout="this.style.color='#8b949e'">↗ LP ranges</a>
@@ -665,7 +666,7 @@ if (document.getElementById('rows-data')) {
   const ts = now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())+' '+pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
   const el = document.getElementById('loaded-at');
   if (el) el.textContent = 'Обновлено: ' + ts;
-  const refreshAt = 1786171525703 + 17*60*1000;
+  const refreshAt = 1786171569488 + 17*60*1000;
   const delay = Math.max(30000, refreshAt - Date.now());
   setTimeout(() => location.reload(), delay);
 })();
