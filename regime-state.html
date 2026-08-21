@@ -1,0 +1,163 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>REGIME State</title>
+<style>
+body {
+  font-family: -apple-system, BlinkMacSystemFont, monospace;
+  background: #0d1117;
+  color: #c9d1d9;
+  padding: 20px;
+}
+h1 { color: #58a6ff; margin-bottom: 10px; }
+.subtitle { color: #8b949e; font-size: 0.9em; margin-bottom: 20px; }
+
+.regime-box {
+  background: #161b22;
+  border: 2px solid '#3fb950';
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.regime-state {
+  font-size: 2.5em;
+  font-weight: 700;
+  color: '#3fb950';
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+.regime-score {
+  font-size: 1.2em;
+  color: #c9d1d9;
+  margin-bottom: 15px;
+}
+.regime-recommendation {
+  font-size: 1.1em;
+  color: '#3fb950';
+  font-weight: 600;
+  padding-top: 15px;
+  border-top: 1px solid #30363d;
+}
+
+.components {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+.component-box {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 15px;
+}
+.component-title {
+  font-size: 0.9em;
+  color: #8b949e;
+  margin-bottom: 8px;
+}
+.component-score {
+  font-size: 2em;
+  font-weight: 700;
+  color: #58a6ff;
+}
+.component-desc {
+  font-size: 0.85em;
+  color: #8b949e;
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+.explanation {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 20px;
+  font-size: 0.9em;
+  line-height: 1.6;
+  color: #c9d1d9;
+}
+.explanation b { color: #58a6ff; }
+
+.history-title {
+  color: #58a6ff;
+  font-size: 1.1em;
+  font-weight: 600;
+  margin-top: 25px;
+  margin-bottom: 15px;
+}
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9em;
+}
+.history-table th, .history-table td {
+  padding: 8px 12px;
+  text-align: center;
+  border-bottom: 1px solid #21262d;
+}
+.history-table th {
+  background: #161b22;
+  color: #8b949e;
+}
+.state-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.85em;
+}
+.state-on { background: #1a3a1a; color: #3fb950; border: 1px solid #3fb950; }
+.state-neutral { background: #4a4a1a; color: #d29922; border: 1px solid #d29922; }
+.state-off { background: #4a1a1a; color: #f85149; border: 1px solid #f85149; }
+</style></head><body>
+<h1>⚖️ REGIME Слой (Макро + Стейблы)</h1>
+<p class="subtitle">Дата: 2026-08-21</p>
+
+<div class="explanation">
+  <b>REGIME</b> — портфельный уровень риска на основе глобальных индикаторов.
+  <b>#12 Макро:</b> BTC доминирование, VIX, Fed политика, ликвидность.
+  <b>#21 Стейблы:</b> поток стейблкоинов, M2 рост.
+  Влияет на сайзинг позиций, не на ранг отдельных тикеров.
+</div>
+
+<div class="regime-box">
+  <div class="regime-state">RISK-ON</div>
+  <div class="regime-score">Средний балл: 4.0/5.0</div>
+  <div class="regime-recommendation">Risk-On: Рынок растёт, инвестируйте максимально</div>
+</div>
+<div class="components">
+<div class="component-box">
+  <div class="component-title">#12 Макро</div>
+  <div class="component-score">3</div>
+  <div class="component-desc">
+    🌍 Глобальные факторы: ликвидность, процентные ставки, доминирование BTC
+  </div>
+</div>
+<div class="component-box">
+  <div class="component-title">#21 Стейблы</div>
+  <div class="component-score">5</div>
+  <div class="component-desc">
+    💰 Потоки стейблкоинов: приток = риск-он, отток = риск-офф
+  </div>
+</div>
+</div>
+<div class="history-title">История REGIME (последние 30 дней)</div>
+<table class="history-table">
+<thead>
+<tr><th>Дата</th><th>Состояние</th><th>Балл</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-08-21</td>
+<td><span class="state-badge state-on">↑ Risk-On</span></td>
+<td>4.0</td>
+</tr>
+</tbody></table>
+
+<div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #30363d; color: #8b949e; font-size: 0.85em">
+  <b>📌 Как использовать:</b><br>
+  • <b>Risk-On (≥4):</b> Максимальный сайзинг, включите все позиции, aggr-ротация OK<br>
+  • <b>Neutral (2-3):</b> Стандартный сайзинг, выборочная ротация<br>
+  • <b>Risk-Off (≤2):</b> Минимальный сайзинг, только G1-G2, готовьтесь к drawdown<br>
+</div>
+</body></html>
