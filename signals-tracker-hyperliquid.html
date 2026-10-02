@@ -1,4 +1,9 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Трекер сигналов</title>
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Трекер сигналов</title>
 <style>
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f5f6f8;--cd:#fff;--tx:#14181f;--mu:#6b7280;--bd:#e3e6eb;--ac:#2f6df6;--g:#16a34a;--r:#dc2626;--y:#d97706}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1218;--cd:#181c24;--tx:#e8ebf0;--mu:#8b93a1;--bd:#2a303b;--ac:#5b8cff;--g:#34d399;--r:#f87171;--y:#fbbf24}}
@@ -10,6 +15,7 @@ h1{font-size:20px;margin:0}.mu{color:var(--mu)}
 .bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0}.bar .sp{flex:1}
 button,select,input,textarea{font:inherit;color:var(--tx);background:var(--cd);border:1px solid var(--bd);border-radius:8px;padding:6px 10px}
 button{cursor:pointer}button.p{background:var(--ac);border-color:var(--ac);color:#fff}button.d{color:var(--r)}
+button:disabled{opacity:0.6;cursor:not-allowed}
 .g{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:12px}
 .c{background:var(--cd);border:1px solid var(--bd);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px}
 .h{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.t{font-size:17px;font-weight:700}
@@ -26,11 +32,15 @@ dialog::backdrop{background:#0008}dialog{max-height:90vh;overflow:auto}
 .f input,.f select,.f textarea{width:100%}
 </style></head><body><div class="w">
 <h1>Трекер сигналов</h1><div class="mu" id="cnt"></div>
-<div class="bar"><select id="fm" onchange="render()"><option value="">Все рынки</option><option value="crypto">Крипта</option><option value="tradfi">TradFi</option></select>
+<div class="bar">
+<select id="fm" onchange="render()"><option value="">Все рынки</option><option value="crypto">Крипта</option><option value="tradfi">TradFi</option></select>
 <select id="fs" onchange="render()"><option value="">Все статусы</option><option value="idea">Идея</option><option value="open">В позиции</option><option value="closed">Закрыта</option><option value="cancel">Отменена</option></select>
-<span class="sp"></span><button onclick="io()">Экспорт / импорт</button><button class="p" onclick="edit(null)">+ Сигнал</button></div>
+<button id="btnFetch" onclick="fetchPrices()">🔄 Обновить цены</button>
+<span id="fetchStatus" class="mu" style="font-size:12px"></span>
+<span class="sp"></span><button onclick="io()">Экспорт / импорт</button><button class="p" onclick="edit(null)">+ Сигнал</button>
+</div>
 <div class="g" id="list"></div>
-<p class="mu" style="font-size:12px">Данные хранятся в этом браузере. Живых котировок на странице нет: график строится по вашим уровням и ручному журналу цен; для рыночного графика откройте ссылку TradingView.</p></div>
+<p class="mu" style="font-size:12px">Данные хранятся в браузере. Онлайн-котировки загружаются через Hyperliquid, Binance и Yahoo Finance.</p></div>
 <dialog id="dlg"><div class="f" id="fm2"></div><div class="bar"><button onclick="dlg.close()">Отмена</button><span class="sp"></span><button class="p" onclick="saveE()">Сохранить</button></div></dialog>
 <dialog id="io"><textarea id="ta" rows="10" style="width:100%"></textarea><div class="bar"><button onclick="io2.close()">Закрыть</button><span class="sp"></span><button class="p" onclick="imp()">Импортировать JSON</button></div><div class="mu" id="im"></div></dialog>
 <script>
@@ -42,9 +52,10 @@ const seed=[
 {ticker:'SNDK',market:'tradfi',kind:'Скальп-лонг · высокий риск',entry1:1326},
 {ticker:'SNDK',market:'tradfi',kind:'Скальп-лонг',entry1:1087,entry2:1012,note:'Зона входа 1087–1012'},
 {ticker:'MU',market:'tradfi',kind:'Агрессивный лонг',entry1:773},
-{ticker:'ZHIPU',market:'tradfi',kind:'Лонг',entry1:81.8,entry2:68.7,note:'81.8 отмечено ✅, второй уровень 68.7 (так прочитано на скриншоте — проверьте)'},
-{ticker:'SKHYNIX',market:'tradfi',kind:'Лонг',entry1:1060,entry2:1107,note:'Лимитки не ставятся, действовать вручную по ситуации'}
+{ticker:'ZHIPU',market:'tradfi',kind:'Лонг',entry1:81.8,entry2:68.7,note:'81.8 отмечено ✅'},
+{ticker:'SKHYNIX',market:'tradfi',kind:'Лонг',entry1:1060,entry2:1107,note:'Лимитки не ставятся'}
 ].map((x,i)=>({status:'idea',stop:null,tp1:null,tp2:null,cur:null,tv:'',log:[],...x,id:Date.now()+i}));
+
 function norm(p){if(p.entry1!=null&&p.entry2!=null){const l=!/шорт|short/i.test(p.kind||''),h=Math.max(p.entry1,p.entry2),w=Math.min(p.entry1,p.entry2);p.entry1=l?h:w;p.entry2=l?w:h}}
 let S=load(),eid=null;S.forEach(norm);
 function load(){try{const v=localStorage.getItem(K);if(v)return JSON.parse(v)}catch(e){}return seed}
@@ -53,6 +64,7 @@ const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&g
 const num=v=>{if(v==null||v==='')return null;const n=parseFloat(String(v).replace(',','.'));return isNaN(n)?null:n};
 const fmt=n=>n==null?'—':(+n).toLocaleString('ru',{maximumFractionDigits:4,useGrouping:false});
 const pc=n=>n==null?'—':`<span class="${n>=0?'pos':'neg'}">${n>=0?'+':''}${n.toFixed(2)}%</span>`;
+
 function chart(p){
  const L=[],a=(v,c,t)=>{if(v!=null)L.push({v,c,t})};
  a(p.tp2,'var(--g)','TP2');a(p.tp1,'var(--g)','TP1');a(p.entry1,'var(--ac)','вход1');a(p.entry2,'var(--ac)','вход2');a(p.cur,'var(--y)','Цена');a(p.stop,'var(--r)','Стоп');
@@ -68,6 +80,7 @@ function chart(p){
  else if(g.length==1)s+=`<circle cx="${pl+3}" cy="${y(g[0])}" r="3" fill="var(--tx)"/>`;
  return s+'</svg>';
 }
+
 function card(p){
  const e=p.entry1,d=p.cur!=null&&e?(p.cur-e)/e*100:null;
  const rr=p.stop!=null&&p.tp1!=null&&e&&e>p.stop?(p.tp1-e)/(e-p.stop):null;
@@ -80,14 +93,17 @@ ${p.note?`<div class="n">${esc(p.note)}</div>`:''}
 <div class="r"><input type="text" inputmode="decimal" placeholder="Новая цена" onkeydown="if(event.key=='Enter')price(${p.id},this.value)"><button onclick="price(${p.id},this.previousElementSibling.value)">Записать</button></div>
 <div class="r"><button onclick="edit(${p.id})">Изменить</button><button onclick="vw(${p.id})">${p.view=='c'?'Уровни':'Свечи 4H'}</button><a href="${tv}" target="_blank" rel="noopener"><button>TradingView ↗</button></a><span style="flex:1"></span><button class="d" onclick="del(${p.id},this)">Удалить</button></div></div>`;
 }
+
 function render(){
- const m=$('fm').value,s=$('fs').value,a=S.filter(p=>(!m||p.market==m)&&(!s||p.status==s));
- $('list').innerHTML=a.map(card).join('')||'<p class="mu">Нет позиций</p>';
+ const m=$('fm').value,s=$('fs').value,a=S.filter(p=>(!m\vert{}\vert{}p.market==m)&&(!s\vert{}\vert{}p.status==s));$('list').innerHTML=a.map(card).join('')||'<p class="mu">Нет позиций</p>';
  $('cnt').textContent=`Всего ${S.length} · в позиции ${S.filter(p=>p.status=='open').length}`;
 }
+
 function price(id,v){const n=num(v),p=S.find(x=>x.id==id);if(n==null||!p)return;p.cur=n;(p.log=p.log||[]).push(n);save();render()}
 function del(id,b){if(b.dataset.s){S=S.filter(x=>x.id!=id);save();render();return}b.dataset.s=1;b.textContent='Точно удалить?';setTimeout(()=>{b.dataset.s='';b.textContent='Удалить'},3000)}
-const F=[['ticker','Тикер','text'],['market','Рынок','sel:crypto=Крипта,tradfi=TradFi'],['kind','Тип сигнала','text w2'],['entry1','вход1 (лонг — верхний, шорт — нижний)','num'],['entry2','вход2 (лонг — нижний, шорт — верхний)','num'],['stop','Стоп','num'],['tp1','Тейк 1','num'],['tp2','Тейк 2','num'],['cur','Текущая цена','num'],['status','Статус','sel:idea=Идея,open=В позиции,closed=Закрыта,cancel=Отменена'],['tv','Символ TradingView (напр. BYBIT:LITUSDT)','text w2'],['log','Журнал цен (через запятую)','text w2'],['candles','Свечи 4H: время,open,high,low,close — по строке на свечу (время можно опустить)','area w2'],['note','Заметка','area w2']];
+
+const F=[['ticker','Тикер','text'],['market','Рынок','sel:crypto=Крипта,tradfi=TradFi'],['kind','Тип сигнала','text w2'],['entry1','вход1 (лонг — верхний, шорт — нижний)','num'],['entry2','вход2 (лонг — нижний, шорт — верхний)','num'],['stop','Стоп','num'],['tp1','Тейк 1','num'],['tp2','Тейк 2','num'],['cur','Текущая цена','num'],['status','Статус','sel:idea=Идея,open=В позиции,closed=Закрыта,cancel=Отменена'],['tv','Символ TradingView (напр. BYBIT:LITUSDT)','text w2'],['log','Журнал цен (через запятую)','text w2'],['candles','Свечи 4H: время,open,high,low,close — по строке на свечу','area w2'],['note','Заметка','area w2']];
+
 function edit(id){
  eid=id;const p=id?S.find(x=>x.id==id):{market:'tradfi',status:'idea',log:[]};
  $('fm2').innerHTML=F.map(([k,l,t])=>{const w=t.includes('w2')?' class="w2"':'',v=k=='log'?(p.log||[]).join(', '):k=='candles'?(p.candles||[]).map(c=>c.join(',')).join('\n'):(p[k]??'');
@@ -96,6 +112,7 @@ function edit(id){
   return `<label${w}>${l}${c}</label>`}).join('');
  dlg.showModal();
 }
+
 function saveE(){
  const g=k=>$('e_'+k).value,o={};
  F.forEach(([k,,t])=>{o[k]=t.startsWith('num')?num(g(k)):g(k).trim()});
@@ -104,11 +121,71 @@ function saveE(){
  const t=eid?Object.assign(S.find(x=>x.id==eid),o):(S.unshift({id:Date.now(),...o}),S[0]);norm(t);
  save();dlg.close();render();
 }
+
 const kc=k=>/шорт|short/i.test(k)?'var(--r)':/лонг|long/i.test(k)?'var(--g)':'var(--mu)';
 const cap=p=>{const c=p.candles||[],l=c[c.length-1];return l?`<div class="n">4H · ${Math.min(c.length,60)} свечей${l[0]?', последняя '+esc(l[0]):''}</div>`:'<div class="n">Свечей нет — вставьте их в «Изменить»</div>'};
 const vw=id=>{const p=S.find(x=>x.id==id);p.view=p.view=='c'?'':'c';save();render()};
 const cnd=t=>t.split('\n').map(l=>l.split(/[,;\t]/).map(s=>s.trim())).map(a=>{const n=a.slice(-4).map(num);return a.length<4||n.includes(null)?null:[a.length>4?a[0]:'',...n]}).filter(Boolean).slice(-200);
+
 function io(){$('ta').value=JSON.stringify(S,null,1);$('im').textContent='';io2.showModal()}
 function imp(){try{const v=JSON.parse($('ta').value);if(!Array.isArray(v))throw 0;S=v;S.forEach(norm);save();render();io2.close()}catch(e){$('im').textContent='Не удалось разобрать JSON'}}
+
+async function fetchPrices(){
+ const btn=$('btnFetch'),st=$('fetchStatus');
+ if(btn)btn.disabled=true;
+ if(st)st.textContent='Загрузка...';
+ let updatedCount=0;
+
+ let hlMids={};
+ try{
+  const res=await fetch('https://api.hyperliquid.xyz/info',{
+   method:'POST',
+   headers:{'Content-Type':'application/json'},
+   body:JSON.stringify({type:'allMids'})
+  });
+  if(res.ok)hlMids=await res.json();
+ }catch(e){}
+
+ let binancePrices={};
+ try{
+  const res=await fetch('https://api.binance.com/api/v3/ticker/price');
+  if(res.ok){
+   const data=await res.json();
+   data.forEach(x=>{binancePrices[x.symbol]=parseFloat(x.price)});
+  }
+ }catch(e){}
+
+ for(let p of S){
+  let newPrice=null,sym=p.ticker.toUpperCase();
+  if(p.market==='crypto'){
+   if(hlMids[sym]) newPrice=parseFloat(hlMids[sym]);
+   else if(binancePrices[sym+'USDT']) newPrice=binancePrices[sym+'USDT'];
+   else if(binancePrices[sym]) newPrice=binancePrices[sym];
+  }else if(p.market==='tradfi'){
+   try{
+    const url=`https://corsproxy.io/?${encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${sym}?interval=1m&range=1d`)}`;
+    const res=await fetch(url);
+    if(res.ok){
+     const data=await res.json();
+     const meta=data?.chart?.result?.[0]?.meta;
+     if(meta&&meta.regularMarketPrice) newPrice=meta.regularMarketPrice;
+    }
+   }catch(e){}
+  }
+
+  if(newPrice!==null&&!isNaN(newPrice)){
+   p.cur=newPrice;
+   if(!p.log)p.log=[];
+   if(p.log[p.log.length-1]!==newPrice) p.log.push(newPrice);
+   updatedCount++;
+  }
+ }
+
+ save();render();
+ if(btn)btn.disabled=false;
+ if(st)st.textContent=`Обновлено в ${new Date().toLocaleTimeString('ru-RU')} (${updatedCount} шт.)`;
+}
+
 render();
+fetchPrices();
 </script></body></html>
