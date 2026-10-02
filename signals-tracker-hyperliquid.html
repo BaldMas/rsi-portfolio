@@ -33,6 +33,7 @@ button.d { color: var(--r); }
 .h { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .t { font-size: 17px; font-weight: 700; }
 .b { font-size: 11px; padding: 2px 7px; border-radius: 99px; border: 1px solid var(--bd); color: var(--mu); }
+.b-lev { color: var(--y); border-color: var(--y); background: rgba(251, 191, 36, 0.1); font-weight: 600; }
 .s-open { color: var(--g); border-color: var(--g); }
 .s-closed, .s-cancel { opacity: .6; }
 svg { width: 100%; height: auto; background: var(--bg); border-radius: 8px; }
@@ -52,12 +53,13 @@ dialog::backdrop { background: #0008; }
 .btn-sm { font-size: 11px; padding: 2px 8px; border-radius: 6px; }
 
 /* Секция кошелька */
-.wallet-box { background: var(--cd); border: 1px solid var(--bd); border-radius: 12px; padding: 14px; margin-bottom: 20px; }
+.wallet-box { background: var(--cd); border: 1px solid var(--bd); border-radius: 12px; padding: 14px; margin-bottom: 20px; overflow-x: auto; }
 .wallet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
 .wallet-addr { font-family: monospace; font-size: 12px; background: var(--bg); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--bd); }
-.pos-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
-.pos-table th, .pos-table td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--bd); }
+.pos-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; min-width: 700px; }
+.pos-table th, .pos-table td { text-align: left; padding: 8px; border-bottom: 1px solid var(--bd); }
 .pos-table th { color: var(--mu); font-weight: normal; font-size: 12px; }
+.pos-table tfoot td { font-weight: bold; border-top: 1px dashed var(--bd); border-bottom: none; }
 </style>
 </head>
 <body>
@@ -91,7 +93,7 @@ dialog::backdrop { background: #0008; }
 <dialog id="io"><textarea id="ta" rows="10" style="width:100%"></textarea><div class="bar"><button onclick="io2.close()">Закрыть</button><span class="sp"></span><button class="p" onclick="imp()">Импортировать JSON</button></div><div class="mu" id="im"></div></dialog>
 
 <script>
-const DB_KEY = 'sigtrack_v15';
+const DB_KEY = 'sigtrack_v17';
 const WALLET_ADDRESS = '0xD34d5dd388560515575692Dcb6033571513A3237';
 const ST = {idea:'Идея', open:'В позиции', closed:'Закрыта', cancel:'Отменена'};
 
@@ -152,6 +154,7 @@ const io2 = $('io');
 let eid = null;
 
 const fmt = n => (n == null || isNaN(n)) ? '—' : Number(n).toLocaleString('ru', {maximumFractionDigits:4, useGrouping:false});
+const fmtUsd = n => (n == null || isNaN(n)) ? '$0.00' : '$' + Number(n).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
 const pc = (n, prefix="") => (n == null || isNaN(n)) ? '—' : `<span class="${n >= 0 ? 'pos' : 'neg'}">${prefix}${n >= 0 ? '+' : ''}${n.toFixed(2)}%</span>`;
 
 function checkHit(entry, candles, createdAt) {
@@ -179,24 +182,29 @@ async function postApi(body) {
   }
 }
 
+// Форматирование маржи и плеча
+function formatLeverage(levObj) {
+  if (!levObj) return '';
+  const typeStr = levObj.type === 'isolated' ? 'ISOL' : 'CROSS';
+  const valStr = levObj.value ? `${levObj.value}x` : '';
+  return `${typeStr} ${valStr}`.trim();
+}
+
 // Загрузка позиций
 async function fetchWalletPositions() {
   const container = $('wallet-positions');
   container.innerHTML = '<div class="mu">Загрузка данных кошелька...</div>';
   
   try {
-    // 1. Загружаем метаданные L1 и trade.xyz
     const [mainMeta, xyzMeta, spotState] = await Promise.all([
       postApi({ type: 'meta' }),
       postApi({ type: 'meta', dex: 'xyz' }),
       postApi({ type: 'spotClearinghouseState', user: WALLET_ADDRESS })
     ]);
 
-    // Карта наименований по индексам
     const mainCoins = mainMeta?.universe ? mainMeta.universe.map(u => u.name) : [];
     const xyzCoins = xyzMeta?.universe ? xyzMeta.universe.map(u => u.name) : [];
 
-    // 2. Запрос позиций: Пробуем запросить ALL_DEXES, L1 и xyz напрямую
     const [allDexState, l1State, xyzState] = await Promise.all([
       postApi({ type: 'clearinghouseState', user: WALLET_ADDRESS, dex: 'ALL_DEXES' }),
       postApi({ type: 'clearinghouseState', user: WALLET_ADDRESS }),
@@ -215,7 +223,6 @@ async function fetchWalletPositions() {
         if (szi !== 0) {
           let coinName = pos.coin;
           
-          // Если номер индекса
           if (typeof coinName === 'number' || !isNaN(coinName)) {
             const idx = parseInt(coinName);
             coinName = metaUniverse[idx] || (dexName ? `${dexName}:Asset#${idx}` : `Asset#${idx}`);
@@ -225,19 +232,24 @@ async function fetchWalletPositions() {
             coinName = `${dexName}:${coinName}`;
           }
 
+          const entryPx = parseFloat(pos.entryPx || 0);
+          const positionValue = parseFloat(pos.positionValue || (Math.abs(szi) * entryPx));
+          const levText = formatLeverage(pos.leverage);
+
           activePositions.push({
             type: dexName ? `HIP-3 (${dexName})` : 'PERP',
             coin: coinName,
             szi: szi,
-            entryPx: parseFloat(pos.entryPx || 0),
+            entryPx: entryPx,
+            positionValue: positionValue,
             unrealizedPnl: parseFloat(pos.unrealizedPnl || 0),
-            returnOnEquity: parseFloat(pos.returnOnEquity || 0) * 100
+            returnOnEquity: parseFloat(pos.returnOnEquity || 0) * 100,
+            leverage: levText
           });
         }
       });
     }
 
-    // Парсим с разных источников
     if (allDexState) {
       if (Array.isArray(allDexState)) {
         allDexState.forEach(dexSt => {
@@ -249,29 +261,31 @@ async function fetchWalletPositions() {
         parseAssetPositions(allDexState.assetPositions, '', mainCoins);
       }
     } else {
-      // Резервный разбор по отдельности
       if (l1State?.assetPositions) parseAssetPositions(l1State.assetPositions, '', mainCoins);
       if (xyzState?.assetPositions) parseAssetPositions(xyzState.assetPositions, 'xyz', xyzCoins);
     }
 
-    // Обработка Спота
+    // Спот
     if (spotState?.balances) {
       spotState.balances.forEach(b => {
         const total = parseFloat(b.total);
         if (total > 0 && b.coin !== 'USDC') {
+          const entryPx = parseFloat(b.entryPx || 0);
           activePositions.push({
             type: 'SPOT',
             coin: b.coin,
             szi: total,
-            entryPx: parseFloat(b.entryPx || 0),
+            entryPx: entryPx,
+            positionValue: total * entryPx,
             unrealizedPnl: parseFloat(b.unrealizedPnl || 0),
-            returnOnEquity: 0
+            returnOnEquity: 0,
+            leverage: ''
           });
         }
       });
     }
 
-    // Удаляем дубликаты позиций (если подтянулись из нескольких методов)
+    // Удаляем дубликаты
     const uniquePositions = [];
     const seenCoins = new Set();
     activePositions.forEach(p => {
@@ -283,21 +297,25 @@ async function fetchWalletPositions() {
     });
 
     if (uniquePositions.length === 0) {
-      container.innerHTML = '<div class="mu">Активных позиций не найдено (баланс 0 или открытые ордера отсутствуют)</div>';
+      container.innerHTML = '<div class="mu">Активных позиций не найдено</div>';
       render();
       return;
     }
+
+    let totalPosValue = 0;
+    let totalUnrealizedPnl = 0;
 
     let html = `
       <table class="pos-table">
         <thead>
           <tr>
             <th>Рынок</th>
-            <th>Актив</th>
+            <th>Актив / Маржа</th>
             <th>Размер</th>
             <th>Ср. вход</th>
+            <th>Стоимость (Value)</th>
             <th>Unrealized PnL</th>
-            <th>Ссылка</th>
+            <th>Действие</th>
           </tr>
         </thead>
         <tbody>
@@ -315,9 +333,14 @@ async function fetchWalletPositions() {
         walletPositionsMap['CL'] = pos;
       }
 
+      totalPosValue += pos.positionValue;
+      totalUnrealizedPnl += pos.unrealizedPnl;
+
       const side = pos.type === 'SPOT' 
         ? '<span class="pos">SPOT</span>' 
         : (pos.szi > 0 ? '<span class="pos">LONG</span>' : '<span class="neg">SHORT</span>');
+
+      const levBadge = pos.leverage ? `<span class="b b-lev">${pos.leverage}</span>` : '';
 
       const pnlStr = pos.type === 'SPOT' 
         ? 'Spot' 
@@ -328,16 +351,28 @@ async function fetchWalletPositions() {
       html += `
         <tr>
           <td><span class="b">${pos.type}</span></td>
-          <td><b>${pos.coin}</b> ${side}</td>
+          <td><b>${pos.coin}</b> ${side} ${levBadge}</td>
           <td>${Math.abs(pos.szi)}</td>
           <td>${fmt(pos.entryPx)}</td>
+          <td><b>${fmtUsd(pos.positionValue)}</b></td>
           <td>${pnlStr}</td>
           <td><a href="${tradeUrl}" target="_blank" style="color:var(--ac); text-decoration:none">Торговать ↗</a></td>
         </tr>
       `;
     });
 
-    html += '</tbody></table>';
+    html += `
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="4">Всего по открытым позициям:</td>
+            <td>${fmtUsd(totalPosValue)}</td>
+            <td colspan="2">${totalUnrealizedPnl >= 0 ? '+' : ''}$${totalUnrealizedPnl.toFixed(2)}</td>
+          </tr>
+        </tfoot>
+      </table>
+    `;
+
     container.innerHTML = html;
     render();
 
@@ -420,6 +455,8 @@ function card(p) {
     distHtml = pc(diff);
   }
 
+  const levBadge = (activePos && activePos.leverage) ? `<span class="b b-lev">${activePos.leverage}</span>` : '';
+
   const rr = (p.stop != null && p.tp1 != null && p.entry1 && p.entry1 > p.stop) ? ((p.tp1 - p.entry1) / (p.entry1 - p.stop)) : null;
   const tv = `https://app.hyperliquid.xyz/trade/${encodeURIComponent(hlSymbol)}`;
 
@@ -430,6 +467,7 @@ function card(p) {
   <div class="c">
     <div class="h">
       <span class="t">${p.ticker || ''}</span>
+      ${levBadge}
       <span class="b">${p.market === 'crypto' ? 'Crypto' : 'HIP-3'}</span>
       <span class="b s-${p.status}">${ST[p.status] || p.status}</span>
     </div>
