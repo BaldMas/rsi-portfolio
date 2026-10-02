@@ -216,7 +216,7 @@
                         <th>Баланс</th>
                         <th>Цена покупки</th>
                         <th>Текущая цена</th>
-                        <th>PNL</th>
+                        <th>PNL ($ / %)</th>
                         <th style="color:var(--y)">Продать (монет)</th>
                         <th style="color:var(--y)">Продать (%)</th>
                         <th style="color:var(--g)">Оставить (бесплатно)</th>
@@ -278,6 +278,8 @@
                 const buyPriceFormatted = buyPrice < 1 ? `$${buyPrice.toFixed(4)}` : fmtUSD(buyPrice);
                 const curPriceFormatted = curPrice < 1 ? `$${curPrice.toFixed(4)}` : fmtUSD(curPrice);
 
+                const pnlUsdFormatted = pnlUsd >= 0 ? `+${fmtUSD(pnlUsd)}` : `-${fmtUSD(Math.abs(pnlUsd))}`;
+
                 // 1. Строка таблицы
                 const tr = document.createElement('tr');
                 if (isHigh) tr.className = 'high-profit-row';
@@ -291,7 +293,7 @@
                     <td style="font-weight:600">${fmtNum(item.holdings, coinDecimals)} ${item.symbol}</td>
                     <td style="color:var(--mu)">${buyPriceFormatted}</td>
                     <td style="font-weight:600">${curPriceFormatted}</td>
-                    <td class="${pnlPct >= 0 ? 'pos' : ''}">${pnlPct >= 0 ? '+' : ''}${pnlPct.toFixed(2)}%</td>
+                    <td class="${pnlPct >= 0 ? 'pos' : ''}">${pnlUsdFormatted} (${pnlPct >= 0 ? '+' : ''}${pnlPct.toFixed(2)}%)</td>
                     <td class="amber">${fmtNum(sellCoins, coinDecimals)} ${item.symbol}</td>
                     <td class="amber">${sellPct.toFixed(2)}%</td>
                     <td class="pos">${fmtNum(keepCoins, coinDecimals)} ${item.symbol}</td>
@@ -305,7 +307,7 @@
                 card.innerHTML = `
                     <div class="card-header">
                         <div class="card-title">${item.symbol} <span class="mu" style="font-size:11px;font-weight:normal">(${item.name})</span></div>
-                        <span class="pos">${pnlPct >= 0 ? '+' : ''}${pnlPct.toFixed(2)}%</span>
+                        <span class="pos">${pnlUsdFormatted} (${pnlPct >= 0 ? '+' : ''}${pnlPct.toFixed(2)}%)</span>
                     </div>
                     <div class="k-grid">
                         <div><span>Цена покупки</span><b>${buyPriceFormatted}</b></div>
