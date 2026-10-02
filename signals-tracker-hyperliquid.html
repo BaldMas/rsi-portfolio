@@ -68,42 +68,44 @@ dialog::backdrop { background: #0008; }
   <!-- Блок кошелька Hyperliquid -->
   <div class="wallet-box">
     <div class="wallet-header">
-      <h2>Открытые позиции на Hyperliquid (Perps / Spot / HIP-3)</h2>
+      <h2>Открытые позиции на Hyperliquid (Perps / Spot / HIP-3 DEX)</h2>
       <div class="wallet-addr" id="wallet-display">0xD34d...3237</div>
     </div>
-    <div id="wallet-positions"><div class="mu">Загрузка всех позиций...</div></div>
+    <div id="wallet-positions"><div class="mu">Подключение к Hyperliquid API...</div></div>
   </div>
 
   <div class="bar">
     <select id="fm" onchange="render()"><option value="">Все рынки</option><option value="crypto">Крипта</option><option value="tradfi">TradFi / HIP-3</option></select>
     <select id="fs" onchange="render()"><option value="">Все статусы</option><option value="idea">Идея</option><option value="open">В позиции</option><option value="closed">Закрыта</option><option value="cancel">Отменена</option></select>
-    <button onclick="refreshAll()">↻ Загрузить все свечи и позиции</button>
+    <button onclick="refreshAll()">↻ Загрузить свечи и позиции</button>
     <span class="sp"></span>
     <button onclick="resetData()">Сбросить всё</button>
     <button onclick="io()">Экспорт / импорт</button>
     <button class="p" onclick="edit(null)">+ Сигнал</button>
   </div>
   <div class="g" id="list"></div>
-  <p class="mu" style="font-size:12px">Крипта, нефть и HIP-3 загружаются напрямую из Hyperliquid API.</p>
+  <p class="mu" style="font-size:12px">Крипта, нефть (CL/WTIOIL), ZHIPU и все HIP-3 подтягиваются напрямую из API Hyperliquid.</p>
 </div>
 
 <dialog id="dlg"><div class="f" id="fm2"></div><div class="bar"><button onclick="dlg.close()">Отмена</button><span class="sp"></span><button class="p" onclick="saveE()">Сохранить</button></div></dialog>
 <dialog id="io"><textarea id="ta" rows="10" style="width:100%"></textarea><div class="bar"><button onclick="io2.close()">Закрыть</button><span class="sp"></span><button class="p" onclick="imp()">Импортировать JSON</button></div><div class="mu" id="im"></div></dialog>
 
 <script>
-const DB_KEY = 'sigtrack_v11';
+const DB_KEY = 'sigtrack_v15';
 const WALLET_ADDRESS = '0xD34d5dd388560515575692Dcb6033571513A3237';
 const ST = {idea:'Идея', open:'В позиции', closed:'Закрыта', cancel:'Отменена'};
 
+// Маппинг тикеров
 const TICKER_MAP = {
-  'OIL': 'xyz:OIL',
+  'OIL': 'xyz:CL',
+  'WTIOIL': 'xyz:CL',
   'CL': 'xyz:CL',
+  'ZHIPU': 'xyz:ZHIPU',
   'SKHYNIX': 'xyz:SKHX',
   'SKHX': 'xyz:SKHX',
   'MU': 'xyz:MU',
   'NBIS': 'xyz:NBIS',
-  'SNDK': 'xyz:SNDK',
-  'ZHIPU': 'xyz:ZHIPU'
+  'SNDK': 'xyz:SNDK'
 };
 
 const seed = [
@@ -113,7 +115,7 @@ const seed = [
   {id: 4, ticker:'SNDK', market:'tradfi', kind:'Скальп-лонг', entry1:1087, entry2:1012, status:'idea', note:'Зона входа 1087–1012', view:'c', createdAt: Date.now() - 86400000 * 2},
   {id: 5, ticker:'MU', market:'tradfi', kind:'Агрессивный лонг', entry1:773, status:'idea', view:'c', createdAt: Date.now() - 86400000 * 2},
   {id: 6, ticker:'ZHIPU', market:'tradfi', kind:'Лонг', entry1:81.8, entry2:68.7, status:'idea', note:'81.8 отмечено ✅, второй уровень 68.7', view:'c', createdAt: Date.now() - 86400000 * 2},
-  {id: 7, ticker:'SKHYNIX', market:'tradfi', kind:'Лонг', entry1:1060, entry2:1107, status:'idea', note:'Лимитки не ставятся, действовать вручную', view:'c', createdAt: Date.now() - 86400000 * 2}
+  {id: 7, ticker:'WTIOIL', market:'tradfi', kind:'Лонг Нефть', entry1:70.5, status:'idea', view:'c', createdAt: Date.now() - 86400000 * 2}
 ];
 
 let S = [];
@@ -162,61 +164,99 @@ function checkHit(entry, candles, createdAt) {
   });
 }
 
-// Загрузка всех метаданных активов + фьючерсов и спота
+// Запрос к Hyperliquid API
+async function postApi(body) {
+  try {
+    const r = await fetch('https://api.hyperliquid.xyz/info', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (!r.ok) return null;
+    return await r.json();
+  } catch (e) {
+    return null;
+  }
+}
+
+// Загрузка позиций
 async function fetchWalletPositions() {
   const container = $('wallet-positions');
+  container.innerHTML = '<div class="mu">Загрузка данных кошелька...</div>';
+  
   try {
-    const [metaRes, perpRes, spotRes] = await Promise.allSettled([
-      fetch('https://api.hyperliquid.xyz/info', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'meta' })
-      }).then(r => r.json()),
-      fetch('https://api.hyperliquid.xyz/info', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'clearinghouseState', user: WALLET_ADDRESS })
-      }).then(r => r.json()),
-      fetch('https://api.hyperliquid.xyz/info', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'spotClearinghouseState', user: WALLET_ADDRESS })
-      }).then(r => r.json())
+    // 1. Загружаем метаданные L1 и trade.xyz
+    const [mainMeta, xyzMeta, spotState] = await Promise.all([
+      postApi({ type: 'meta' }),
+      postApi({ type: 'meta', dex: 'xyz' }),
+      postApi({ type: 'spotClearinghouseState', user: WALLET_ADDRESS })
     ]);
 
-    const assetNames = (metaRes.status === 'fulfilled' && metaRes.value?.universe) 
-      ? metaRes.value.universe.map(u => u.name) 
-      : [];
+    // Карта наименований по индексам
+    const mainCoins = mainMeta?.universe ? mainMeta.universe.map(u => u.name) : [];
+    const xyzCoins = xyzMeta?.universe ? xyzMeta.universe.map(u => u.name) : [];
+
+    // 2. Запрос позиций: Пробуем запросить ALL_DEXES, L1 и xyz напрямую
+    const [allDexState, l1State, xyzState] = await Promise.all([
+      postApi({ type: 'clearinghouseState', user: WALLET_ADDRESS, dex: 'ALL_DEXES' }),
+      postApi({ type: 'clearinghouseState', user: WALLET_ADDRESS }),
+      postApi({ type: 'clearinghouseState', user: WALLET_ADDRESS, dex: 'xyz' })
+    ]);
 
     const activePositions = [];
     walletPositionsMap = {};
 
-    // 1. ОБРАБОТКА ФЬЮЧЕРСОВ (включая сырье и HIP-3)
-    if (perpRes.status === 'fulfilled' && perpRes.value?.assetPositions) {
-      perpRes.value.assetPositions.forEach(p => {
-        const pos = p.position;
+    function parseAssetPositions(positionsArray, dexName = '', metaUniverse = []) {
+      if (!Array.isArray(positionsArray)) return;
+      
+      positionsArray.forEach(p => {
+        const pos = p.position || p;
         const szi = parseFloat(pos.szi);
         if (szi !== 0) {
           let coinName = pos.coin;
-          // Если имя вернется как числовой индекс актива — берем имя из meta
+          
+          // Если номер индекса
           if (typeof coinName === 'number' || !isNaN(coinName)) {
-            coinName = assetNames[parseInt(coinName)] || `Asset#${coinName}`;
+            const idx = parseInt(coinName);
+            coinName = metaUniverse[idx] || (dexName ? `${dexName}:Asset#${idx}` : `Asset#${idx}`);
           }
+
+          if (dexName && !String(coinName).includes(':')) {
+            coinName = `${dexName}:${coinName}`;
+          }
+
           activePositions.push({
-            type: 'PERP',
+            type: dexName ? `HIP-3 (${dexName})` : 'PERP',
             coin: coinName,
             szi: szi,
-            entryPx: parseFloat(pos.entryPx),
-            unrealizedPnl: parseFloat(pos.unrealizedPnl),
+            entryPx: parseFloat(pos.entryPx || 0),
+            unrealizedPnl: parseFloat(pos.unrealizedPnl || 0),
             returnOnEquity: parseFloat(pos.returnOnEquity || 0) * 100
           });
         }
       });
     }
 
-    // 2. ОБРАБОТКА СПОТА
-    if (spotRes.status === 'fulfilled' && spotRes.value?.balances) {
-      spotRes.value.balances.forEach(b => {
+    // Парсим с разных источников
+    if (allDexState) {
+      if (Array.isArray(allDexState)) {
+        allDexState.forEach(dexSt => {
+          const dexName = dexSt.dex || '';
+          const metaList = dexName === 'xyz' ? xyzCoins : mainCoins;
+          parseAssetPositions(dexSt.assetPositions, dexName, metaList);
+        });
+      } else if (allDexState.assetPositions) {
+        parseAssetPositions(allDexState.assetPositions, '', mainCoins);
+      }
+    } else {
+      // Резервный разбор по отдельности
+      if (l1State?.assetPositions) parseAssetPositions(l1State.assetPositions, '', mainCoins);
+      if (xyzState?.assetPositions) parseAssetPositions(xyzState.assetPositions, 'xyz', xyzCoins);
+    }
+
+    // Обработка Спота
+    if (spotState?.balances) {
+      spotState.balances.forEach(b => {
         const total = parseFloat(b.total);
         if (total > 0 && b.coin !== 'USDC') {
           activePositions.push({
@@ -231,8 +271,19 @@ async function fetchWalletPositions() {
       });
     }
 
-    if (activePositions.length === 0) {
-      container.innerHTML = '<div class="mu">Нет активных позиций на кошельке</div>';
+    // Удаляем дубликаты позиций (если подтянулись из нескольких методов)
+    const uniquePositions = [];
+    const seenCoins = new Set();
+    activePositions.forEach(p => {
+      const key = `${p.type}_${p.coin}`;
+      if (!seenCoins.has(key)) {
+        seenCoins.add(key);
+        uniquePositions.push(p);
+      }
+    });
+
+    if (uniquePositions.length === 0) {
+      container.innerHTML = '<div class="mu">Активных позиций не найдено (баланс 0 или открытые ордера отсутствуют)</div>';
       render();
       return;
     }
@@ -252,19 +303,24 @@ async function fetchWalletPositions() {
         <tbody>
     `;
 
-    activePositions.forEach(pos => {
+    uniquePositions.forEach(pos => {
       const rawName = String(pos.coin).toUpperCase();
       const cleanName = rawName.replace('XYZ:', '').replace('@', '');
-      
+
       walletPositionsMap[rawName] = pos;
       walletPositionsMap[cleanName] = pos;
+      if (cleanName === 'CL' || cleanName === 'OIL') {
+        walletPositionsMap['WTIOIL'] = pos;
+        walletPositionsMap['OIL'] = pos;
+        walletPositionsMap['CL'] = pos;
+      }
 
       const side = pos.type === 'SPOT' 
         ? '<span class="pos">SPOT</span>' 
         : (pos.szi > 0 ? '<span class="pos">LONG</span>' : '<span class="neg">SHORT</span>');
 
       const pnlStr = pos.type === 'SPOT' 
-        ? 'Spot Баланс' 
+        ? 'Spot' 
         : `${pc(pos.returnOnEquity)} (${pos.unrealizedPnl >= 0 ? '+' : ''}$${pos.unrealizedPnl.toFixed(2)})`;
 
       const tradeUrl = `https://app.hyperliquid.xyz/trade/${encodeURIComponent(pos.coin)}`;
@@ -286,7 +342,7 @@ async function fetchWalletPositions() {
     render();
 
   } catch (e) {
-    container.innerHTML = '<div class="mu" style="color:var(--r)">Ошибка получения данных кошелька</div>';
+    container.innerHTML = `<div class="mu" style="color:var(--r)">Ошибка загрузки: ${e.message}</div>`;
   }
 }
 
@@ -444,16 +500,10 @@ function vw(id) {
 }
 
 async function requestHLCandles(coinSymbol, startTime, now) {
-  const res = await fetch('https://api.hyperliquid.xyz/info', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      type: 'candleSnapshot',
-      req: { coin: coinSymbol, interval: '4h', startTime: startTime, endTime: now }
-    })
+  const data = await postApi({
+    type: 'candleSnapshot',
+    req: { coin: coinSymbol, interval: '4h', startTime: startTime, endTime: now }
   });
-  if (!res.ok) return null;
-  const data = await res.json();
   return Array.isArray(data) && data.length > 0 ? data : null;
 }
 
