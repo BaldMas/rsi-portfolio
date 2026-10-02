@@ -79,7 +79,6 @@
         button:hover { border-color: var(--ac); }
         button.p { background: var(--ac); border-color: var(--ac); color: #fff; }
 
-        /* Компактная таблица без горизонтальной прокрутки */
         .table-wrap {
             background: var(--cd);
             border: 1px solid var(--bd);
@@ -123,7 +122,6 @@
         }
         tr:last-child td { border-bottom: none; }
 
-        /* Подсветка >100% PNL */
         tr.high-profit-row {
             background: var(--gbg) !important;
         }
@@ -131,7 +129,6 @@
             border-left: 3px solid var(--g);
         }
 
-        /* Подсветка >200% PNL */
         tr.super-profit-row {
             background: var(--pbg) !important;
         }
@@ -161,7 +158,6 @@
             margin-top: 2px;
         }
 
-        /* Вид карточек */
         .grid-cards {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -211,7 +207,6 @@
 
         .pbar-bg { height: 5px; background: var(--bd); border-radius: 99px; overflow: hidden; }
         .pbar-fill { height: 100%; background: var(--y); border-radius: 99px; }
-        .pbar-fill-purple { height: 100%; background: var(--purple); border-radius: 99px; }
 
         .note-box {
             background: var(--cd);
@@ -238,14 +233,14 @@
         <div class="header-bar">
             <div>
                 <h1>📊 Расчёт «бесплатного остатка»</h1>
-                <div class="mu" id="statusLine">Обновление цен...</div>
+                <div class="mu" id="statusLine">Синхронизация с DropsTab...</div>
             </div>
             <div class="controls">
                 <select id="viewSelect" onchange="toggleView()">
                     <option value="table">Вид: Таблица</option>
                     <option value="cards">Вид: Карточки</option>
                 </select>
-                <button class="p" onclick="fetchPrices()">🔄 Обновить цены</button>
+                <button class="p" onclick="fetchPortfolioAndPrices()">🔄 Обновить данные</button>
             </div>
         </div>
 
@@ -271,10 +266,10 @@
             </table>
         </div>
 
-        <!-- Вид карточек сигналов -->
+        <!-- Вид карточек -->
         <div id="cardsView" class="grid-cards hidden"></div>
 
-        <!-- Таблица 2: Монеты с PNL > 200% (Забор тела + 100% прибыли) -->
+        <!-- Таблица 2: PNL > 200% -->
         <div id="superTableSection">
             <h2>🚀 Фиксация тела + 100% прибыли (для монет с PNL > 200%)</h2>
             <div class="table-wrap purple-wrap">
@@ -300,13 +295,15 @@
 
         <div class="note-box">
             💡 <b>Сигналы забора тела инвестиций:</b><br>
-            • Позиции с прибылью <b>более +100%</b> подсвечены зеленым цветом (вывод 100% вложенного капитала).<br>
-            • В нижней таблице <b>(PNL > +200%)</b> расчёт ведётся с выводом первоначального тела <b>плюс 100% чистой прибыли сверху</b> (всего вывод равен 2×Инвестировано), а оставшиеся монеты остаются в чистый плюс.
+            • Данные автоматически подтягиваются из публичного портфеля DropsTab.<br>
+            • Позиции с прибылью <b>более +100%</b> подсвечены зеленым цветом.<br>
+            • В нижней таблице <b>(PNL > +200%)</b> расчёт ведётся с выводом первоначального тела <b>плюс 100% чистой прибыли сверху</b>.
         </div>
     </div>
 
     <script>
-        const portfolio = [
+        // Запасной локальный портфель на случай сбоя внешней загрузки
+        let portfolio = [
             { symbol: 'BTC', name: 'Bitcoin', holdings: 0.6445, invested: 16434.75, price: 86317.00, binance: 'BTCUSDT' },
             { symbol: 'XRP', name: 'XRP', holdings: 15873.00, invested: 7998.40, price: 1.54, binance: 'XRPUSDT' },
             { symbol: 'ETH', name: 'Ethereum', holdings: 15.18, invested: 31969.04, price: 2745.83, binance: 'ETHUSDT' },
@@ -314,6 +311,8 @@
             { symbol: 'CC', name: 'Canton', holdings: 1795.70, invested: 194.03, price: 0.1209, binance: null },
             { symbol: 'GRT', name: 'The Graph', holdings: 5398.33, invested: 153.22, price: 0.029302, binance: 'GRTUSDT' }
         ];
+
+        const DROPSTAB_PORTFOLIO_SLUG = 'po-moim-myslam-fjkjsebo6f';
 
         function fmtUSD(val) {
             return '$' + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -342,7 +341,6 @@
                 const pnlUsd = holdingsVal - item.invested;
                 const pnlPct = (pnlUsd / item.invested) * 100;
 
-                // Основные расчеты (Забор 100% тела)
                 const sellCoins = item.invested / curPrice;
                 const sellPct = (sellCoins / item.holdings) * 100;
                 const keepCoins = item.holdings - sellCoins;
@@ -355,7 +353,7 @@
                 const buyPriceFormatted = buyPrice < 1 ? `$${buyPrice.toFixed(4)}` : fmtUSD(buyPrice);
                 const curPriceFormatted = curPrice < 1 ? `$${curPrice.toFixed(4)}` : fmtUSD(curPrice);
 
-                // 1. Основная строка таблицы
+                // 1. Таблица 1
                 const tr = document.createElement('tr');
                 if (isHigh) tr.className = 'high-profit-row';
 
@@ -377,10 +375,10 @@
                 `;
                 tBody.appendChild(tr);
 
-                // 2. Вторая таблица: Забор Тела + 100% прибыли (PNL > 200%)
+                // 2. Таблица 2 (PNL > 200%)
                 if (isSuper) {
                     superCount++;
-                    const superTakeUsd = item.invested * 2; // Вложенное + 100% прибыли
+                    const superTakeUsd = item.invested * 2;
                     const superSellCoins = superTakeUsd / curPrice;
                     const superSellPct = (superSellCoins / item.holdings) * 100;
                     const superKeepCoins = item.holdings - superSellCoins;
@@ -406,7 +404,7 @@
                     sBody.appendChild(superTr);
                 }
 
-                // 3. Карточки сигналов
+                // 3. Карточки
                 const card = document.createElement('div');
                 card.className = `card ${isSuper ? 'super-profit-card' : (isHigh ? 'high-profit-card' : '')}`;
                 card.innerHTML = `
@@ -440,9 +438,42 @@
             }
         }
 
+        // Загрузка состава портфеля с DropsTab
+        async function fetchPortfolioAndPrices() {
+            const statusLine = document.getElementById('statusLine');
+            statusLine.innerText = 'Загрузка портфеля с DropsTab...';
+
+            try {
+                // Публичный CORS-прокси для получения данных
+                const proxyUrl = 'https://api.allorigins.win/raw?url=';
+                const dropsTabApi = `https://api.dropstab.com/v1/portfolios/share/${DROPSTAB_PORTFOLIO_SLUG}`;
+                
+                const res = await fetch(proxyUrl + encodeURIComponent(dropsTabApi));
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.coins && data.coins.length > 0) {
+                        portfolio = data.coins.map(c => ({
+                            symbol: c.symbol.toUpperCase(),
+                            name: c.name || c.symbol,
+                            holdings: parseFloat(c.amount || c.quantity || 0),
+                            invested: parseFloat(c.totalInvested || (c.amount * c.avgBuyPrice) || 0),
+                            price: parseFloat(c.price || 0),
+                            binance: c.symbol.toUpperCase() + 'USDT'
+                        }));
+                        statusLine.innerText = 'Портфель синхронизирован с DropsTab!';
+                    }
+                }
+            } catch (e) {
+                console.warn('Не удалось загрузить портфель с DropsTab напрямую. Используются резервные данные.', e);
+                statusLine.innerText = 'Резервный режим (данные DropsTab недоступны)';
+            }
+
+            // После загрузки состава портфеля обновляем живые цены с Binance
+            await fetchPrices();
+        }
+
         async function fetchPrices() {
             const statusLine = document.getElementById('statusLine');
-            statusLine.innerText = 'Загрузка свежих цен...';
             let livePrices = {};
 
             try {
@@ -457,12 +488,10 @@
                             livePrices[coin.symbol] = map[coin.binance];
                         }
                     });
-                    statusLine.innerText = 'Цены обновлены онлайн (Binance API) · ' + new Date().toLocaleTimeString('ru-RU');
-                } else {
-                    throw new Error();
+                    statusLine.innerText = 'Данные и цены обновлены онлайн · ' + new Date().toLocaleTimeString('ru-RU');
                 }
             } catch (e) {
-                statusLine.innerText = 'Используются снимок цен · ' + new Date().toLocaleTimeString('ru-RU');
+                statusLine.innerText = 'Цены из снимка DropsTab · ' + new Date().toLocaleTimeString('ru-RU');
             }
 
             render(livePrices);
@@ -476,7 +505,7 @@
         }
 
         // Автозапуск
-        fetchPrices();
+        fetchPortfolioAndPrices();
     </script>
 </body>
 </html>
