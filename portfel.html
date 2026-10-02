@@ -16,6 +16,8 @@
             --gbg: rgba(52, 211, 153, 0.12);
             --r: #f87171;
             --y: #fbbf24;
+            --purple: #a855f7;
+            --pbg: rgba(168, 85, 247, 0.12);
         }
 
         @media (prefers-color-scheme: light) {
@@ -30,6 +32,8 @@
                 --gbg: rgba(22, 163, 74, 0.12);
                 --r: #dc2626;
                 --y: #d97706;
+                --purple: #9333ea;
+                --pbg: rgba(147, 51, 234, 0.12);
             }
         }
 
@@ -56,6 +60,7 @@
         }
 
         h1 { font-size: 18px; margin: 0; font-weight: 700; }
+        h2 { font-size: 15px; margin: 24px 0 12px 0; font-weight: 700; display: flex; align-items: center; gap: 8px; }
         .mu { color: var(--mu); font-size: 11px; }
 
         .controls { display: flex; gap: 8px; align-items: center; }
@@ -82,6 +87,10 @@
             overflow: hidden;
             margin-bottom: 16px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .table-wrap.purple-wrap {
+            border-color: var(--purple);
         }
 
         table {
@@ -122,6 +131,14 @@
             border-left: 3px solid var(--g);
         }
 
+        /* Подсветка >200% PNL */
+        tr.super-profit-row {
+            background: var(--pbg) !important;
+        }
+        tr.super-profit-row td:first-child {
+            border-left: 3px solid var(--purple);
+        }
+
         .badge-high {
             display: inline-block;
             font-size: 9px;
@@ -130,6 +147,17 @@
             border-radius: 3px;
             background: var(--g);
             color: #000;
+            margin-top: 2px;
+        }
+
+        .badge-super {
+            display: inline-block;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 1px 4px;
+            border-radius: 3px;
+            background: var(--purple);
+            color: #fff;
             margin-top: 2px;
         }
 
@@ -155,6 +183,11 @@
             background: linear-gradient(180deg, var(--gbg) 0%, var(--cd) 40%);
         }
 
+        .card.super-profit-card {
+            border: 1px solid var(--purple);
+            background: linear-gradient(180deg, var(--pbg) 0%, var(--cd) 40%);
+        }
+
         .card-header { display: flex; justify-content: space-between; align-items: center; }
         .card-title { font-size: 15px; font-weight: 700; }
         
@@ -174,9 +207,11 @@
 
         .pos { color: var(--g); font-weight: 700; }
         .amber { color: var(--y); font-weight: 700; }
+        .purp { color: var(--purple); font-weight: 700; }
 
         .pbar-bg { height: 5px; background: var(--bd); border-radius: 99px; overflow: hidden; }
         .pbar-fill { height: 100%; background: var(--y); border-radius: 99px; }
+        .pbar-fill-purple { height: 100%; background: var(--purple); border-radius: 99px; }
 
         .note-box {
             background: var(--cd);
@@ -185,6 +220,14 @@
             padding: 12px 16px;
             font-size: 12px;
             color: var(--mu);
+            margin-top: 16px;
+        }
+
+        .empty-row {
+            text-align: center;
+            color: var(--mu);
+            padding: 16px;
+            font-style: italic;
         }
 
         .hidden { display: none !important; }
@@ -206,7 +249,7 @@
             </div>
         </div>
 
-        <!-- Таблица -->
+        <!-- Таблица 1: Забор тела (100%) -->
         <div id="tableView" class="table-wrap">
             <table>
                 <thead>
@@ -231,8 +274,34 @@
         <!-- Вид карточек сигналов -->
         <div id="cardsView" class="grid-cards hidden"></div>
 
+        <!-- Таблица 2: Монеты с PNL > 200% (Забор тела + 100% прибыли) -->
+        <div id="superTableSection">
+            <h2>🚀 Фиксация тела + 100% прибыли (для монет с PNL > 200%)</h2>
+            <div class="table-wrap purple-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Актив</th>
+                            <th>Инвестировано</th>
+                            <th>Текущий баланс ($)</th>
+                            <th>Текущая цена</th>
+                            <th>PNL</th>
+                            <th style="color:var(--purple)">Забрать ($)</th>
+                            <th style="color:var(--purple)">Продать (монет)</th>
+                            <th style="color:var(--purple)">Продать (%)</th>
+                            <th style="color:var(--g)">Оставить (бесплатно)</th>
+                            <th style="color:var(--g)">Стоимость остатка</th>
+                        </tr>
+                    </thead>
+                    <tbody id="superTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
         <div class="note-box">
-            💡 <b>Сигналы забора тела инвестиций:</b> Позиции с прибылью <b>более +100%</b> подсвечены зеленым цветом. Продажа фиксационной доли полностью выводит первоначальный капитал ($100+), оставляя остаток монет в чистую прибыль.
+            💡 <b>Сигналы забора тела инвестиций:</b><br>
+            • Позиции с прибылью <b>более +100%</b> подсвечены зеленым цветом (вывод 100% вложенного капитала).<br>
+            • В нижней таблице <b>(PNL > +200%)</b> расчёт ведётся с выводом первоначального тела <b>плюс 100% чистой прибыли сверху</b> (всего вывод равен 2×Инвестировано), а оставшиеся монеты остаются в чистый плюс.
         </div>
     </div>
 
@@ -256,9 +325,14 @@
 
         function render(prices = {}) {
             const tBody = document.getElementById('tableBody');
+            const sBody = document.getElementById('superTableBody');
             const cView = document.getElementById('cardsView');
+            
             tBody.innerHTML = '';
+            sBody.innerHTML = '';
             cView.innerHTML = '';
+
+            let superCount = 0;
 
             portfolio.forEach(item => {
                 const curPrice = prices[item.symbol] || item.price;
@@ -268,18 +342,20 @@
                 const pnlUsd = holdingsVal - item.invested;
                 const pnlPct = (pnlUsd / item.invested) * 100;
 
+                // Основные расчеты (Забор 100% тела)
                 const sellCoins = item.invested / curPrice;
                 const sellPct = (sellCoins / item.holdings) * 100;
                 const keepCoins = item.holdings - sellCoins;
                 const keepVal = keepCoins * curPrice;
 
                 const isHigh = pnlPct > 100;
+                const isSuper = pnlPct > 200;
                 const coinDecimals = item.holdings < 1 ? 4 : 2;
                 
                 const buyPriceFormatted = buyPrice < 1 ? `$${buyPrice.toFixed(4)}` : fmtUSD(buyPrice);
                 const curPriceFormatted = curPrice < 1 ? `$${curPrice.toFixed(4)}` : fmtUSD(curPrice);
 
-                // 1. Строка таблицы
+                // 1. Основная строка таблицы
                 const tr = document.createElement('tr');
                 if (isHigh) tr.className = 'high-profit-row';
 
@@ -301,13 +377,42 @@
                 `;
                 tBody.appendChild(tr);
 
-                // 2. Карточка сигнала
+                // 2. Вторая таблица: Забор Тела + 100% прибыли (PNL > 200%)
+                if (isSuper) {
+                    superCount++;
+                    const superTakeUsd = item.invested * 2; // Вложенное + 100% прибыли
+                    const superSellCoins = superTakeUsd / curPrice;
+                    const superSellPct = (superSellCoins / item.holdings) * 100;
+                    const superKeepCoins = item.holdings - superSellCoins;
+                    const superKeepVal = superKeepCoins * curPrice;
+
+                    const superTr = document.createElement('tr');
+                    superTr.className = 'super-profit-row';
+                    superTr.innerHTML = `
+                        <td style="font-weight:700">
+                            <div>${item.symbol} <span class="mu">(${item.name})</span></div>
+                            <span class="badge-super">>200% PNL</span>
+                        </td>
+                        <td>${fmtUSD(item.invested)}</td>
+                        <td style="font-weight:600">${fmtUSD(holdingsVal)}</td>
+                        <td style="font-weight:600">${curPriceFormatted}</td>
+                        <td class="pos">+${pnlPct.toFixed(2)}%</td>
+                        <td class="purp">${fmtUSD(superTakeUsd)}</td>
+                        <td class="purp">${fmtNum(superSellCoins, coinDecimals)} ${item.symbol}</td>
+                        <td class="purp">${superSellPct.toFixed(2)}%</td>
+                        <td class="pos">${fmtNum(superKeepCoins, coinDecimals)} ${item.symbol}</td>
+                        <td class="pos">${fmtUSD(superKeepVal)}</td>
+                    `;
+                    sBody.appendChild(superTr);
+                }
+
+                // 3. Карточки сигналов
                 const card = document.createElement('div');
-                card.className = `card ${isHigh ? 'high-profit-card' : ''}`;
+                card.className = `card ${isSuper ? 'super-profit-card' : (isHigh ? 'high-profit-card' : '')}`;
                 card.innerHTML = `
                     <div class="card-header">
                         <div class="card-title">${item.symbol} <span class="mu" style="font-size:11px;font-weight:normal">(${item.name})</span></div>
-                        <span class="pos">${pnlPct >= 0 ? '+' : ''}${pnlPct.toFixed(2)}%</span>
+                        <span class="pos">+${pnlPct.toFixed(2)}%</span>
                     </div>
                     <div class="k-grid">
                         <div><span>Цена покупки</span><b>${buyPriceFormatted}</b></div>
@@ -329,6 +434,10 @@
                 `;
                 cView.appendChild(card);
             });
+
+            if (superCount === 0) {
+                sBody.innerHTML = `<tr><td colspan="10" class="empty-row">Сейчас в портфеле нет монет с PNL > +200%</td></tr>`;
+            }
         }
 
         async function fetchPrices() {
@@ -362,6 +471,7 @@
         function toggleView() {
             const mode = document.getElementById('viewSelect').value;
             document.getElementById('tableView').classList.toggle('hidden', mode !== 'table');
+            document.getElementById('superTableSection').classList.toggle('hidden', mode !== 'table');
             document.getElementById('cardsView').classList.toggle('hidden', mode !== 'cards');
         }
 
