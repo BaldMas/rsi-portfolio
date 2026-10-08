@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scoring System</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='5' fill='%230d1117'/><text x='4' y='24' font-size='22'>📊</text></svg>">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', sans-serif; background: #0d1117; color: #e6edf3; padding: 24px 20px; max-width: 1400px; margin: 0 auto; }
+
+h1 { font-size: 1.4em; color: #58a6ff; margin-bottom: 4px; }
+.subtitle { color: #8b949e; font-size: 0.83em; margin-bottom: 28px; }
+
+h2 { font-size: 1.1em; color: #e6edf3; margin: 36px 0 6px; border-left: 3px solid #58a6ff; padding-left: 12px; }
+h3 { font-size: 0.88em; color: #8b949e; text-transform: uppercase; letter-spacing: 0.07em;
+     margin: 22px 0 8px; border-left: 3px solid #30363d; padding-left: 10px; }
+
+.card { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 14px 18px; margin-bottom: 16px; }
+.card-row { display: flex; gap: 32px; flex-wrap: wrap; }
+.card-item .label { color: #8b949e; font-size: 0.78em; margin-bottom: 3px; }
+.card-item .value { font-size: 0.9em; font-weight: 600; }
+
+/* badges */
+.b { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.73em; font-weight: 600; white-space: nowrap; }
+.b-ai   { background: #2d1f6e; color: #a78bfa; }
+.b-auto { background: #1f3a24; color: #3fb950; }
+.b-paid { background: #2d1e00; color: #d29922; }
+.b-free { background: #161b22; color: #484f58; border: 1px solid #30363d; }
+.b-key  { background: #1a2c1a; color: #6db86d; }
+.b-s    { background: #1a2e4a; color: #58a6ff; }   /* tier S weight */
+.b-a    { background: #1f2c1f; color: #3fb950; }   /* tier A */
+.b-b    { background: #252018; color: #d29922; }   /* tier B */
+.b-c    { background: #221a1a; color: #8b949e; }   /* tier C */
+
+/* tables */
+table { width: 100%; border-collapse: collapse; font-size: 0.79em; margin-bottom: 4px; }
+th { background: #0d1117; color: #8b949e; padding: 7px 10px; text-align: left;
+     border-bottom: 2px solid #30363d; white-space: nowrap; font-weight: 600; }
+td { padding: 6px 10px; border-bottom: 1px solid #21262d; vertical-align: top; }
+tr:hover td { background: #1c2128; }
+.mono { font-family: monospace; font-size: 0.85em; color: #8b949e; }
+.pts { color: #c9d1d9; }
+.col-src { min-width: 110px; }
+.col-pts { min-width: 260px; }
+
+/* criteria grid */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 6px; margin-bottom: 20px; }
+.gc { background: #161b22; border: 1px solid #21262d; border-radius: 6px; padding: 8px 12px;
+      display: flex; align-items: baseline; gap: 8px; }
+.gc-num { color: #58a6ff; font-weight: 700; font-size: 0.8em; min-width: 20px; }
+.gc-name { font-size: 0.82em; flex: 1; color: #c9d1d9; }
+.gc-w { font-size: 0.75em; color: #8b949e; }
+
+.sep { border: none; border-top: 1px solid #21262d; margin: 28px 0; }
+</style>
+</head>
+<body>
+
+<h1>📊 Scoring System</h1>
+<div class="subtitle">Два движка скоринга по 29-пунктовому фреймворку · обновлено 2026-08-01</div>
+
+<!-- ═══════════════════ ПРИНЦИП ═══════════════════ -->
+<h3>Фреймворк: 29 пунктов, макс. ~420 баллов</h3>
+<div class="grid">
+  <div class="gc"><span class="gc-num">1</span><span class="gc-name">Ликвидность и структура рынка</span><span class="gc-w b b-s">×8</span></div>
+  <div class="gc"><span class="gc-num">2</span><span class="gc-name">Токеномика и анлоки</span><span class="gc-w b b-s">×7</span></div>
+  <div class="gc"><span class="gc-num">3</span><span class="gc-name">Нарратив и фаза цикла</span><span class="gc-w b b-s">×7</span></div>
+  <div class="gc"><span class="gc-num">4</span><span class="gc-name">Технический анализ</span><span class="gc-w b b-s">×7</span></div>
+  <div class="gc"><span class="gc-num">5</span><span class="gc-name">Фундаментал (TVL, revenue, users)</span><span class="gc-w b b-a">×3</span></div>
+  <div class="gc"><span class="gc-num">6</span><span class="gc-name">On-chain метрики</span><span class="gc-w b b-a">×4</span></div>
+  <div class="gc"><span class="gc-num">7</span><span class="gc-name">Команда, инвесторы, vesting</span><span class="gc-w b b-b">×2</span></div>
+  <div class="gc"><span class="gc-num">8</span><span class="gc-name">Конкуренция и moat</span><span class="gc-w b b-b">×2</span></div>
+  <div class="gc"><span class="gc-num">9</span><span class="gc-name">Безопасность</span><span class="gc-w b b-b">×2</span></div>
+  <div class="gc"><span class="gc-num">10</span><span class="gc-name">Социальные метрики</span><span class="gc-w b b-c">×1</span></div>
+  <div class="gc"><span class="gc-num">11</span><span class="gc-name">Регуляторные риски</span><span class="gc-w b b-b">×2</span></div>
+  <div class="gc"><span class="gc-num">12</span><span class="gc-name">Макро-контекст</span><span class="gc-w b b-b">×2</span></div>
+  <div class="gc"><span class="gc-num">13</span><span class="gc-name">Деривативы и позиционирование</span><span class="gc-w b b-s">×7</span></div>
+  <div class="gc"><span class="gc-num">14</span><span class="gc-name">Корреляции и бета</span><span class="gc-w b b-c">×1</span></div>
+  <div class="gc"><span class="gc-num">15</span><span class="gc-name">Реальная доходность (real yield)</span><span class="gc-w b b-b">×2</span></div>
+  <div class="gc"><span class="gc-num">16</span><span class="gc-name">Катализаторы и roadmap</span><span class="gc-w b b-s">×7</span></div>
+  <div class="gc"><span class="gc-num">17</span><span class="gc-name">Активность разработки</span><span class="gc-w b b-b">×2</span></div>
+  <div class="gc"><span class="gc-num">18</span><span class="gc-name">Концентрация холдеров / smart money</span><span class="gc-w b b-a">×3</span></div>
+  <div class="gc"><span class="gc-num">19</span><span class="gc-name">Казна и runway</span><span class="gc-w b b-c">×1</span></div>
+  <div class="gc"><span class="gc-num">20</span><span class="gc-name">Качество реакции на новости</span><span class="gc-w b b-b">×2</span></div>
+  <div class="gc"><span class="gc-num">21</span><span class="gc-name">Стейблкоины и потоки в экосистеме</span><span class="gc-w b b-a">×3</span></div>
+  <div class="gc"><span class="gc-num">22</span><span class="gc-name">Интеграции и BD</span><span class="gc-w b b-c">×1</span></div>
+  <div class="gc"><span class="gc-num">23</span><span class="gc-name">Value accrual</span><span class="gc-w b b-a">×4</span></div>
+  <div class="gc"><span class="gc-num">24</span><span class="gc-name">RS к сектору / BTC</span><span class="gc-w b b-s">×7</span></div>
+  <div class="gc"><span class="gc-num">25</span><span class="gc-name">Cost basis distribution (URPD)</span><span class="gc-w b b-a">×4</span></div>
+  <div class="gc"><span class="gc-num">26</span><span class="gc-name">Exit liquidity</span><span class="gc-w b b-a">×4</span></div>
+  <div class="gc"><span class="gc-num">27</span><span class="gc-name">Поведение в аналогичных сетапах</span><span class="gc-w b b-a">×3</span></div>
+  <div class="gc"><span class="gc-num">28</span><span class="gc-name">Key person risk</span><span class="gc-w b b-c">×1</span></div>
+  <div class="gc"><span class="gc-num">29</span><span class="gc-name">Off-ramp и конвертируемость</span><span class="gc-w b b-c">×1</span></div>
+</div>
+<div style="font-size:0.78em;color:#8b949e;margin-bottom:12px;">
+  Каждый пункт: 0–5 баллов × вес = взвешенный балл. Итог: Группа 1 (≥361), 2 (≥285), 3 (≥209), 4 (≥133), 5 (&lt;133).
+</div>
+
+<hr class="sep">
+
+<!-- ═══════════════════ ДВИЖОК 1 ═══════════════════ -->
+<h2>Движок 1 — <code>score_coin.py</code> · AI-ассистированный</h2>
+<div class="card">
+  <div class="card-row">
+    <div class="card-item"><div class="label">Путь</div><div class="value mono">/home/masus/CRYPTO/dropstab/</div></div>
+    <div class="card-item"><div class="label">Запуск</div><div class="value">cron 21:00 UTC ежедневно (auto_score_unified.py)</div></div>
+    <div class="card-item"><div class="label">ИИ</div><div class="value"><span class="b b-ai">claude-opus-4-8 + web_search</span></div></div>
+    <div class="card-item"><div class="label">Режим</div><div class="value">ultrathink (до 600 сек/монета)</div></div>
+  </div>
+</div>
+
+<p style="font-size:0.84em;color:#c9d1d9;margin-bottom:16px;line-height:1.6;">
+  <strong>Принцип.</strong> Двухэтапный гибридный скоринг. Этап 1 — количественные пункты (<code>QUANT_CRITERIA</code>) считаются детерминированно по API-данным без AI. Этап 2 — качественные пункты отдаются Claude: скрипт собирает все данные в структурированный промпт и вызывает <code>claude CLI</code> с инструментом <code>web_search</code>, который самостоятельно дополняет анализ свежими данными из интернета. Claude возвращает JSON с баллами и обоснованием по каждому критерию. Результат кэшируется на 7 дней (QUAL_CACHE_DAYS). Количественные пункты пересчитываются при каждом запуске.
+</p>
+
+<div style="font-size:0.82em;color:#8b949e;margin-bottom:6px;">
+  Разделение: <span class="b b-auto">API-авто</span> пункты 1, 4, 12, 13, 14, 17, 23, 24, 29 &nbsp;·&nbsp; <span class="b b-ai">Claude</span> остальные 20 пунктов
+</div>
+
+<h3>Источники данных</h3>
+<table>
+<thead><tr>
+  <th class="col-src">Источник</th>
+  <th>API / URL</th>
+  <th>Стоимость</th>
+  <th>Что получает</th>
+  <th class="col-pts">Пункты фреймворка</th>
+  <th>ИИ для получения?</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td><strong>Binance Spot</strong></td>
+  <td class="mono">api.binance.com /api/v3/klines<br>/api/v3/ticker/24hr</td>
+  <td><span class="b b-free">бесплатно</span></td>
+  <td>Дневные свечи (250 дней), объём 30д в USDT</td>
+  <td class="pts">#1 ликвидность (vol), #4 ТА (цена/MA200/RSI), #24 RS к BTC</td>
+  <td><span class="b b-auto">нет — API</span></td>
+</tr>
+<tr>
+  <td><strong>Binance Futures</strong></td>
+  <td class="mono">fapi.binance.com /fapi/v1/openInterest<br>/fapi/v1/premiumIndex<br>/futures/data/globalLongShortAccountRatio</td>
+  <td><span class="b b-free">бесплатно</span></td>
+  <td>Open interest (USD), funding rate, long/short ratio трейдеров</td>
+  <td class="pts">#13 деривативы (OI, funding, L/S)</td>
+  <td><span class="b b-auto">нет — API</span></td>
+</tr>
+<tr>
+  <td><strong>Bybit Spot</strong></td>
+  <td class="mono">api.bybit.com /v5/market/kline</td>
+  <td><span class="b b-free">бесплатно</span></td>
+  <td>Объём 30д (fallback для монет не на Binance: HYPE, MNT)</td>
+  <td class="pts">#1 ликвидность</td>
+  <td><span class="b b-auto">нет — API</span></td>
+</tr>
+<tr>
+  <td><strong>CoinPaprika</strong></td>
+  <td class="mono">api.coinpaprika.com /v1/search<br>/v1/tickers/{id}</td>
+  <td><span class="b b-free">бесплатно</span></td>
+  <td>Market cap, circulating supply, CMC rank, ATH</td>
+  <td class="pts">#1 ликвидность, #4 MVRV-proxy, #5 фундаментал</td>
+  <td><span class="b b-auto">нет — API</span></td>
+</tr>
+<tr>
+  <td><strong>CoinGecko</strong></td>
+  <td class="mono">api.coingecko.com /api/v3/coins/markets<br>/api/v3/search<br>/api/v3/coins/{id}</td>
+  <td><span class="b b-free">бесплатно</span></td>
+  <td>Fallback по mcap/rank, developer_data (stars, commits 4w, PRs)</td>
+  <td class="pts">#1 fallback, #17 dev activity (CG commits)</td>
+  <td><span class="b b-auto">нет — API</span></td>
+</tr>
+<tr>
+  <td><strong>DeFiLlama</strong></td>
+  <td class="mono">api.llama.fi /protocols<br>/overview/fees<br>/yields/pools</td>
+  <td><span class="b b-free">бесплатно</span></td>
+  <td>TVL протокола, TVL change 7d, fees 30d, holders_revenue 30d, DEX volume 24h, staking APY, stables</td>
+  <td class="pts">#5 фундаментал, #15 real yield, #19 казна, #21 стейблкоины, #23 value accrual</td>
+  <td><span class="b b-auto">нет — API</span></td>
+</tr>
+<tr>
+  <td><strong>Arkham Intelligence</strong></td>
+  <td class="mono">api.arkm.com /token/top_flow/{slug}<br>/balances/entity/{entity}</td>
+  <td><span class="b b-paid">платный API-ключ</span></td>
+  <td>CEX netflow за 7д (deposits vs withdrawals), балансы фондов (Jump, Wintermute, Paradigm, a16z и др.)</td>
+  <td class="pts">#13 деривативы (CEX netflow), #18 холдеры (fund_pct)</td>
+  <td><span class="b b-auto">нет — API</span></td>
+</tr>
+<tr>
+  <td><strong>FRED (St. Louis Fed)</strong></td>
+  <td class="mono">api.stlouisfed.org /fred/series/observations<br>DFF, DTWEXBGS, M2SL</td>
+  <td><span class="b b-key">бесплатно с ключом</span></td>
+  <td>Fed rate (DFF), DXY index, M2 money supply</td>
+  <td class="pts">#12 макро (fed rate, DXY)</td>
+  <td><span class="b b-auto">нет — API</span></td>
+</tr>
+<tr>
+  <td><strong>GitHub API</strong></td>
+  <td class="mono">api.github.com /repos/{owner}/{repo}/commits</td>
+  <td><span class="b b-key">бесплатно с PAT</span></td>
+  <td>Количество коммитов за 30 дней по всем репозиториям проекта</td>
+  <td class="pts">#17 dev activity (commits 30d)</td>
+  <td><span class="b b-auto">нет — API</span></td>
+</tr>
+<tr>
+  <td><strong>Ethplorer</strong></td>
+  <td class="mono">api.ethplorer.io /getTopTokenHolders/{addr}</td>
+  <td><span class="b b-key">бесплатно (freekey)</span></td>
+  <td>Топ-20 держателей ERC-20 токена: концентрация top10%, Nakamoto coefficient</td>
+  <td class="pts">#18 холдеры (top10_pct, nakamoto)</td>
+  <td><span class="b b-auto">нет — API</span></td>
+</tr>
+<tr>
+  <td><strong>Кэши crypto_analysis</strong></td>
+  <td class="mono">.cache/dev_silence_state.json<br>.cache/unlocks_schedule.json<br>.cache/arkham_data.json<br>.cache/defillama_state.json<br>.cache/twitter_activity.json</td>
+  <td><span class="b b-free">локально</span></td>
+  <td>Дни молчания GitHub, расписание анлоков, предрасчитанные on-chain данные, изменение стейблов, активность Twitter</td>
+  <td class="pts">#2 токеномика (анлоки), #17 dev silence, #21 стейблкоины</td>
+  <td><span class="b b-auto">нет — кэш</span></td>
+</tr>
+<tr>
+  <td><strong>Claude API (Anthropic)</strong></td>
+  <td class="mono">claude CLI + web_search<br>Модель: claude-opus-4-8<br>Режим: ultrathink</td>
+  <td><span class="b b-paid">платный (Anthropic)</span></td>
+  <td>Качественный анализ 20 пунктов с доступом к интернету: нарратив, команда, конкуренты, регуляторика, катализаторы, история, URPD, roadmap и др.</td>
+  <td class="pts">#2, 3, 5, 6, 7, 8, 9, 10, 11, 15, 16, 18, 19, 20, 21, 22, 25, 26, 27, 28</td>
+  <td><span class="b b-ai">да — это и есть ИИ</span></td>
+</tr>
+</tbody>
+</table>
+
+<hr class="sep">
+
+<!-- ═══════════════════ ДВИЖОК 2 ═══════════════════ -->
+<h2>Движок 2 — <code>scorer.py</code> · Полностью автоматический</h2>
+<div class="card">
+  <div class="card-row">
+    <div class="card-item"><div class="label">Путь</div><div class="value mono">/home/masus/CRYPTO/программирование/</div></div>
+    <div class="card-item"><div class="label">Запуск</div><div class="value">cron: каждые 4ч +20 мин (20 */4 * * *)</div></div>
+    <div class="card-item"><div class="label">Источник данных</div><div class="value mono">data.db (SQLite, заполняет data_collector.py)</div></div>
+    <div class="card-item"><div class="label">ИИ</div><div class="value"><span class="b b-auto">нет — только алгоритм</span></div></div>
+  </div>
+</div>
+
+<p style="font-size:0.84em;color:#c9d1d9;margin-bottom:16px;line-height:1.6;">
+  <strong>Принцип.</strong> Полностью детерминированный скоринг без AI. <code>data_collector.py</code> (watchdog каждые 30 мин) собирает рыночные данные в SQLite таблицы. <code>scorer.py</code> читает последние записи из каждой таблицы, применяет пороговые функции <code>score_from_brackets()</code> и усредняет суб-баллы в итоговый балл по пункту. Пункты которые нельзя автоматизировать (нарратив, команда, конкуренты) получают нейтральный балл 3. Результат сохраняется в таблицу <code>scores</code> сразу после каждого тикера (commit per ticker) для устойчивости к падениям.
+</p>
+
+<h3>Таблицы SQLite и источники данных</h3>
+<table>
+<thead><tr>
+  <th class="col-src">Таблица DB</th>
+  <th>Откуда данные</th>
+  <th>Стоимость</th>
+  <th>Поля / метрики</th>
+  <th class="col-pts">Пункты фреймворка</th>
+  <th>ИИ для получения?</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td><strong>orderbook</strong></td>
+  <td class="mono">Binance/Bybit order book snapshots</td>
+  <td><span class="b b-free">бесплатно</span></td>
+  <td>spread_pct, depth_bid_usd, slippage_100k_pct, n_tier1_exchanges</td>
+  <td class="pts">#1 ликвидность, #26 exit liquidity</td>
+  <td><span class="b b-auto">нет</span></td>
+</tr>
+<tr>
+  <td><strong>price</strong></td>
+  <td class="mono">Binance + CoinPaprika + CoinGecko</td>
+  <td><span class="b b-free">бесплатно</span></td>
+  <td>price, ma200, rsi_14, mvrv_proxy, mcap, vol_30d_avg_usd</td>
+  <td class="pts">#1 объём, #4 ТА (RSI/MA200/MVRV), #14 бета/корреляция</td>
+  <td><span class="b b-auto">нет</span></td>
+</tr>
+<tr>
+  <td><strong>defillama</strong></td>
+  <td class="mono">DeFiLlama /protocols, /overview/fees, /yields</td>
+  <td><span class="b b-free">бесплатно</span></td>
+  <td>tvl_usd, tvl_change_7d_pct, revenue_30d_usd, holders_revenue_30d_usd, fees_24h_usd, dex_volume_24h</td>
+  <td class="pts">#5 фундаментал, #15 real yield, #19 казна, #23 value accrual</td>
+  <td><span class="b b-auto">нет</span></td>
+</tr>
+<tr>
+  <td><strong>derivatives</strong></td>
+  <td class="mono">Binance Futures (G1, обновляется каждый час)</td>
+  <td><span class="b b-free">бесплатно</span></td>
+  <td>funding_rate_pct, oi_change_7d_pct, ls_ratio, basis_pct, taker_buy_ratio</td>
+  <td class="pts">#13 деривативы</td>
+  <td><span class="b b-auto">нет</span></td>
+</tr>
+<tr>
+  <td><strong>deribit</strong></td>
+  <td class="mono">Deribit API (только BTC/ETH, G4 24ч)</td>
+  <td><span class="b b-free">бесплатно</span></td>
+  <td>dvol (implied volatility), pc_ratio (put/call)</td>
+  <td class="pts">#13 деривативы (IV + P/C ratio)</td>
+  <td><span class="b b-auto">нет</span></td>
+</tr>
+<tr>
+  <td><strong>rs</strong> (relative strength)</td>
+  <td class="mono">Binance klines → расчёт локально</td>
+  <td><span class="b b-free">бесплатно</span></td>
+  <td>beta_vs_btc, corr_vs_btc, rs_vs_btc (30d), rs_vs_sector</td>
+  <td class="pts">#14 бета, #24 RS к BTC/сектору</td>
+  <td><span class="b b-auto">нет</span></td>
+</tr>
+<tr>
+  <td><strong>dev</strong></td>
+  <td class="mono">GitHub API (PAT) + CoinGecko developer_data</td>
+  <td><span class="b b-key">бесплатно с ключом</span></td>
+  <td>commits_30d, silence_days, cg_stars, cg_commits_4w, cg_prs_merged</td>
+  <td class="pts">#17 dev activity, #28 key person risk</td>
+  <td><span class="b b-auto">нет</span></td>
+</tr>
+<tr>
+  <td><strong>holders</strong></td>
+  <td class="mono">Ethplorer (EVM) + Arkham Intelligence</td>
+  <td><span class="b b-key">бесплатно (freekey)</span> <span class="b b-paid">Arkham платный</span></td>
+  <td>top10_pct, nakamoto_approx, top1_pct; fund_pct, cex_pct (Arkham)</td>
+  <td class="pts">#18 холдеры и smart money</td>
+  <td><span class="b b-auto">нет</span></td>
+</tr>
+<tr>
+  <td><strong>macro</strong></td>
+  <td class="mono">Alternative.me (Fear&amp;Greed) + FRED API + внешний VIX/Kimchi</td>
+  <td><span class="b b-free">бесплатно</span> <span class="b b-key">FRED с ключом</span></td>
+  <td>vix, dxy_week_pct, us10y, dff, fear_greed_7d_avg, kimchi_btc_pct</td>
+  <td class="pts">#12 макро</td>
+  <td><span class="b b-auto">нет</span></td>
+</tr>
+<tr>
+  <td><strong>onchain</strong></td>
+  <td class="mono">Arkham / Glassnode-прокси / Ethplorer</td>
+  <td><span class="b b-paid">Arkham платный</span></td>
+  <td>active_addresses, tx_count, netflow_pct, whale_txns</td>
+  <td class="pts">#6 on-chain метрики</td>
+  <td><span class="b b-auto">нет</span></td>
+</tr>
+<tr>
+  <td><strong>social</strong></td>
+  <td class="mono">Twitter activity cache (scan_twitter.py)</td>
+  <td><span class="b b-free">unofficial</span></td>
+  <td>tweet_count_7d, sentiment_score, follower_growth</td>
+  <td class="pts">#10 социальные метрики</td>
+  <td><span class="b b-auto">нет</span></td>
+</tr>
+<tr>
+  <td><strong>security</strong></td>
+  <td class="mono">Локальная база хаков (scan_security.py)</td>
+  <td><span class="b b-free">локально</span></td>
+  <td>hack_count_12m, hack_penalty, audit_score</td>
+  <td class="pts">#9 безопасность</td>
+  <td><span class="b b-auto">нет</span></td>
+</tr>
+<tr>
+  <td><strong>unlocks</strong></td>
+  <td class="mono">scan_unlocks.py → .cache/unlocks_schedule.json</td>
+  <td><span class="b b-free">локально</span></td>
+  <td>unlock_pct_90d, unlock_type (LINEAR/CLIFF), f3_status</td>
+  <td class="pts">#2 токеномика/анлоки</td>
+  <td><span class="b b-auto">нет</span></td>
+</tr>
+<tr>
+  <td><strong>narrative</strong></td>
+  <td class="mono">scan_catalysts.py + внутренние теги</td>
+  <td><span class="b b-free">локально</span></td>
+  <td>narrative_tag, cycle_phase, sector_momentum</td>
+  <td class="pts">#3 нарратив</td>
+  <td><span class="b b-auto">нет</span></td>
+</tr>
+<tr>
+  <td><strong>catalysts</strong></td>
+  <td class="mono">scan_catalysts.py (RSS + биржи + новости)</td>
+  <td><span class="b b-free">бесплатно</span></td>
+  <td>catalyst_count, next_event_days, severity_score</td>
+  <td class="pts">#16 катализаторы и roadmap</td>
+  <td><span class="b b-auto">нет</span></td>
+</tr>
+<tr>
+  <td><strong>stables</strong></td>
+  <td class="mono">DeFiLlama /stablecoins</td>
+  <td><span class="b b-free">бесплатно</span></td>
+  <td>stables_delta_pct (изменение топ-5 стейблов за неделю)</td>
+  <td class="pts">#21 стейблкоины и потоки</td>
+  <td><span class="b b-auto">нет</span></td>
+</tr>
+<tr>
+  <td><strong>vp</strong> (volume profile)</td>
+  <td class="mono">Binance klines → расчёт VPVR локально</td>
+  <td><span class="b b-free">бесплатно</span></td>
+  <td>poc_price, support_pct_below, vah_price, val_price</td>
+  <td class="pts">#25 URPD / cost basis distribution</td>
+  <td><span class="b b-auto">нет</span></td>
+</tr>
+<tr>
+  <td><strong>history_analog</strong></td>
+  <td class="mono">Исторические паттерны из Binance klines</td>
+  <td><span class="b b-free">бесплатно</span></td>
+  <td>analog_return_pct, analog_similarity, pattern_type</td>
+  <td class="pts">#27 поведение в аналогичных сетапах</td>
+  <td><span class="b b-auto">нет</span></td>
+</tr>
+<tr>
+  <td><strong>exchanges</strong></td>
+  <td class="mono">CoinGecko /coins/{id}/tickers</td>
+  <td><span class="b b-free">бесплатно</span></td>
+  <td>n_tier1_exchanges, n_stable_pairs_tier1, has_cme_futures</td>
+  <td class="pts">#1 биржи, #29 off-ramp</td>
+  <td><span class="b b-auto">нет</span></td>
+</tr>
+</tbody>
+</table>
+
+<hr class="sep">
+
+<!-- ═══════════════════ СРАВНЕНИЕ ═══════════════════ -->
+<h2>Сравнение движков</h2>
+<table>
+<thead><tr>
+  <th>Параметр</th>
+  <th>score_coin.py</th>
+  <th>scorer.py</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>ИИ</td>
+  <td><span class="b b-ai">Claude-opus-4-8 + web_search</span></td>
+  <td><span class="b b-auto">нет — только алгоритм</span></td>
+</tr>
+<tr>
+  <td>Покрытие пунктов</td>
+  <td>Все 29, включая качественные</td>
+  <td>26 пунктов (качественные = нейтрал 3)</td>
+</tr>
+<tr>
+  <td>Скорость</td>
+  <td>~5–10 мин/монета (ultrathink)</td>
+  <td>~3–5 сек/монета</td>
+</tr>
+<tr>
+  <td>Запуск</td>
+  <td>1 раз в сутки (21:00 UTC), весь портфель за ночь</td>
+  <td>Каждые 4ч, весь портфель за секунды</td>
+</tr>
+<tr>
+  <td>Кэш качественного анализа</td>
+  <td>7 дней (QUAL_CACHE_DAYS)</td>
+  <td>н/п</td>
+</tr>
+<tr>
+  <td>Источник данных</td>
+  <td>Прямые API-запросы в runtime</td>
+  <td>SQLite (data.db), данные уже собраны</td>
+</tr>
+<tr>
+  <td>Платные API</td>
+  <td>Anthropic (Claude), Arkham Intelligence</td>
+  <td>Arkham Intelligence (опционально)</td>
+</tr>
+<tr>
+  <td>Устойчивость к падению</td>
+  <td>Кэш качества 7д; количественное пересчитывается</td>
+  <td>Commit per ticker в SQLite</td>
+</tr>
+<tr>
+  <td>Результат</td>
+  <td>Markdown-файл в analysis_results/ + TG-алерт</td>
+  <td>Таблица scores в data.db</td>
+</tr>
+</tbody>
+</table>
+
+<div style="margin-top:32px; color:#484f58; font-size:0.75em;">
+  Контабо VPS · score_coin.py 2479 строк · scorer.py 1638 строк
+</div>
+
+</body>
+</html>

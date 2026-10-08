@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scoring Research</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='5' fill='%230d1117'/><text x='4' y='24' font-size='22'>🔬</text></svg>">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', sans-serif; background: #0d1117; color: #e6edf3; padding: 24px 20px; max-width: 1300px; margin: 0 auto; line-height: 1.6; }
+
+h1 { font-size: 1.5em; color: #58a6ff; margin-bottom: 4px; }
+.subtitle { color: #8b949e; font-size: 0.83em; margin-bottom: 32px; }
+
+h2 { font-size: 1.15em; color: #e6edf3; margin: 40px 0 10px;
+     border-left: 3px solid #58a6ff; padding-left: 12px; }
+h3 { font-size: 0.9em; color: #8b949e; text-transform: uppercase;
+     letter-spacing: 0.07em; margin: 24px 0 10px;
+     border-left: 3px solid #30363d; padding-left: 10px; }
+
+p { font-size: 0.87em; color: #c9d1d9; margin-bottom: 12px; }
+ul, ol { padding-left: 20px; margin-bottom: 12px; }
+li { font-size: 0.87em; color: #c9d1d9; margin-bottom: 4px; }
+strong { color: #e6edf3; }
+code { font-family: monospace; background: #161b22; border: 1px solid #30363d;
+       border-radius: 3px; padding: 1px 5px; font-size: 0.82em; color: #79c0ff; }
+
+/* badges */
+.b { display: inline-block; padding: 2px 8px; border-radius: 10px;
+     font-size: 0.73em; font-weight: 600; white-space: nowrap; }
+.b-green  { background: #1f3a24; color: #3fb950; }
+.b-blue   { background: #1a2e4a; color: #58a6ff; }
+.b-yellow { background: #2d1e00; color: #d29922; }
+.b-red    { background: #2d1517; color: #f85149; }
+.b-gray   { background: #21262d; color: #8b949e; }
+.b-purple { background: #2d1f6e; color: #a78bfa; }
+
+/* tables */
+table { width: 100%; border-collapse: collapse; font-size: 0.82em; margin: 12px 0 20px; }
+th { background: #161b22; color: #8b949e; padding: 8px 12px; text-align: left;
+     border-bottom: 2px solid #30363d; font-weight: 600; white-space: nowrap; }
+td { padding: 7px 12px; border-bottom: 1px solid #21262d; vertical-align: top; }
+tr:hover td { background: #1c2128; }
+.td-name { font-weight: 600; color: #e6edf3; white-space: nowrap; }
+.td-mono { font-family: monospace; font-size: 0.82em; color: #8b949e; }
+.td-dim  { color: #8b949e; font-size: 0.82em; }
+
+/* cards */
+.card { background: #161b22; border: 1px solid #30363d; border-radius: 8px;
+        padding: 16px 20px; margin-bottom: 16px; }
+.card-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.card h4 { font-size: 0.88em; color: #58a6ff; margin-bottom: 8px; }
+
+/* criteria grid */
+.crit-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+             gap: 6px; margin: 12px 0; }
+.crit { background: #161b22; border: 1px solid #21262d; border-radius: 6px;
+        padding: 8px 12px; display: flex; align-items: baseline; gap: 8px; }
+.crit-n { color: #58a6ff; font-weight: 700; font-size: 0.8em; min-width: 22px; }
+.crit-name { font-size: 0.82em; flex: 1; color: #c9d1d9; }
+.crit-w { font-size: 0.75em; color: #8b949e; }
+
+/* action table colours */
+.act-del { background: #1a0d0d; }
+.act-mrg { background: #0d1a1a; }
+.act-add { background: #0d1a0d; }
+.act-up  { background: #1a1a0d; }
+
+.sep { border: none; border-top: 1px solid #21262d; margin: 36px 0; }
+
+/* TOC */
+.toc { background: #161b22; border: 1px solid #30363d; border-radius: 8px;
+       padding: 14px 20px; margin-bottom: 32px; display: flex; gap: 32px; flex-wrap: wrap; }
+.toc-col { min-width: 220px; }
+.toc-col h5 { font-size: 0.75em; color: #58a6ff; font-weight: 700; margin-bottom: 6px;
+              text-transform: uppercase; letter-spacing: 0.06em; }
+.toc a { display: block; font-size: 0.8em; color: #8b949e; text-decoration: none;
+         padding: 2px 0; line-height: 1.4; }
+.toc a:hover { color: #c9d1d9; }
+.toc a.toc-h2 { color: #c9d1d9; font-weight: 600; margin-top: 4px; }
+.toc a.toc-h3 { padding-left: 10px; border-left: 1px solid #30363d; }
+.toc a.toc-new { color: #3fb950; }
+.note { background: #161b22; border-left: 3px solid #d29922; border-radius: 0 6px 6px 0;
+        padding: 10px 14px; font-size: 0.84em; color: #c9d1d9; margin: 12px 0 20px; }
+.source { font-size: 0.74em; color: #484f58; margin-top: 4px; }
+
+/* sharpe highlight */
+.sharpe { color: #3fb950; font-weight: 700; }
+
+/* vs compare box */
+.vs-box { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+.vs-col { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 14px 16px; }
+.vs-col h4 { font-size: 0.85em; color: #8b949e; margin-bottom: 10px; }
+.vs-col ul { padding-left: 16px; }
+.vs-col li { font-size: 0.82em; color: #c9d1d9; margin-bottom: 3px; }
+
+@media (max-width: 700px) {
+  .card-2col, .vs-box { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<h1>🔬 Исследование систем скоринга монет</h1>
+<div class="subtitle">Анализ двух систем · академические источники · рекомендации по оптимизации · обновлено 2026-08-01 (v2)</div>
+
+<nav class="toc">
+  <div class="toc-col">
+    <h5>Исследование</h5>
+    <a href="#sys" class="toc-h2">Анализируемые системы</a>
+    <a href="#research" class="toc-h2">Академические источники</a>
+    <a href="#r1" class="toc-h3">1. Оптимальное кол-во факторов</a>
+    <a href="#r2" class="toc-h3">2. Факторы с наибольшей силой</a>
+    <a href="#r3" class="toc-h3">3. Слабые факторы</a>
+    <a href="#r4" class="toc-h3">4. Корреляции</a>
+    <a href="#r5" class="toc-h3">5. Чего не хватает</a>
+    <a href="#r6" class="toc-h3">6. Проблема TTL кэша</a>
+    <a href="#r7" class="toc-h3">7. Архитектурные преимущества</a>
+    <a href="#r8" class="toc-h3 toc-new">8. Новые исследования 2024-2026 ★</a>
+  </div>
+  <div class="toc-col">
+    <h5>Рекомендации</h5>
+    <a href="#recs" class="toc-h2">Рекомендации</a>
+    <a href="#rec-a" class="toc-h3">А. Действия с критериями</a>
+    <a href="#rec-b" class="toc-h3">Б. Новые критерии</a>
+    <a href="#rec-v" class="toc-h3">В. Структура 18 критериев</a>
+    <a href="#rec-g" class="toc-h3">Г. Архитектура движков</a>
+    <a href="#rec-d" class="toc-h3">Д. TTL кэша по типу</a>
+    <a href="#rec-e" class="toc-h3 toc-new">Е. Доп. критерии (новые) ★</a>
+    <a href="#extra" class="toc-h2" style="margin-top:8px">Доп. вопросы</a>
+    <a href="#extra1" class="toc-h3">1. Фундаментал vs рынок</a>
+    <a href="#extra2" class="toc-h3">2. Сроки обновления</a>
+    <a href="#summary" class="toc-h2">Итог</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════ АНАЛИЗИРУЕМЫЕ СИСТЕМЫ ═══════════════════ -->
+<h2 id="sys">Анализируемые системы</h2>
+
+<div class="vs-box">
+  <div class="vs-col">
+    <h4>Система 1 — psv044581</h4>
+    <ul>
+      <li><strong>12 критериев</strong>, макс. 60 баллов</li>
+      <li>Каждый критерий: 1–5 баллов (без весов)</li>
+      <li>Haiku для сбора данных → Sonnet для анализа</li>
+      <li>Кэш 14 дней</li>
+      <li>Группы: 1 (&lt;20) критичный → 5 (50-60) сильный</li>
+      <li>Фокус: фундаментал + качественный анализ</li>
+    </ul>
+  </div>
+  <div class="vs-col">
+    <h4>Система 2 — baldmas</h4>
+    <ul>
+      <li><strong>29 критериев</strong>, макс. ~420 баллов</li>
+      <li>Веса ×1…×8, сложная система суб-баллов</li>
+      <li>Двойной движок: AI (1×/день) + алгоритм (каждые 4ч)</li>
+      <li>Кэш 7 дней</li>
+      <li>Группы: 1 (≥361) → 5 (&lt;133)</li>
+      <li>Фокус: гибрид quant + qualitative</li>
+    </ul>
+  </div>
+</div>
+
+<h3>Критерии системы 1 (12 осей)</h3>
+<div class="crit-grid">
+  <div class="crit"><span class="crit-n">1</span><span class="crit-name">Technology / Product</span><span class="crit-w b b-gray">×1</span></div>
+  <div class="crit"><span class="crit-n">2</span><span class="crit-name">Tokenomics / Unlocks</span><span class="crit-w b b-gray">×1</span></div>
+  <div class="crit"><span class="crit-n">3</span><span class="crit-name">Revenue / Value Capture</span><span class="crit-w b b-gray">×1</span></div>
+  <div class="crit"><span class="crit-n">4</span><span class="crit-name">Team / Investors</span><span class="crit-w b b-gray">×1</span></div>
+  <div class="crit"><span class="crit-n">5</span><span class="crit-name">Ecosystem / Metrics</span><span class="crit-w b b-gray">×1</span></div>
+  <div class="crit"><span class="crit-n">6</span><span class="crit-name">Narrative / Timing</span><span class="crit-w b b-gray">×1</span></div>
+  <div class="crit"><span class="crit-n">7</span><span class="crit-name">Liquidity</span><span class="crit-w b b-gray">×1</span></div>
+  <div class="crit"><span class="crit-n">8</span><span class="crit-name">Regulatory Risk</span><span class="crit-w b b-gray">×1</span></div>
+  <div class="crit"><span class="crit-n">9</span><span class="crit-name">Competitive Position</span><span class="crit-w b b-gray">×1</span></div>
+  <div class="crit"><span class="crit-n">10</span><span class="crit-name">Centralization</span><span class="crit-w b b-gray">×1</span></div>
+  <div class="crit"><span class="crit-n">11</span><span class="crit-name">Security</span><span class="crit-w b b-gray">×1</span></div>
+  <div class="crit"><span class="crit-n">12</span><span class="crit-name">Product-Market Fit</span><span class="crit-w b b-gray">×1</span></div>
+</div>
+
+<h3>Критерии системы 2 (29 осей с весами)</h3>
+<div class="crit-grid">
+  <div class="crit"><span class="crit-n">1</span><span class="crit-name">Ликвидность и структура рынка</span><span class="crit-w b b-blue">×8</span></div>
+  <div class="crit"><span class="crit-n">2</span><span class="crit-name">Токеномика и анлоки</span><span class="crit-w b b-blue">×7</span></div>
+  <div class="crit"><span class="crit-n">3</span><span class="crit-name">Нарратив и фаза цикла</span><span class="crit-w b b-blue">×7</span></div>
+  <div class="crit"><span class="crit-n">4</span><span class="crit-name">Технический анализ</span><span class="crit-w b b-blue">×7</span></div>
+  <div class="crit"><span class="crit-n">5</span><span class="crit-name">Фундаментал (TVL, revenue, users)</span><span class="crit-w b b-green">×3</span></div>
+  <div class="crit"><span class="crit-n">6</span><span class="crit-name">On-chain метрики</span><span class="crit-w b b-green">×4</span></div>
+  <div class="crit"><span class="crit-n">7</span><span class="crit-name">Команда, инвесторы, vesting</span><span class="crit-w b b-yellow">×2</span></div>
+  <div class="crit"><span class="crit-n">8</span><span class="crit-name">Конкуренция и moat</span><span class="crit-w b b-yellow">×2</span></div>
+  <div class="crit"><span class="crit-n">9</span><span class="crit-name">Безопасность</span><span class="crit-w b b-yellow">×2</span></div>
+  <div class="crit"><span class="crit-n">10</span><span class="crit-name">Социальные метрики</span><span class="crit-w b b-gray">×1</span></div>
+  <div class="crit"><span class="crit-n">11</span><span class="crit-name">Регуляторные риски</span><span class="crit-w b b-yellow">×2</span></div>
+  <div class="crit"><span class="crit-n">12</span><span class="crit-name">Макро-контекст</span><span class="crit-w b b-yellow">×2</span></div>
+  <div class="crit"><span class="crit-n">13</span><span class="crit-name">Деривативы и позиционирование</span><span class="crit-w b b-blue">×7</span></div>
+  <div class="crit"><span class="crit-n">14</span><span class="crit-name">Корреляции и бета</span><span class="crit-w b b-gray">×1</span></div>
+  <div class="crit"><span class="crit-n">15</span><span class="crit-name">Реальная доходность (real yield)</span><span class="crit-w b b-yellow">×2</span></div>
+  <div class="crit"><span class="crit-n">16</span><span class="crit-name">Катализаторы и roadmap</span><span class="crit-w b b-blue">×7</span></div>
+  <div class="crit"><span class="crit-n">17</span><span class="crit-name">Активность разработки</span><span class="crit-w b b-yellow">×2</span></div>
+  <div class="crit"><span class="crit-n">18</span><span class="crit-name">Концентрация холдеров / smart money</span><span class="crit-w b b-green">×3</span></div>
+  <div class="crit"><span class="crit-n">19</span><span class="crit-name">Казна и runway</span><span class="crit-w b b-gray">×1</span></div>
+  <div class="crit"><span class="crit-n">20</span><span class="crit-name">Качество реакции на новости</span><span class="crit-w b b-yellow">×2</span></div>
+  <div class="crit"><span class="crit-n">21</span><span class="crit-name">Стейблкоины и потоки в экосистеме</span><span class="crit-w b b-green">×3</span></div>
+  <div class="crit"><span class="crit-n">22</span><span class="crit-name">Интеграции и BD</span><span class="crit-w b b-gray">×1</span></div>
+  <div class="crit"><span class="crit-n">23</span><span class="crit-name">Value accrual</span><span class="crit-w b b-green">×4</span></div>
+  <div class="crit"><span class="crit-n">24</span><span class="crit-name">RS к сектору / BTC</span><span class="crit-w b b-blue">×7</span></div>
+  <div class="crit"><span class="crit-n">25</span><span class="crit-name">Cost basis distribution (URPD)</span><span class="crit-w b b-green">×4</span></div>
+  <div class="crit"><span class="crit-n">26</span><span class="crit-name">Exit liquidity</span><span class="crit-w b b-green">×4</span></div>
+  <div class="crit"><span class="crit-n">27</span><span class="crit-name">Поведение в аналогичных сетапах</span><span class="crit-w b b-green">×3</span></div>
+  <div class="crit"><span class="crit-n">28</span><span class="crit-name">Key person risk</span><span class="crit-w b b-gray">×1</span></div>
+  <div class="crit"><span class="crit-n">29</span><span class="crit-name">Off-ramp и конвертируемость</span><span class="crit-w b b-gray">×1</span></div>
+</div>
+
+<hr class="sep">
+
+<!-- ═══════════════════ АКАДЕМИЧЕСКИЕ ИСТОЧНИКИ ═══════════════════ -->
+<h2 id="research">Что говорят академические источники и исследования</h2>
+
+<div class="note">Исследование проводилось по материалам на русском, английском и корейском языках. Источники: SSRN, Sparkline Capital, aperiodic.io, MDPI, arxiv.org, Centic, ScienceDirect, medium.com/@centicio.</div>
+
+<h3 id="r1">1. Оптимальное количество факторов</h3>
+<p>Исследование Sparkline Capital «Crypto Factor Investing» (бэктест 2017–2024) показывает: <strong>2–3 хорошо выбранных фактора устраняют большую часть аномальных доходностей</strong>. Исследование SSRN «Quantitative Alpha in Crypto Markets» подтверждает: из 36 факторов <strong>всего 2–3 ключевых убирают весь значимый портфельный альфа</strong>. Сверх 15–18 факторов начинается разводнение сигнала и переобучение модели.</p>
+<p>Вывод: 29 критериев избыточно. 12 — минимально (пропускает ключевые quant-сигналы). Оптимальный диапазон: <strong>15–18 критериев</strong>.</p>
+<div class="source">Источники: Sparkline Capital (sparklinecapital.com/post/crypto-factor-investing) · SSRN 5225612 · MDPI Mathematics 12/9/1351</div>
+
+<h3 id="r2">2. Факторы с наибольшей эмпирической силой</h3>
+<table>
+<thead><tr>
+  <th>Фактор</th><th>Sharpe / Доходность</th><th>Особенности в крипте</th><th>Источник</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td class="td-name">Ликвидность (объём, спред)</td>
+  <td><span class="sharpe">доминирует в отборе факторов</span></td>
+  <td>Появляется во всех весовых схемах, периодах и спецификациях</td>
+  <td class="td-dim">Sparkline, SSRN</td>
+</tr>
+<tr>
+  <td class="td-name">Momentum / RS к BTC (30d)</td>
+  <td><span class="sharpe">Sharpe 1.0–1.5</span></td>
+  <td>В крипте горизонт ~30d, быстро затухает — нужна частая переоценка</td>
+  <td class="td-dim">aperiodic.io, Sparkline (18.3% ann.)</td>
+</tr>
+<tr>
+  <td class="td-name">Funding rate / Carry</td>
+  <td><span class="sharpe">Sharpe 1.0–1.5</span></td>
+  <td>OI-взвешенный composite across exchanges — самый надёжный</td>
+  <td class="td-dim">aperiodic.io</td>
+</tr>
+<tr>
+  <td class="td-name">Intangible value / фундаментал</td>
+  <td><span class="sharpe">31.8% ann. (small-caps)</span></td>
+  <td>Фильтрует мусорные токены; менее эффективен в large-caps</td>
+  <td class="td-dim">Sparkline</td>
+</tr>
+<tr>
+  <td class="td-name">3 ортогональных фактора совместно</td>
+  <td><span class="sharpe">Sharpe ≈ 2.5</span></td>
+  <td>Ликвидность + Momentum + Carry дают несвязанные сигналы</td>
+  <td class="td-dim">aperiodic.io (20+ factors tracked)</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="r3">3. Факторы со слабой или нулевой предсказательной силой</h3>
+<table>
+<thead><tr>
+  <th>Критерий</th><th>Проблема</th><th>Что говорит исследование</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td class="td-name">#10 Социальные метрики (×1)</td>
+  <td><span class="b b-red">слабый</span></td>
+  <td>Легко манипулируются ботами; Twitter/X данные зашумлены. Предсказательная сила статистически незначима после контроля других факторов</td>
+</tr>
+<tr>
+  <td class="td-name">#14 Beta / корреляция (×1)</td>
+  <td><span class="b b-red">избыточный</span></td>
+  <td>Полностью перекрывается с #24 RS к BTC — та же информация, другая формула</td>
+</tr>
+<tr>
+  <td class="td-name">#27 Исторические аналоги (×3)</td>
+  <td><span class="b b-red">ненадёжный</span></td>
+  <td>Паттерн-матчинг в крипте воспроизводится плохо из-за короткой истории и структурных изломов; риск ложных аналогий</td>
+</tr>
+<tr>
+  <td class="td-name">#20 Качество реакции на новости (×2)</td>
+  <td><span class="b b-red">нестабильный</span></td>
+  <td>Слишком субъективно и situational; не поддаётся надёжной автоматизации</td>
+</tr>
+<tr>
+  <td class="td-name">#19 Казна / runway (×1)</td>
+  <td><span class="b b-yellow">узкий</span></td>
+  <td>Релевантна только для ранних проектов; для BTC, ETH, SOL — бессмысленна</td>
+</tr>
+<tr>
+  <td class="td-name">#22 Интеграции / BD (×1)</td>
+  <td><span class="b b-yellow">дублирует</span></td>
+  <td>Концептуально покрывается #16 Катализаторами; самостоятельного веса не несёт</td>
+</tr>
+<tr>
+  <td class="td-name">#28 Key person risk (×1)</td>
+  <td><span class="b b-yellow">шум</span></td>
+  <td>Не поддаётся количественной оценке; результат субъективен и редко обновляется</td>
+</tr>
+<tr>
+  <td class="td-name">#29 Off-ramp (×1)</td>
+  <td><span class="b b-yellow">статичный</span></td>
+  <td>Для портфельных монет (топ-30 по капитализации) практически не меняется; информация покрыта #1 Ликвидностью</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="r4">4. Корреляция между существующими критериями</h3>
+<p>Высокая корреляция между критериями — источник двойного счёта и завышения уверенности в оценке:</p>
+<table>
+<thead><tr><th>Группа связанных критериев</th><th>Проблема</th></tr></thead>
+<tbody>
+<tr>
+  <td><strong>#5 Фундаментал + #15 Real yield + #23 Value accrual</strong></td>
+  <td>Все три читают данные DeFiLlama: TVL, fees, revenue. Считают практически одно и то же тремя способами</td>
+</tr>
+<tr>
+  <td><strong>#3 Нарратив + #16 Катализаторы</strong></td>
+  <td>Нарратив без катализаторов — пустой звук. Катализаторы и есть материализация нарратива. Разделение искусственное</td>
+</tr>
+<tr>
+  <td><strong>#6 On-chain + #18 Холдеры / Smart money</strong></td>
+  <td>Оба описывают поведение крупных участников на блокчейне; частичное перекрытие</td>
+</tr>
+<tr>
+  <td><strong>#4 TA + #24 RS к BTC</strong></td>
+  <td>Оба price-based; RSI в #4 и RS в #24 коррелируют — монета, растущая быстрее BTC, обычно и технически сильна</td>
+</tr>
+<tr>
+  <td><strong>#14 Бета + #24 RS</strong></td>
+  <td>Полный дубликат: бета измеряет то же, что RS, но в другой метрике</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="r5">5. Чего не хватает в обеих системах</h3>
+<table>
+<thead><tr>
+  <th>Отсутствующий фактор</th><th>Почему важен</th><th>Источник данных</th><th>Доступность</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td class="td-name">ETF flow data (BTC/ETH)</td>
+  <td>Spot ETF netting с 2024 года стал доминирующим институциональным сигналом. Приток/отток из ETF предсказывает направление крупных движений</td>
+  <td class="td-mono">SoSoValue API</td>
+  <td><span class="b b-green">бесплатно</span></td>
+</tr>
+<tr>
+  <td class="td-name">Stablecoin dominance trend (USDT.D %)</td>
+  <td>Рост USDT.D = деньги уходят в кэш = медвежий сигнал для всего рынка. Один из лучших макро-индикаторов ротации</td>
+  <td class="td-mono">CoinGlass / DeFiLlama stables</td>
+  <td><span class="b b-green">бесплатно</span></td>
+</tr>
+<tr>
+  <td class="td-name">OI / Market Cap ratio</td>
+  <td>Уровень плеча в системе относительно капитализации монеты. Высокий OI/McAp = система перегружена плечом = предиктор каскадных ликвидаций</td>
+  <td class="td-mono">Binance Futures fapi</td>
+  <td><span class="b b-green">бесплатно</span></td>
+</tr>
+<tr>
+  <td class="td-name">Revenue acceleration (производная, не уровень)</td>
+  <td>Рост выручки на 3x важнее абсолютного уровня. Ни одна из систем не считает ускорение — только абсолютный уровень за 30д</td>
+  <td class="td-mono">DeFiLlama (уже есть в данных)</td>
+  <td><span class="b b-green">бесплатно</span></td>
+</tr>
+<tr>
+  <td class="td-name">CEX → DEX flow ratio</td>
+  <td>Где находится ликвидность — куда уходит умный капитал. Shift из CEX в DEX означает самокастодиальный нарратив, вероятен рост on-chain активности</td>
+  <td class="td-mono">DeFiLlama DEX volumes</td>
+  <td><span class="b b-green">бесплатно</span></td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="r6">6. Проблема TTL кэша</h3>
+<p>Обе системы используют одинаковый кэш для данных разной волатильности — это фундаментальная ошибка:</p>
+<table>
+<thead><tr>
+  <th>Тип данных</th><th>Сейчас (ср.)</th><th>Рекомендуется</th><th>Обоснование</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>Деривативы, объём, RS, funding</td>
+  <td class="td-dim">каждый раз / 4ч</td>
+  <td><span class="b b-green">real-time / без кэша</span></td>
+  <td>Меняются каждый час, кэш убивает сигнал</td>
+</tr>
+<tr>
+  <td>Нарратив, катализаторы</td>
+  <td class="td-dim">7–14 дней</td>
+  <td><span class="b b-blue">3–4 дня</span></td>
+  <td>Нарративы разворачиваются быстро, 14 дней — слишком долго</td>
+</tr>
+<tr>
+  <td>Фундаментал, TVL, выручка</td>
+  <td class="td-dim">7 дней</td>
+  <td><span class="b b-yellow">7–10 дней</span></td>
+  <td>Меняется медленно, текущий TTL разумен</td>
+</tr>
+<tr>
+  <td>Команда, токеномика, конкуренты</td>
+  <td class="td-dim">7–14 дней</td>
+  <td><span class="b b-yellow">21–30 дней</span></td>
+  <td>Команда не меняется за 2 недели; избыточный перезапрос тратит токены</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="r7">7. Архитектурные преимущества каждой системы</h3>
+<div class="vs-box">
+  <div class="vs-col">
+    <h4>✅ Что хорошо в системе 1</h4>
+    <ul>
+      <li>Правильное разделение ролей моделей: Haiku собирает данные, Sonnet анализирует</li>
+      <li>Дольше кэш (14 дней) экономит токены</li>
+      <li>Проще интерпретировать результат (60 баллов, без сложных весов)</li>
+      <li>Меньше избыточных критериев</li>
+    </ul>
+  </div>
+  <div class="vs-col">
+    <h4>✅ Что хорошо в системе 2</h4>
+    <ul>
+      <li>Двойной движок: алгоритм каждые 4ч + AI раз в сутки</li>
+      <li>Quant-критерии не тратят токены (только API)</li>
+      <li>Веса отражают эмпирическую значимость (ликвидность ×8, RS ×7 — правильно)</li>
+      <li>SQLite с commit per ticker — устойчиво к падениям</li>
+      <li>Arkham для smart money — редкий источник с высоким сигналом</li>
+    </ul>
+  </div>
+</div>
+
+<h3 id="r8">8. Критически недооценённые факторы (новые исследования 2024–2026)</h3>
+<div class="note">Источники: SSRN, arxiv, Keyrock, DWF Labs, Frontiers in Blockchain, ACM SIGMETRICS 2026. Все выводы подкреплены реальными работами — без домыслов.</div>
+
+<table>
+<thead><tr>
+  <th>Фактор</th><th>Эмпирический факт</th><th>Рекомендуемый вес</th><th>Источник</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td class="td-name">Vesting Cliff Timing<br><span class="td-dim">дата + размер конкретного клиффа</span></td>
+  <td>Keyrock: 16 000+ unlock-событий — <strong>90% создают негативное давление на цену</strong>. SSRN Kim 2025 (52 события на Binance): 88.5% (46/52) показали negative returns за 72ч (p=2.2×10⁻⁹). Ценовое давление начинается <strong>за ~30 дней до cliff</strong>. Team unlocks = падение до 25%</td>
+  <td><span class="b b-blue">×5</span></td>
+  <td class="td-dim">SSRN 6632838 · Keyrock 2024</td>
+</tr>
+<tr>
+  <td class="td-name">MC/FDV Supply Overhang<br><span class="td-dim">circulating market cap / fully diluted</span></td>
+  <td>MC/FDV &lt;40% = 60%+ supply «нависает» над рынком = структурное разводнение. Frontiers in Blockchain 2026: token unlocks β=−0.22 на цену ETH. Токен с 10% circulating — «медленный rug pull» даже без новых покупателей</td>
+  <td><span class="b b-blue">×4</span></td>
+  <td class="td-dim">Frontiers fbloc.2026.1817622 · CoinGecko</td>
+</tr>
+<tr>
+  <td class="td-name">Incentive vs Organic Growth<br><span class="td-dim">TVR, D30 wallet retention</span></td>
+  <td>arxiv:2404.11745 «Piercing the Veil of TVL» (UCL/NTU): TVL раздут ~2x на пике — гэп TVL−TVR достиг $139.87B. Castle Labs (Compound/Arbitrum LTIPP 2024): органические пользователи вносили $154K vs $9K у инцентивных (17x разница). D30 retention = 1 повторный депозит в месяц, затем исчезновение</td>
+  <td><span class="b b-blue">×4</span></td>
+  <td class="td-dim">arxiv:2404.11745 · Castle Labs 2024</td>
+</tr>
+<tr>
+  <td class="td-name">Narrative Lifecycle Positioning<br><span class="td-dim">фаза нарратива: early/growing/peak/declining</span></td>
+  <td>Sharpe.ai отслеживает 30 нарративов × 25+ таймфреймов. Ключевой сигнал — <strong>Mindshare delta week-over-week</strong>: растущий при низкой абсолютной доле = early entry. Mainstream coverage (Bloomberg) + Google Trends spike = peak (риск). Гартнер Hype Cycle for Web3 2024 подтверждает цикличность</td>
+  <td><span class="b b-blue">×4</span></td>
+  <td class="td-dim">Sharpe.ai Mindshare · Gartner Web3 2024</td>
+</tr>
+<tr>
+  <td class="td-name">Protocol Revenue Retention<br><span class="td-dim">buyback quality vs treasury dump</span></td>
+  <td>DWF Labs 2025: holder revenue вырос >5x, достиг $800M в Q3 2025. Hyperliquid направляет <strong>91% комиссий на buybacks</strong> — один из лучших ценовых перформансов. Keyrock: buyback эффективен только при низком P/S; при высоком P/S разрушает treasury (один протокол потерял $86.3M на неоптимальных buybacks)</td>
+  <td><span class="b b-yellow">×3</span></td>
+  <td class="td-dim">DWF Labs 2025 · Keyrock · Token Terminal</td>
+</tr>
+<tr>
+  <td class="td-name">Token Velocity (V = txvol/supply)<br><span class="td-dim">скорость обращения по уравнению MV=PQ</span></td>
+  <td>arxiv:2403.04914: из уравнения обмена P = (Q×kPQ) / (M×V). Низкая velocity (Ethereum 3.6%) = токен держат, не продают = бычий. Velocity sinks: стейкинг, buyback-burn, veToken-локи. «Hot potato effect» — токен берут только чтобы сразу продать → цена стремится к нулю</td>
+  <td><span class="b b-yellow">×3</span></td>
+  <td class="td-dim">arxiv:2403.04914 · Burniske 2017</td>
+</tr>
+<tr>
+  <td class="td-name">Metcalfe Ratio (сетевые эффекты)<br><span class="td-dim">actual price / Metcalfe fair value</span></td>
+  <td>arxiv:1803.05663 (Bitcoin 2010–2018, 2782 точки): стоимость сети ∝ N², slope β=1.69, <strong>R²=0.95</strong>. SSRN Peterson: «exceptional fit» для Bitcoin. Metcalfe Ratio &gt;2 = пузырь, &lt;0.5 = недооценён. Ограничение: применимо только к монетам с длинной историей active addresses</td>
+  <td><span class="b b-yellow">×3</span></td>
+  <td class="td-dim">arxiv:1803.05663 · SSRN 3078248</td>
+</tr>
+<tr>
+  <td class="td-name">Social Sentiment Velocity<br><span class="td-dim">d(mentions)/dt, не абсолютный уровень</span></td>
+  <td>Santiment 2025: комбо social+on-chain предсказывает направление BTC с <strong>64% точностью</strong> на 30d. Lead time: сентимент опережает цену на 24–48ч. Ловушка: абсолютный sentiment часто лагирует — к моменту когда он bullish, цена уже выросла 10–20%. ACM 2025: CNN-LSTM с sentiment улучшает F1-score на 12%</td>
+  <td><span class="b b-yellow">×3</span></td>
+  <td class="td-dim">ACM 2025 · SSRN 4806394 · LunarCrush</td>
+</tr>
+<tr>
+  <td class="td-name">Protocol Bad Debt / VaR<br><span class="td-dim">только для lending-протоколов</span></td>
+  <td>arxiv:2605.05145 (Institutional DeFi Risk, 9 dimensions): composability risk, temporal risk, comprehension debt как новые измерения. Aave V3 (2023–2025): $2M lifetime bad debt при $1T+ займах = 0.0002% (отличный). Gauntlet/Chaos Labs: VaR@95% и LaR@95% для stress-testing параметров. DefiLlama публикует bad debt tracker</td>
+  <td><span class="b b-yellow">×3</span></td>
+  <td class="td-dim">arxiv:2605.05145 · arxiv:2506.12855 · Gauntlet</td>
+</tr>
+<tr>
+  <td class="td-name">Options IV Skew<br><span class="td-dim">только BTC/ETH — Deribit 90%+ объёма</span></td>
+  <td>ScienceDirect 2024 (тик-тик данные Deribit сентябрь 2020 – август 2023): IV slope связана с инвестиционным сентиментом. 25-delta Risk Reversal (RR25) = IV(25d call) − IV(25d put). Положительный RR25 = call skew (bullish), отрицательный = put skew (demand на защиту). IV backwardation = stress signal. DVOL = аналог VIX для BTC</td>
+  <td><span class="b b-yellow">×2</span></td>
+  <td class="td-dim">ScienceDirect S0167637724000713 · Deribit</td>
+</tr>
+<tr>
+  <td class="td-name">Revenue Concentration (HHI)<br><span class="td-dim">индекс Херфиндаля-Хиршмана по источникам revenue</span></td>
+  <td>CryptoBriefing: 10 протоколов генерируют 87% holder revenue, 3 протокола = 71% — высокая системная концентрация. HHI &lt;1500 = норма, &gt;2500 = красный флаг. Применение: если 80% revenue протокола от 1 dApp/use case — это single point of failure</td>
+  <td><span class="b b-gray">×2</span></td>
+  <td class="td-dim">arxiv:2601.08540 · FSB DeFi 2023 · CryptoBriefing</td>
+</tr>
+<tr>
+  <td class="td-name">Bridge Flows (active, не structural)<br><span class="td-dim">realized interoperability, не наличие мостов</span></td>
+  <td>ACM SIGMETRICS 2026 (arxiv:2604.03083, 20 блокчейнов, 16 мостов, 2022–2025): <strong>«connectivity alone does not imply economically meaningful integration»</strong>. Spike inflows + спад через 30 дней = инцентивная программа закончилась. Sustained net inflows 3+ месяца + рост active addresses = органическое расширение</td>
+  <td><span class="b b-gray">×2</span></td>
+  <td class="td-dim">arxiv:2604.03083 · DefiLlama bridges</td>
+</tr>
+</tbody>
+</table>
+<div class="source">Исследование проводилось по материалам на русском, английском, корейском. Примечание: корейских и китайских академических работ по scoring framework в открытом доступе фактически нет — исследования сосредоточены на market efficiency и регуляторике.</div>
+
+<hr class="sep">
+
+<!-- ═══════════════════ РЕКОМЕНДАЦИИ ═══════════════════ -->
+<h2 id="recs">Рекомендации по оптимальной системе</h2>
+
+<h3 id="rec-a">А. Действия с существующими критериями</h3>
+<table>
+<thead><tr>
+  <th>Действие</th><th>Критерии</th><th>Обоснование</th>
+</tr></thead>
+<tbody>
+<tr class="act-del">
+  <td><span class="b b-red">Удалить</span></td>
+  <td><strong>#14 Бета/корреляция (×1)</strong></td>
+  <td>Полный дубликат #24 RS к BTC — та же информация в другой форме</td>
+</tr>
+<tr class="act-del">
+  <td><span class="b b-red">Удалить</span></td>
+  <td><strong>#20 Реакция на новости (×2)</strong></td>
+  <td>Не поддаётся надёжному измерению; нестабильный и situational критерий</td>
+</tr>
+<tr class="act-del">
+  <td><span class="b b-red">Удалить</span></td>
+  <td><strong>#28 Key person risk (×1)</strong></td>
+  <td>Субъективный шум; редко обновляется; перекрывается командой #7</td>
+</tr>
+<tr class="act-del">
+  <td><span class="b b-red">Удалить</span></td>
+  <td><strong>#29 Off-ramp / конвертируемость (×1)</strong></td>
+  <td>Статичен для портфельных монет; покрывается #1 Ликвидностью</td>
+</tr>
+<tr class="act-del">
+  <td><span class="b b-red">Удалить</span></td>
+  <td><strong>#22 Интеграции / BD (×1)</strong></td>
+  <td>Концептуальный дубликат #16 Катализаторов</td>
+</tr>
+<tr class="act-del">
+  <td><span class="b b-red">Удалить</span></td>
+  <td><strong>#27 Исторические аналоги (×3)</strong></td>
+  <td>Паттерн-матчинг в крипте ненадёжен из-за короткой истории; риск ложных аналогий</td>
+</tr>
+<tr class="act-mrg">
+  <td><span class="b b-blue">Объединить</span></td>
+  <td><strong>#5 + #15 + #23 → «Фундаментал + доходность»</strong></td>
+  <td>Все три из DeFiLlama, сильно коррелируют. Единый блок с весом ×6</td>
+</tr>
+<tr class="act-mrg">
+  <td><span class="b b-blue">Объединить</span></td>
+  <td><strong>#3 + #16 → «Нарратив + катализаторы»</strong></td>
+  <td>Нарратив без катализаторов — пустой звук. Катализаторы — материализация нарратива</td>
+</tr>
+<tr class="act-mrg">
+  <td><span class="b b-blue">Объединить</span></td>
+  <td><strong>#6 + #18 → «On-chain + распределение»</strong></td>
+  <td>Оба про поведение крупных участников на блокчейне; снижает дублирование</td>
+</tr>
+<tr class="act-mrg">
+  <td><span class="b b-blue">Объединить</span></td>
+  <td><strong>#7 + #8 → «Команда + конкурентный ров»</strong></td>
+  <td>Сила команды и конкурентная позиция — две стороны одного вопроса</td>
+</tr>
+<tr class="act-up">
+  <td><span class="b b-yellow">Повысить вес</span></td>
+  <td><strong>#24 RS к BTC/сектору: ×7 → ×9</strong></td>
+  <td>Momentum — эмпирически наиболее стабильный фактор в крипте (Sharpe 1.0–1.5 отдельно)</td>
+</tr>
+<tr class="act-up">
+  <td><span class="b b-yellow">Расширить</span></td>
+  <td><strong>#21 Стейблкоины: добавить USDT.D trend</strong></td>
+  <td>Trend доминанса стейблов — один из лучших макро-индикаторов ротации</td>
+</tr>
+<tr class="act-up">
+  <td><span class="b b-yellow">Расширить</span></td>
+  <td><strong>#12 Макро: добавить ETF flow (BTC/ETH)</strong></td>
+  <td>С 2024 года spot ETF netting — ключевой институциональный сигнал</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="rec-b">Б. Новые критерии</h3>
+<table>
+<thead><tr>
+  <th>Новый критерий</th><th>Вес</th><th>Источник данных</th><th>Стоимость</th><th>Обоснование</th>
+</tr></thead>
+<tbody>
+<tr class="act-add">
+  <td class="td-name">ETF-флоу (BTC/ETH Spot ETF)</td>
+  <td><span class="b b-blue">×3</span></td>
+  <td class="td-mono">SoSoValue API</td>
+  <td><span class="b b-green">бесплатно</span></td>
+  <td>Приток/отток из институциональных ETF — новый доминирующий макро-сигнал с 2024 года. Прямо влияет на ликвидность BTC/ETH и через них на альткоины</td>
+</tr>
+<tr class="act-add">
+  <td class="td-name">OI / Market Cap ratio</td>
+  <td><span class="b b-blue">×3</span></td>
+  <td class="td-mono">Binance fapi (уже подключён)</td>
+  <td><span class="b b-green">бесплатно</span></td>
+  <td>Уровень плеча относительно капитализации. Высокий OI/McAp = предиктор каскадных ликвидаций. Данные уже есть в Binance Futures — только формула</td>
+</tr>
+<tr class="act-add">
+  <td class="td-name">Revenue acceleration (производная 30d vs 90d)</td>
+  <td><span class="b b-blue">×2</span></td>
+  <td class="td-mono">DeFiLlama (уже в данных)</td>
+  <td><span class="b b-green">бесплатно</span></td>
+  <td>Рост выручки с ускорением важнее абсолютного уровня. DeFiLlama отдаёт исторические данные — нужно только считать производную из уже собираемых данных</td>
+</tr>
+<tr class="act-add">
+  <td class="td-name">Sharpe ratio монеты (30d / 90d vs BTC)</td>
+  <td><span class="b b-blue">×2</span></td>
+  <td class="td-mono">Binance klines (уже подключён)</td>
+  <td><span class="b b-green">бесплатно</span></td>
+  <td>Академически подтверждённая мера доходности с поправкой на риск. Монеты с Sharpe ниже BTC не оправдывают риск — кандидаты на выход из портфеля. Считается из уже собираемых klines без новых API. Комбинация ликвидность+momentum+carry даёт Sharpe ≈ 2.5 — цель для топ-позиций</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="rec-v">В. Итоговая рекомендуемая структура (18 критериев)</h3>
+<div class="note">Убрано 9 критериев из системы 2, объединено 4 пары, добавлено 3 новых. Итого: 18 критериев, макс. ~477 баллов. 14 из 18 считаются алгоритмически без AI.</div>
+<table>
+<thead><tr>
+  <th>#</th><th>Критерий</th><th>Вес</th><th>Метод</th><th>Изменение</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>1</td><td>Ликвидность и структура рынка</td><td><span class="b b-blue">×8</span></td><td><span class="b b-green">API</span></td><td>без изменений</td>
+</tr>
+<tr>
+  <td>2</td><td>Токеномика и анлоки</td><td><span class="b b-blue">×7</span></td><td><span class="b b-purple">AI</span></td><td>без изменений</td>
+</tr>
+<tr>
+  <td>3</td><td>Нарратив <strong>+</strong> катализаторы (объединить #3 и #16)</td><td><span class="b b-blue">×9</span></td><td><span class="b b-purple">AI</span></td><td class="b b-blue">объединение</td>
+</tr>
+<tr>
+  <td>4</td><td>Технический анализ (RSI, MA200, MVRV)</td><td><span class="b b-blue">×7</span></td><td><span class="b b-green">API</span></td><td>без изменений</td>
+</tr>
+<tr>
+  <td>5</td><td>Фундаментал + real yield + value accrual (объединить #5, #15, #23)</td><td><span class="b b-blue">×6</span></td><td><span class="b b-green">API</span></td><td class="b b-blue">объединение</td>
+</tr>
+<tr>
+  <td>6</td><td>On-chain + концентрация холдеров (объединить #6 и #18)</td><td><span class="b b-blue">×5</span></td><td><span class="b b-green">API</span></td><td class="b b-blue">объединение</td>
+</tr>
+<tr>
+  <td>7</td><td>Команда + конкурентный ров (объединить #7 и #8)</td><td><span class="b b-yellow">×3</span></td><td><span class="b b-purple">AI</span></td><td class="b b-blue">объединение</td>
+</tr>
+<tr>
+  <td>9</td><td>Безопасность (аудиты, хаки)</td><td><span class="b b-yellow">×2</span></td><td><span class="b b-green">API</span></td><td>без изменений</td>
+</tr>
+<tr>
+  <td>11</td><td>Регуляторные риски</td><td><span class="b b-yellow">×2</span></td><td><span class="b b-purple">AI</span></td><td>без изменений</td>
+</tr>
+<tr>
+  <td>12</td><td>Макро (VIX, DXY, ставка, F&amp;G) <strong>+ ETF flow</strong></td><td><span class="b b-yellow">×3</span></td><td><span class="b b-green">API</span></td><td class="b b-yellow">расширение + вес +1</td>
+</tr>
+<tr>
+  <td>13</td><td>Деривативы: funding, OI, L/S, basis, taker</td><td><span class="b b-blue">×7</span></td><td><span class="b b-green">API</span></td><td>без изменений</td>
+</tr>
+<tr>
+  <td>17</td><td>Активность разработки (GitHub commits, silence)</td><td><span class="b b-yellow">×2</span></td><td><span class="b b-green">API</span></td><td>без изменений</td>
+</tr>
+<tr>
+  <td>21</td><td>Стейблкоины + USDT.D trend (расширить #21)</td><td><span class="b b-yellow">×4</span></td><td><span class="b b-green">API</span></td><td class="b b-yellow">расширение + вес +1</td>
+</tr>
+<tr>
+  <td>24</td><td>RS к BTC / сектору (Momentum)</td><td><span class="b b-blue">×9</span></td><td><span class="b b-green">API</span></td><td class="b b-yellow">вес ×7 → ×9</td>
+</tr>
+<tr>
+  <td>25</td><td>URPD / cost basis distribution</td><td><span class="b b-yellow">×4</span></td><td><span class="b b-green">API</span></td><td>без изменений</td>
+</tr>
+<tr>
+  <td>26</td><td>Exit liquidity (при заданном размере позиции)</td><td><span class="b b-yellow">×4</span></td><td><span class="b b-green">API</span></td><td>без изменений</td>
+</tr>
+<tr style="background:#0d1a0d">
+  <td><strong>NEW</strong></td><td><strong>OI / Market Cap ratio</strong></td><td><span class="b b-blue">×3</span></td><td><span class="b b-green">API</span></td><td class="b b-green">новый</td>
+</tr>
+<tr style="background:#0d1a0d">
+  <td><strong>NEW</strong></td><td><strong>Revenue acceleration (30d vs 90d)</strong></td><td><span class="b b-yellow">×2</span></td><td><span class="b b-green">API</span></td><td class="b b-green">новый</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="rec-g">Г. Рекомендуемая архитектура</h3>
+<div class="card-2col">
+  <div class="card">
+    <h4>Движок 1 — Алгоритмический (каждые 4ч)</h4>
+    <ul>
+      <li>14 из 18 критериев — только API, без AI</li>
+      <li>Результат в SQLite, commit per ticker</li>
+      <li>Деривативы и RS без кэша — real-time</li>
+      <li>Основной источник для принятия решений</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4>Движок 2 — AI (раз в 3–4 дня)</h4>
+    <ul>
+      <li>4 из 18 критериев: нарратив+катализаторы, токеномика, команда+ров, регуляторика</li>
+      <li>Haiku или Sonnet собирает web-данные → Sonnet анализирует</li>
+      <li>Разные TTL кэша по типу критерия (3/7/21 дней)</li>
+      <li>Не блокирует обновление quant-части</li>
+    </ul>
+  </div>
+</div>
+
+<h3 id="rec-d">Д. Разные TTL кэша (по типу критерия)</h3>
+<table>
+<thead><tr>
+  <th>Тип данных / критерий</th><th>Текущий TTL</th><th>Рекомендуется</th><th>Обоснование</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>Деривативы (#13), RS (#24), объём (#1)</td>
+  <td class="td-dim">4ч / каждый раз</td>
+  <td><span class="b b-green">без кэша — real-time</span></td>
+  <td>Funding rate меняется каждые 8ч, кэш на 4ч убивает сигнал</td>
+</tr>
+<tr>
+  <td>Нарратив + катализаторы (#3)</td>
+  <td class="td-dim">7–14 дней</td>
+  <td><span class="b b-blue">3–4 дня</span></td>
+  <td>Нарративы в крипте разворачиваются за 2–3 дня</td>
+</tr>
+<tr>
+  <td>Фундаментал (#5), On-chain (#6), Dev (#17)</td>
+  <td class="td-dim">7 дней</td>
+  <td><span class="b b-yellow">7–10 дней</span></td>
+  <td>Текущий TTL разумен</td>
+</tr>
+<tr>
+  <td>Команда + конкуренты (#7), Регуляторика (#11)</td>
+  <td class="td-dim">7–14 дней</td>
+  <td><span class="b b-yellow">21–30 дней</span></td>
+  <td>Команда не меняется за 2 недели; избыточный AI-вызов тратит токены</td>
+</tr>
+<tr>
+  <td>Токеномика (#2)</td>
+  <td class="td-dim">7 дней</td>
+  <td><span class="b b-yellow">14 дней</span></td>
+  <td>Расписание анлоков меняется редко; 7 дней избыточно</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="rec-e">Е. Дополнительные критерии (из новых исследований)</h3>
+<div class="note">Приоритизированы по соотношению сигнал/сложность внедрения. MC/FDV и Revenue Retention реализуются за несколько часов (данные уже есть). Cliff Timing требует Tokenomist.ai. Metcalfe и Bad Debt — только для подходящих типов активов.</div>
+<table>
+<thead><tr>
+  <th>Новый критерий</th><th>Вес</th><th>Источник данных</th><th>Применимость</th><th>Обоснование</th>
+</tr></thead>
+<tbody>
+<tr class="act-add">
+  <td class="td-name">Vesting Cliff Timing (дата + % circulating)</td>
+  <td><span class="b b-blue">×5</span></td>
+  <td class="td-mono">Tokenomist.ai · Unlocks.app</td>
+  <td>все токены</td>
+  <td>90% unlock-событий = негативное давление. Давление начинается за 30 дней. Cliff >15% circulating = красный флаг. Лучший предсказуемый риск-фактор из всех</td>
+</tr>
+<tr class="act-add">
+  <td class="td-name">MC/FDV Supply Overhang</td>
+  <td><span class="b b-blue">×4</span></td>
+  <td class="td-mono">CoinGecko API (уже подключён)</td>
+  <td>все токены</td>
+  <td>MC/FDV &lt;40% = структурное разводнение. Очень простой в реализации — данные уже есть в CoinGecko</td>
+</tr>
+<tr class="act-add">
+  <td class="td-name">Incentive vs Organic (D30 retention / TVR)</td>
+  <td><span class="b b-blue">×4</span></td>
+  <td class="td-mono">DeFiLlama · Dune Analytics</td>
+  <td>DeFi, L1/L2</td>
+  <td>Organic users вносят 17x больше инцентивных. TVR = реальный TVL без левериджной накрутки. Blast упал −97% после окончания airdrop</td>
+</tr>
+<tr class="act-add">
+  <td class="td-name">Narrative Lifecycle (Mindshare delta)</td>
+  <td><span class="b b-blue">×4</span></td>
+  <td class="td-mono">Sharpe.ai · Google Trends · Santiment</td>
+  <td>все токены</td>
+  <td>Фаза нарратива определяет risk-reward сильнее технических факторов. Early entry = максимальный upside. Sharpe.ai: 30 нарративов × 25+ таймфреймов</td>
+</tr>
+<tr class="act-add">
+  <td class="td-name">Protocol Revenue Retention Quality</td>
+  <td><span class="b b-yellow">×3</span></td>
+  <td class="td-mono">Token Terminal · DefiLlama /fees</td>
+  <td>DeFi протоколы</td>
+  <td>Разница: buyback при низком P/S (эффективно) vs treasury dump vs buyback при высоком P/S (разрушает стоимость). Holder Revenue = ключевая метрика Token Terminal</td>
+</tr>
+<tr class="act-add">
+  <td class="td-name">Token Velocity (txvol / circulating supply)</td>
+  <td><span class="b b-yellow">×3</span></td>
+  <td class="td-mono">Glassnode · CryptoQuant · Messari</td>
+  <td>utility-токены</td>
+  <td>Velocity &lt;5% = holders не продают (бычий). Velocity sinks (staking, veToken, burn) снижают velocity и поддерживают цену. Менее применимо к pure governance токенам</td>
+</tr>
+<tr class="act-add">
+  <td class="td-name">Social Sentiment Velocity (rate of change)</td>
+  <td><span class="b b-yellow">×3</span></td>
+  <td class="td-mono">LunarCrush · Santiment</td>
+  <td>все токены</td>
+  <td>64% accuracy предсказания направления BTC при комбо social+on-chain. Lead time 24–48ч. Важен именно delta (ускорение), не абсолютный уровень — который лагирует</td>
+</tr>
+<tr class="act-add">
+  <td class="td-name">Metcalfe Ratio (network value / Metcalfe estimate)</td>
+  <td><span class="b b-yellow">×3</span></td>
+  <td class="td-mono">Glassnode /active_addresses</td>
+  <td>BTC, ETH, SOL — крупные с историей</td>
+  <td>R²=0.95 на Bitcoin 2010–2018. Ratio &gt;2 = пузырь, &lt;0.5 = value zone. Не применимо к молодым проектам без длинной истории active addresses</td>
+</tr>
+<tr class="act-add">
+  <td class="td-name">Protocol Bad Debt / VaR@95%</td>
+  <td><span class="b b-yellow">×3</span></td>
+  <td class="td-mono">DefiLlama bad debt · Gauntlet dashboard</td>
+  <td>lending протоколы (Aave, Compound, Morpho)</td>
+  <td>Bad debt / TVL &lt;0.001% = excellent (Aave). VaR@95% по Gauntlet. Для не-lending протоколов — ×1</td>
+</tr>
+<tr class="act-add">
+  <td class="td-name">Options IV Skew (RR25)</td>
+  <td><span class="b b-yellow">×2</span></td>
+  <td class="td-mono">Deribit API (публичный)</td>
+  <td>BTC и ETH — где есть опционный рынок</td>
+  <td>25-delta Risk Reversal: положительный = call skew (bullish demand). IV backwardation = stress. Для альткоинов опционного рынка нет</td>
+</tr>
+<tr class="act-add">
+  <td class="td-name">Revenue Concentration HHI</td>
+  <td><span class="b b-gray">×2</span></td>
+  <td class="td-mono">DefiLlama /fees breakdown</td>
+  <td>middleware, bridge, L2</td>
+  <td>HHI &gt;2500 = 80%+ revenue от 1 use case = single point of failure. Ethereum (тысячи dApps) vs LINK (зависимость от DeFi сектора)</td>
+</tr>
+<tr class="act-add">
+  <td class="td-name">Active Bridge Flows (не structural)</td>
+  <td><span class="b b-gray">×2</span></td>
+  <td class="td-mono">DefiLlama /bridges API</td>
+  <td>L1/L2 экосистемы</td>
+  <td>Наличие мостов ≠ рост экосистемы (SIGMETRICS 2026). Нужен sustained net inflow 3+ мес. Spike + спад через 30 дней = конец инцентивной программы</td>
+</tr>
+</tbody>
+</table>
+
+<hr class="sep">
+
+<!-- ═══════════════════ ДВА ДОПОЛНИТЕЛЬНЫХ ВОПРОСА ═══════════════════ -->
+<h2 id="extra">Дополнительные вопросы по системе</h2>
+
+<h3 id="extra1">1. Есть ли разделение на фундаментал и рыночные данные?</h3>
+<div class="note">В предложенной системе из 18 критериев такого разделения <strong>нет явно</strong> — все смешаны в единый итоговый балл. Это проблема: монета может быть фундаментально сильной, но сейчас не время покупать, и наоборот.</div>
+
+<p>Правильная архитектура — <strong>два отдельных независимых блока</strong> с отдельными итоговыми оценками:</p>
+
+<div class="vs-box">
+  <div class="vs-col">
+    <h4>Блок A — Сила монеты (фундаментал)</h4>
+    <p style="font-size:0.8em;color:#8b949e;margin-bottom:8px">Пересчёт раз в 1–2 недели. Отвечает на вопрос: <em>«Хороший ли это актив?»</em></p>
+    <ul>
+      <li>Токеномика и анлоки</li>
+      <li>Фундаментал (TVL, revenue, users)</li>
+      <li>Real yield / value accrual</li>
+      <li>Команда + конкурентный ров</li>
+      <li>Безопасность</li>
+      <li>Регуляторные риски</li>
+      <li>Dev activity</li>
+      <li>On-chain + концентрация холдеров</li>
+    </ul>
+  </div>
+  <div class="vs-col">
+    <h4>Блок B — Рыночный сигнал (тайминг)</h4>
+    <p style="font-size:0.8em;color:#8b949e;margin-bottom:8px">Пересчёт каждые 4–8ч. Отвечает на вопрос: <em>«Сейчас покупать, держать или выходить?»</em></p>
+    <ul>
+      <li>RS / Momentum к BTC (30d)</li>
+      <li>Деривативы: funding, OI, L/S, basis</li>
+      <li>Технический анализ (RSI, MA200, MVRV)</li>
+      <li>OI / Market Cap ratio</li>
+      <li>ETF flow (BTC/ETH)</li>
+      <li>USDT.D trend</li>
+      <li>Exit liquidity</li>
+      <li>URPD / cost basis</li>
+    </ul>
+  </div>
+</div>
+
+<p>Итог — не одно число, а <strong>матрица 2×2</strong>:</p>
+<table>
+<thead><tr>
+  <th></th>
+  <th>Рыночный сигнал: ПОКУПАТЬ</th>
+  <th>Рыночный сигнал: ДЕРЖАТЬ</th>
+  <th>Рыночный сигнал: ВЫХОДИТЬ</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td><strong>Фундаментал: СИЛЬНЫЙ</strong></td>
+  <td style="background:#1f3a24;color:#3fb950">Агрессивный вход / докупка</td>
+  <td style="background:#1a2e4a;color:#58a6ff">Держать полную позицию</td>
+  <td style="background:#252018;color:#d29922">Держать, стоп подтянуть</td>
+</tr>
+<tr>
+  <td><strong>Фундаментал: СЛАБЫЙ</strong></td>
+  <td style="background:#252018;color:#d29922">Спекулятивный вход (малая доля)</td>
+  <td style="background:#1a1e24;color:#8b949e">Сокращать постепенно</td>
+  <td style="background:#2d1517;color:#f85149">Выходить немедленно</td>
+</tr>
+</tbody>
+</table>
+<p style="margin-top:10px">Ни одна из двух существующих систем (psv044581 и baldmas) эту матрицу не реализует — обе выдают единый итоговый балл, который смешивает медленные и быстрые сигналы.</p>
+
+<h3 id="extra2">2. Рекомендации по срокам обновления данных</h3>
+<p>Не все данные одинаково нуждаются в обновлении. Текущие системы используют единый кэш (7 или 14 дней для AI-части), что создаёт два противоположных сбоя: быстрые данные протухают, медленные обновляются слишком часто (лишние расходы).</p>
+
+<table>
+<thead><tr>
+  <th>Данные / критерий</th>
+  <th>Рекомендуемая частота</th>
+  <th>Обоснование</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td><strong>Funding rate, L/S ratio</strong><br><span class="td-dim">Binance Futures</span></td>
+  <td><span class="b b-red">каждые 8ч</span></td>
+  <td>Funding rate сбрасывается каждые 8ч на Binance; кэш дольше = устаревший сигнал</td>
+</tr>
+<tr>
+  <td><strong>RS к BTC, объём (30d)</strong><br><span class="td-dim">Binance Spot klines</span></td>
+  <td><span class="b b-red">каждые 4ч</span></td>
+  <td>Импульс затухает быстро; скользящее окно 30d обновляется непрерывно</td>
+</tr>
+<tr>
+  <td><strong>OI, OI/McAp ratio</strong><br><span class="td-dim">Binance Futures</span></td>
+  <td><span class="b b-red">каждые 4ч</span></td>
+  <td>Ликвидации накапливаются резко; запоздалое обнаружение перегрева критично</td>
+</tr>
+<tr>
+  <td><strong>TA: RSI, MA200, MVRV</strong><br><span class="td-dim">Дневные свечи</span></td>
+  <td><span class="b b-yellow">1 раз в день</span></td>
+  <td>Дневные свечи закрываются раз в сутки; пересчёт чаще не имеет смысла</td>
+</tr>
+<tr>
+  <td><strong>ETF flow (BTC/ETH Spot)</strong><br><span class="td-dim">SoSoValue</span></td>
+  <td><span class="b b-yellow">1 раз в день</span></td>
+  <td>Данные публикуются с суточной задержкой; обновление чаще ничего не добавляет</td>
+</tr>
+<tr>
+  <td><strong>USDT.D trend</strong><br><span class="td-dim">DeFiLlama / CoinGlass</span></td>
+  <td><span class="b b-yellow">1 раз в день</span></td>
+  <td>Суточное изменение стейблкоин-доминанса — достаточная гранулярность</td>
+</tr>
+<tr>
+  <td><strong>TVL, revenue, fees (DeFi)</strong><br><span class="td-dim">DeFiLlama</span></td>
+  <td><span class="b b-yellow">1 раз в день</span></td>
+  <td>DeFiLlama обновляет данные ежедневно; чаще — нет смысла</td>
+</tr>
+<tr>
+  <td><strong>URPD / cost basis</strong><br><span class="td-dim">Binance klines → VPVR</span></td>
+  <td><span class="b b-yellow">1 раз в день</span></td>
+  <td>Распределение объёма меняется медленно; ежедневного обновления достаточно</td>
+</tr>
+<tr>
+  <td><strong>Нарратив + катализаторы</strong><br><span class="td-dim">AI + web_search</span></td>
+  <td><span class="b b-blue">каждые 3–4 дня</span></td>
+  <td>Нарративы в крипте разворачиваются за 2–3 дня; 7–14-дневный кэш слишком долго</td>
+</tr>
+<tr>
+  <td><strong>On-chain метрики, холдеры</strong><br><span class="td-dim">Arkham, Ethplorer</span></td>
+  <td><span class="b b-blue">раз в неделю</span></td>
+  <td>Распределение холдеров и on-chain потоки меняются медленно</td>
+</tr>
+<tr>
+  <td><strong>Токеномика / расписание анлоков</strong><br><span class="td-dim">AI + tokenomist.ai</span></td>
+  <td><span class="b b-gray">раз в 2 недели</span></td>
+  <td>Вестинг-расписание известно заранее и меняется редко</td>
+</tr>
+<tr>
+  <td><strong>Команда, конкуренты</strong><br><span class="td-dim">AI + web_search</span></td>
+  <td><span class="b b-gray">раз в месяц</span></td>
+  <td>Ключевые люди и конкурентная позиция меняются очень редко; частые AI-вызовы — пустая трата токенов</td>
+</tr>
+<tr>
+  <td><strong>Регуляторные риски</strong><br><span class="td-dim">AI + news</span></td>
+  <td><span class="b b-gray">раз в месяц</span></td>
+  <td>Регуляторные события редки; мониторинг новостей через incident-скрипт перекрывает срочные случаи</td>
+</tr>
+<tr>
+  <td><strong>Dev activity (GitHub commits)</strong><br><span class="td-dim">GitHub API</span></td>
+  <td><span class="b b-gray">раз в неделю</span></td>
+  <td>30-дневное скользящее окно; еженедельного обновления достаточно</td>
+</tr>
+<tr>
+  <td><strong>Безопасность (хаки, аудиты)</strong><br><span class="td-dim">внутренняя база</span></td>
+  <td><span class="b b-purple">по событию</span></td>
+  <td>Плановый ресcan не нужен — хак или новый аудит = триггер от incident-монитора</td>
+</tr>
+</tbody>
+</table>
+
+<div class="card" style="margin-top:16px">
+  <p><strong>Главный вывод по срокам:</strong> быстрые сигналы (funding, RS, OI) должны обновляться каждые 4–8ч без AI и без кэша. Медленные качественные данные (команда, регуляторика) — раз в месяц, это экономит ~80% AI-токенов по этим критериям. Единый кэш для всего — системная ошибка обеих существующих реализаций.</p>
+</div>
+
+<hr class="sep">
+
+<h2 id="summary">Итог</h2>
+<div class="card">
+  <p style="margin-bottom:10px">Ни одна из систем не оптимальна по отдельности. Система 1 слишком проста и пропускает ключевые quant-сигналы (деривативы, RS, URPD). Система 2 слишком перегружена низковесными критериями (7 критериев с весом ×1) с высокой взаимной корреляцией.</p>
+  <p style="margin-bottom:10px">Академические исследования однозначно указывают: <strong>ликвидность + momentum + carry — три ортогональных фактора, дающих Sharpe ≈ 2.5</strong>. Они уже присутствуют в системе 2, но «размыты» среди 29 критериев.</p>
+  <p style="margin-bottom:10px"><strong>Оптимум: 18 критериев</strong>, из которых 14 считаются алгоритмически без AI, 4 — через AI раз в 3–4 дня. ETF flow, OI/McAp и revenue acceleration добавить как новые API-сигналы. Дифференцировать TTL кэша по типу данных.</p>
+  <p><strong>Новое исследование (раздел 8 и Е):</strong> самый важный gap — <strong>Vesting Cliff Timing</strong> (90% unlock-событий негативны, давление за 30 дней до — два независимых академических исследования). <strong>MC/FDV &lt;40%</strong> — структурное разводнение, данные уже в CoinGecko. <strong>Organic vs incentive growth</strong> — ключевой для оценки DeFi/L2 (TVR формула, arxiv:2404.11745). <strong>Narrative Lifecycle</strong> определяет risk-reward сильнее большинства технических факторов. Из 12 новых критериев 7 реализуются на уже подключённых данных.</p>
+</div>
+
+<div style="margin-top:32px; color:#484f58; font-size:0.75em;">
+  Источники первой волны: <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5225612" style="color:#484f58">SSRN 5225612</a> ·
+  <a href="https://www.sparklinecapital.com/post/crypto-factor-investing" style="color:#484f58">Sparkline Capital</a> ·
+  <a href="https://blog.aperiodic.io/p/cross-sectional-alpha-factors-in" style="color:#484f58">aperiodic.io</a> ·
+  <a href="https://www.mdpi.com/2227-7390/12/9/1351" style="color:#484f58">MDPI Mathematics</a> ·
+  <a href="https://medium.com/@centicio/all-about-token-health-a-comprehensive-scoring-system-for-cryptocurrency-4e3fc8cb2122" style="color:#484f58">Centic Token Health</a> ·
+  <a href="https://arxiv.org/html/2604.26747v1" style="color:#484f58">arxiv 2604.26747</a>
+  <br style="margin-top:6px">
+  Новые источники (раздел 8): <a href="https://arxiv.org/abs/2404.11745" style="color:#484f58">arxiv:2404.11745 (TVR)</a> ·
+  <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6632838" style="color:#484f58">SSRN 6632838 (Vesting Cliffs)</a> ·
+  <a href="https://arxiv.org/abs/2403.04914" style="color:#484f58">arxiv:2403.04914 (Token Velocity)</a> ·
+  <a href="https://arxiv.org/abs/1803.05663" style="color:#484f58">arxiv:1803.05663 (Metcalfe)</a> ·
+  <a href="https://arxiv.org/abs/2604.03083" style="color:#484f58">arxiv:2604.03083 (Bridge Flows)</a> ·
+  <a href="https://arxiv.org/abs/2605.05145" style="color:#484f58">arxiv:2605.05145 (DeFi Risk 9D)</a> ·
+  <a href="https://arxiv.org/abs/2602.03874" style="color:#484f58">arxiv:2602.03874 (ASRI)</a> ·
+  <a href="https://www.frontiersin.org/journals/blockchain/articles/10.3389/fbloc.2026.1817622/full" style="color:#484f58">Frontiers Blockchain 2026</a> ·
+  <a href="https://keyrock.com/designing-token-buybacks/" style="color:#484f58">Keyrock Buybacks</a> ·
+  <a href="https://www.dwf-labs.com/research/547-token-buybacks-in-web3" style="color:#484f58">DWF Labs 2025</a>
+</div>
+
+</body>
+</html>
