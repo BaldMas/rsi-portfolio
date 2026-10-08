@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Расчёт «бесплатного остатка» — Трекер сигналов</title>
+    <style>
+        :root {
+            --bg: #0f1218;
+            --cd: #181c24;
+            --tx: #e8ebf0;
+            --mu: #8b93a1;
+            --bd: #2a303b;
+            --ac: #5b8cff;
+            --g: #34d399;
+            --gbg: rgba(52, 211, 153, 0.12);
+            --r: #f87171;
+            --y: #fbbf24;
+            --purple: #a855f7;
+            --pbg: rgba(168, 85, 247, 0.12);
+        }
+
+        @media (prefers-color-scheme: light) {
+            :root:not([data-theme="dark"]) {
+                --bg: #f5f6f8;
+                --cd: #ffffff;
+                --tx: #14181f;
+                --mu: #6b7280;
+                --bd: #e3e6eb;
+                --ac: #2f6df6;
+                --g: #16a34a;
+                --gbg: rgba(22, 163, 74, 0.12);
+                --r: #dc2626;
+                --y: #d97706;
+                --purple: #9333ea;
+                --pbg: rgba(147, 51, 234, 0.12);
+            }
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--tx);
+            font: 13px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            padding: 16px;
+        }
+
+        .w { max-width: 1280px; margin: 0 auto; }
+        
+        .header-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--bd);
+        }
+
+        h1 { font-size: 18px; margin: 0; font-weight: 700; }
+        h2 { font-size: 15px; margin: 24px 0 12px 0; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .mu { color: var(--mu); font-size: 11px; }
+
+        .controls { display: flex; gap: 8px; align-items: center; }
+
+        button, select {
+            font: inherit;
+            color: var(--tx);
+            background: var(--cd);
+            border: 1px solid var(--bd);
+            border-radius: 8px;
+            padding: 6px 12px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        button:hover { border-color: var(--ac); }
+        button.p { background: var(--ac); border-color: var(--ac); color: #fff; }
+
+        .table-wrap {
+            background: var(--cd);
+            border: 1px solid var(--bd);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .table-wrap.purple-wrap {
+            border-color: var(--purple);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: right;
+            table-layout: auto;
+        }
+
+        th {
+            padding: 10px 6px;
+            font-size: 10px;
+            color: var(--mu);
+            border-bottom: 1px solid var(--bd);
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            background: rgba(0, 0, 0, 0.08);
+            white-space: normal;
+            vertical-align: bottom;
+            line-height: 1.2;
+        }
+
+        th:first-child, td:first-child { text-align: left; }
+
+        td {
+            padding: 9px 6px;
+            border-bottom: 1px solid var(--bd);
+            font-size: 12px;
+            white-space: nowrap;
+        }
+        tr:last-child td { border-bottom: none; }
+
+        tr.high-profit-row {
+            background: var(--gbg) !important;
+        }
+        tr.high-profit-row td:first-child {
+            border-left: 3px solid var(--g);
+        }
+
+        tr.super-profit-row {
+            background: var(--pbg) !important;
+        }
+        tr.super-profit-row td:first-child {
+            border-left: 3px solid var(--purple);
+        }
+
+        .badge-high {
+            display: inline-block;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 1px 4px;
+            border-radius: 3px;
+            background: var(--g);
+            color: #000;
+            margin-top: 2px;
+        }
+
+        .badge-super {
+            display: inline-block;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 1px 4px;
+            border-radius: 3px;
+            background: var(--purple);
+            color: #fff;
+            margin-top: 2px;
+        }
+
+        .grid-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 12px;
+        }
+
+        .card {
+            background: var(--cd);
+            border: 1px solid var(--bd);
+            border-radius: 12px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .card.high-profit-card {
+            border: 1px solid var(--g);
+            background: linear-gradient(180deg, var(--gbg) 0%, var(--cd) 40%);
+        }
+
+        .card.super-profit-card {
+            border: 1px solid var(--purple);
+            background: linear-gradient(180deg, var(--pbg) 0%, var(--cd) 40%);
+        }
+
+        .card-header { display: flex; justify-content: space-between; align-items: center; }
+        .card-title { font-size: 15px; font-weight: 700; }
+        
+        .k-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            background: var(--bg);
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--bd);
+            font-size: 12px;
+        }
+
+        .k-grid div span { display: block; color: var(--mu); font-size: 10px; }
+        .k-grid div b { display: block; font-size: 12px; margin-top: 2px; }
+
+        .pos { color: var(--g); font-weight: 700; }
+        .amber { color: var(--y); font-weight: 700; }
+        .purp { color: var(--purple); font-weight: 700; }
+
+        .pbar-bg { height: 5px; background: var(--bd); border-radius: 99px; overflow: hidden; }
+        .pbar-fill { height: 100%; background: var(--y); border-radius: 99px; }
+
+        .note-box {
+            background: var(--cd);
+            border: 1px solid var(--bd);
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 12px;
+            color: var(--mu);
+            margin-top: 16px;
+        }
+
+        .empty-row {
+            text-align: center;
+            color: var(--mu);
+            padding: 16px;
+            font-style: italic;
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <div class="w">
+        <div class="header-bar">
+            <div>
+                <h1>📊 Расчёт «бесплатного остатка»</h1>
+                <div class="mu" id="statusLine">Синхронизация с DropsTab...</div>
+            </div>
+            <div class="controls">
+                <select id="viewSelect" onchange="toggleView()">
+                    <option value="table">Вид: Таблица</option>
+                    <option value="cards">Вид: Карточки</option>
+                </select>
+                <button class="p" onclick="fetchPortfolioAndPrices()">🔄 Обновить данные</button>
+            </div>
+        </div>
+
+        <!-- Таблица 1: Забор тела (100%) -->
+        <div id="tableView" class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Актив</th>
+                        <th>Инвестировано</th>
+                        <th>Баланс (монет)</th>
+                        <th>Текущий баланс ($)</th>
+                        <th>Цена покупки</th>
+                        <th>Текущая цена</th>
+                        <th>PNL</th>
+                        <th style="color:var(--y)">Продать (монет)</th>
+                        <th style="color:var(--y)">Продать (%)</th>
+                        <th style="color:var(--g)">Оставить (бесплатно)</th>
+                        <th style="color:var(--g)">Стоимость остатка</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+
+        <!-- Вид карточек -->
+        <div id="cardsView" class="grid-cards hidden"></div>
+
+        <!-- Таблица 2: PNL > 200% -->
+        <div id="superTableSection">
+            <h2>🚀 Фиксация тела + 100% прибыли (для монет с PNL > 200%)</h2>
+            <div class="table-wrap purple-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Актив</th>
+                            <th>Инвестировано</th>
+                            <th>Текущий баланс ($)</th>
+                            <th>Текущая цена</th>
+                            <th>PNL</th>
+                            <th style="color:var(--purple)">Забрать ($)</th>
+                            <th style="color:var(--purple)">Продать (монет)</th>
+                            <th style="color:var(--purple)">Продать (%)</th>
+                            <th style="color:var(--g)">Оставить (бесплатно)</th>
+                            <th style="color:var(--g)">Стоимость остатка</th>
+                        </tr>
+                    </thead>
+                    <tbody id="superTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="note-box">
+            💡 <b>Сигналы забора тела инвестиций:</b><br>
+            • Данные автоматически подтягиваются из публичного портфеля DropsTab.<br>
+            • Позиции с прибылью <b>более +100%</b> подсвечены зеленым цветом.<br>
+            • В нижней таблице <b>(PNL > +200%)</b> расчёт ведётся с выводом первоначального тела <b>плюс 100% чистой прибыли сверху</b>.
+        </div>
+    </div>
+
+    <script>
+        // Запасной локальный портфель на случай сбоя внешней загрузки
+        let portfolio = [
+            { symbol: 'BTC', name: 'Bitcoin', holdings: 0.6445, invested: 16434.75, price: 86317.00, binance: 'BTCUSDT' },
+            { symbol: 'XRP', name: 'XRP', holdings: 15873.00, invested: 7998.40, price: 1.54, binance: 'XRPUSDT' },
+            { symbol: 'ETH', name: 'Ethereum', holdings: 15.18, invested: 31969.04, price: 2745.83, binance: 'ETHUSDT' },
+            { symbol: 'HBAR', name: 'Hedera', holdings: 76729.65, invested: 5995.96, price: 0.1054, binance: 'HBARUSDT' },
+            { symbol: 'CC', name: 'Canton', holdings: 1795.70, invested: 194.03, price: 0.1209, binance: null },
+            { symbol: 'GRT', name: 'The Graph', holdings: 5398.33, invested: 153.22, price: 0.029302, binance: 'GRTUSDT' }
+        ];
+
+        const DROPSTAB_PORTFOLIO_SLUG = 'po-moim-myslam-fjkjsebo6f';
+
+        function fmtUSD(val) {
+            return '$' + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function fmtNum(val, decimals = 2) {
+            return val.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+        }
+
+        function render(prices = {}) {
+            const tBody = document.getElementById('tableBody');
+            const sBody = document.getElementById('superTableBody');
+            const cView = document.getElementById('cardsView');
+            
+            tBody.innerHTML = '';
+            sBody.innerHTML = '';
+            cView.innerHTML = '';
+
+            let superCount = 0;
+
+            portfolio.forEach(item => {
+                const curPrice = prices[item.symbol] || item.price;
+                const buyPrice = item.invested / item.holdings;
+                
+                const holdingsVal = item.holdings * curPrice;
+                const pnlUsd = holdingsVal - item.invested;
+                const pnlPct = (pnlUsd / item.invested) * 100;
+
+                const sellCoins = item.invested / curPrice;
+                const sellPct = (sellCoins / item.holdings) * 100;
+                const keepCoins = item.holdings - sellCoins;
+                const keepVal = keepCoins * curPrice;
+
+                const isHigh = pnlPct > 100;
+                const isSuper = pnlPct > 200;
+                const coinDecimals = item.holdings < 1 ? 4 : 2;
+                
+                const buyPriceFormatted = buyPrice < 1 ? `$${buyPrice.toFixed(4)}` : fmtUSD(buyPrice);
+                const curPriceFormatted = curPrice < 1 ? `$${curPrice.toFixed(4)}` : fmtUSD(curPrice);
+
+                // 1. Таблица 1
+                const tr = document.createElement('tr');
+                if (isHigh) tr.className = 'high-profit-row';
+
+                tr.innerHTML = `
+                    <td style="font-weight:700">
+                        <div>${item.symbol} <span class="mu">(${item.name})</span></div>
+                        ${isHigh ? '<span class="badge-high">>100% PNL</span>' : ''}
+                    </td>
+                    <td>${fmtUSD(item.invested)}</td>
+                    <td style="font-weight:600">${fmtNum(item.holdings, coinDecimals)} ${item.symbol}</td>
+                    <td style="font-weight:600">${fmtUSD(holdingsVal)}</td>
+                    <td style="color:var(--mu)">${buyPriceFormatted}</td>
+                    <td style="font-weight:600">${curPriceFormatted}</td>
+                    <td class="${pnlPct >= 0 ? 'pos' : ''}">${pnlPct >= 0 ? '+' : ''}${pnlPct.toFixed(2)}%</td>
+                    <td class="amber">${fmtNum(sellCoins, coinDecimals)} ${item.symbol}</td>
+                    <td class="amber">${sellPct.toFixed(2)}%</td>
+                    <td class="pos">${fmtNum(keepCoins, coinDecimals)} ${item.symbol}</td>
+                    <td class="pos">${fmtUSD(keepVal)}</td>
+                `;
+                tBody.appendChild(tr);
+
+                // 2. Таблица 2 (PNL > 200%)
+                if (isSuper) {
+                    superCount++;
+                    const superTakeUsd = item.invested * 2;
+                    const superSellCoins = superTakeUsd / curPrice;
+                    const superSellPct = (superSellCoins / item.holdings) * 100;
+                    const superKeepCoins = item.holdings - superSellCoins;
+                    const superKeepVal = superKeepCoins * curPrice;
+
+                    const superTr = document.createElement('tr');
+                    superTr.className = 'super-profit-row';
+                    superTr.innerHTML = `
+                        <td style="font-weight:700">
+                            <div>${item.symbol} <span class="mu">(${item.name})</span></div>
+                            <span class="badge-super">>200% PNL</span>
+                        </td>
+                        <td>${fmtUSD(item.invested)}</td>
+                        <td style="font-weight:600">${fmtUSD(holdingsVal)}</td>
+                        <td style="font-weight:600">${curPriceFormatted}</td>
+                        <td class="pos">+${pnlPct.toFixed(2)}%</td>
+                        <td class="purp">${fmtUSD(superTakeUsd)}</td>
+                        <td class="purp">${fmtNum(superSellCoins, coinDecimals)} ${item.symbol}</td>
+                        <td class="purp">${superSellPct.toFixed(2)}%</td>
+                        <td class="pos">${fmtNum(superKeepCoins, coinDecimals)} ${item.symbol}</td>
+                        <td class="pos">${fmtUSD(superKeepVal)}</td>
+                    `;
+                    sBody.appendChild(superTr);
+                }
+
+                // 3. Карточки
+                const card = document.createElement('div');
+                card.className = `card ${isSuper ? 'super-profit-card' : (isHigh ? 'high-profit-card' : '')}`;
+                card.innerHTML = `
+                    <div class="card-header">
+                        <div class="card-title">${item.symbol} <span class="mu" style="font-size:11px;font-weight:normal">(${item.name})</span></div>
+                        <span class="pos">+${pnlPct.toFixed(2)}%</span>
+                    </div>
+                    <div class="k-grid">
+                        <div><span>Цена покупки</span><b>${buyPriceFormatted}</b></div>
+                        <div><span>Текущая цена</span><b>${curPriceFormatted}</b></div>
+                        <div><span>Инвестировано</span><b>${fmtUSD(item.invested)}</b></div>
+                        <div><span>Текущий баланс</span><b>${fmtUSD(holdingsVal)}</b></div>
+                        <div><span>Продать монет</span><b class="amber">${fmtNum(sellCoins, coinDecimals)} ${item.symbol}</b></div>
+                        <div><span>Продать (%)</span><b class="amber">${sellPct.toFixed(2)}%</b></div>
+                        <div><span>Оставить (бесплатно)</span><b class="pos">${fmtNum(keepCoins, coinDecimals)} ${item.symbol}</b></div>
+                        <div><span>Стоимость остатка</span><b class="pos">${fmtUSD(keepVal)}</b></div>
+                    </div>
+                    <div>
+                        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--mu);margin-bottom:4px">
+                            <span>Вывод тела инвестиций</span>
+                            <span>${sellPct.toFixed(1)}%</span>
+                        </div>
+                        <div class="pbar-bg"><div class="pbar-fill" style="width:${Math.min(sellPct, 100)}%"></div></div>
+                    </div>
+                `;
+                cView.appendChild(card);
+            });
+
+            if (superCount === 0) {
+                sBody.innerHTML = `<tr><td colspan="10" class="empty-row">Сейчас в портфеле нет монет с PNL > +200%</td></tr>`;
+            }
+        }
+
+        // Загрузка состава портфеля с DropsTab
+        async function fetchPortfolioAndPrices() {
+            const statusLine = document.getElementById('statusLine');
+            statusLine.innerText = 'Загрузка портфеля с DropsTab...';
+
+            try {
+                // Публичный CORS-прокси для получения данных
+                const proxyUrl = 'https://api.allorigins.win/raw?url=';
+                const dropsTabApi = `https://api.dropstab.com/v1/portfolios/share/${DROPSTAB_PORTFOLIO_SLUG}`;
+                
+                const res = await fetch(proxyUrl + encodeURIComponent(dropsTabApi));
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.coins && data.coins.length > 0) {
+                        portfolio = data.coins.map(c => ({
+                            symbol: c.symbol.toUpperCase(),
+                            name: c.name || c.symbol,
+                            holdings: parseFloat(c.amount || c.quantity || 0),
+                            invested: parseFloat(c.totalInvested || (c.amount * c.avgBuyPrice) || 0),
+                            price: parseFloat(c.price || 0),
+                            binance: c.symbol.toUpperCase() + 'USDT'
+                        }));
+                        statusLine.innerText = 'Портфель синхронизирован с DropsTab!';
+                    }
+                }
+            } catch (e) {
+                console.warn('Не удалось загрузить портфель с DropsTab напрямую. Используются резервные данные.', e);
+                statusLine.innerText = 'Резервный режим (данные DropsTab недоступны)';
+            }
+
+            // После загрузки состава портфеля обновляем живые цены с Binance
+            await fetchPrices();
+        }
+
+        async function fetchPrices() {
+            const statusLine = document.getElementById('statusLine');
+            let livePrices = {};
+
+            try {
+                const res = await fetch('https://api.binance.com/api/v3/ticker/price');
+                if (res.ok) {
+                    const data = await res.json();
+                    const map = {};
+                    data.forEach(x => map[x.symbol] = parseFloat(x.price));
+                    
+                    portfolio.forEach(coin => {
+                        if (coin.binance && map[coin.binance]) {
+                            livePrices[coin.symbol] = map[coin.binance];
+                        }
+                    });
+                    statusLine.innerText = 'Данные и цены обновлены онлайн · ' + new Date().toLocaleTimeString('ru-RU');
+                }
+            } catch (e) {
+                statusLine.innerText = 'Цены из снимка DropsTab · ' + new Date().toLocaleTimeString('ru-RU');
+            }
+
+            render(livePrices);
+        }
+
+        function toggleView() {
+            const mode = document.getElementById('viewSelect').value;
+            document.getElementById('tableView').classList.toggle('hidden', mode !== 'table');
+            document.getElementById('superTableSection').classList.toggle('hidden', mode !== 'table');
+            document.getElementById('cardsView').classList.toggle('hidden', mode !== 'cards');
+        }
+
+        // Автозапуск
+        fetchPortfolioAndPrices();
+    </script>
+</body>
+</html>
