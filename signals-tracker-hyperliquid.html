@@ -644,7 +644,7 @@ function saveE() {
   fetchCandles(item.id);
 }
 
-function io() { $('ta').value = JSON.stringify(S, null, 2); io2.showModal(); }
+function io() { const clean = S.map(p => { const {candles, rawCandles, ...rest} = p; return rest; }); $('ta').value = JSON.stringify(clean, null, 2); io2.showModal(); }
 function imp() {
   try {
     S = JSON.parse($('ta').value);
