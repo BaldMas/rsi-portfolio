@@ -60,6 +60,12 @@ dialog::backdrop { background: #0008; }
 .pos-table th, .pos-table td { text-align: left; padding: 8px; border-bottom: 1px solid var(--bd); }
 .pos-table th { color: var(--mu); font-weight: normal; font-size: 12px; }
 .pos-table tfoot td { font-weight: bold; border-top: 1px dashed var(--bd); border-bottom: none; }
+.wallet-tabs { display: flex; gap: 4px; margin-bottom: 10px; }
+.wallet-tabs button { padding: 6px 14px; font-size: 13px; border-radius: 8px 8px 0 0; border: 1px solid var(--bd); border-bottom: none; background: var(--bg); color: var(--mu); cursor: pointer; }
+.wallet-tabs button.active { background: var(--cd); color: var(--tx); border-bottom: 2px solid var(--cd); }
+.wallet-tabs button.inactive { border-bottom: 1px solid var(--bd); }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
 </style>
 </head>
 <body>
@@ -93,7 +99,7 @@ dialog::backdrop { background: #0008; }
 <dialog id="io"><textarea id="ta" rows="10" style="width:100%"></textarea><div class="bar"><button onclick="io2.close()">Закрыть</button><span class="sp"></span><button class="p" onclick="imp()">Импортировать JSON</button></div><div class="mu" id="im"></div></dialog>
 
 <script>
-const DB_KEY = 'sigtrack_v17';
+const DB_KEY = 'sigtrack_v18';
 const WALLET_ADDRESS = '0xD34d5dd388560515575692Dcb6033571513A3237';
 const ST = {idea:'Идея', open:'В позиции', closed:'Закрыта', cancel:'Отменена'};
 
@@ -110,6 +116,17 @@ const TICKER_MAP = {
   'SNDK': 'xyz:SNDK',
   'XAG': 'xyz:SILVER'
 };
+
+// Обратный маппинг: HL тикер → сигнальный тикер
+const HL_TO_SIGNAL = {};
+Object.entries(TICKER_MAP).forEach(([sigTicker, hlTicker]) => {
+  const cleanHL = hlTicker.replace(/xyz:/gi, '');
+  // Предпочитаем WTIOIL, MU и т.д. - используем первый НЕ-обобщённый тикер
+  const isPrimary = ['WTIOIL', 'MU', 'NBIS', 'SNDK', 'ZHIPU', 'SKHX', 'SKHYNIX', 'LIT', 'XAG'].includes(sigTicker);
+  if (!HL_TO_SIGNAL[cleanHL] || (isPrimary && HL_TO_SIGNAL[cleanHL] !== sigTicker)) {
+    HL_TO_SIGNAL[cleanHL] = sigTicker;
+  }
+});
 
 const seed = [
   {id: 1, ticker:'LIT', market:'crypto', kind:'Лонг', entry1:3.904, status:'idea', view:'c', createdAt: Date.now() - 86400000 * 3},
@@ -205,10 +222,11 @@ function formatLeverage(levObj) {
 }
 
 // Загрузка позиций
-// Расчет RSI по массиву свечей [t, o, h, l, c, t]
+// Расчет RSI по объектам свечей {t, o, h, l, c, v}
 function calcRSI(candles, period) {
-  if (!candles || candles.length < period + 1) return null;
-  const closes = candles.map(c => parseFloat(c[4]));
+  if (!candles || !Array.isArray(candles) || candles.length < period + 1) return null;
+  const closes = candles.map(c => parseFloat(c.c || c[4]));
+  if (closes.some(isNaN)) return null;
   const deltas = [];
   for (let i = 1; i < closes.length; i++) {
     deltas.push(closes[i] - closes[i - 1]);
@@ -235,17 +253,30 @@ async function fetchRSI(coin, intervals) {
   const startTime = now - (200 * 7 * 24 * 3600 * 1000); // ~200 недель
   const results = {};
   for (const [tf, period] of intervals) {
-    const data = await postApi({
+    let data = await postApi({
       type: 'candleSnapshot',
       req: { coin: coin, interval: tf, startTime: startTime, endTime: now }
     });
-    if (data && Array.isArray(data) && data.length > 0) {
+    // Если не удалось, пробуем с xyz: префиксом
+    if ((!data || !Array.isArray(data) || data.length === 0) && !coin.startsWith('xyz:')) {
+      data = await postApi({
+        type: 'candleSnapshot',
+        req: { coin: 'xyz:' + coin, interval: tf, startTime: startTime, endTime: now }
+      });
+    }
+    if (Array.isArray(data) && data.length > 0) {
       results[tf] = calcRSI(data, period);
-    } else if (data && Array.isArray(data) && data.length === 0) {
-      console.log(`Empty candles for ${coin} ${tf}`);
     }
   }
   return results;
+}
+
+function switchWalletTab(btn, tabId) {
+  const container = $('wallet-positions');
+  const tabContents = container.querySelectorAll('.tab-content');
+  const tabButtons = container.querySelectorAll('.tab-btn');
+  tabContents.forEach(c => c.classList.toggle('active', c.id === 'wallet-' + tabId));
+  tabButtons.forEach(b => b.classList.toggle('active', b === btn));
 }
 
 async function fetchWalletPositions() {
@@ -253,11 +284,16 @@ async function fetchWalletPositions() {
   container.innerHTML = '<div class="mu">Загрузка данных кошелька...</div>';
   
   try {
-    const [mainMeta, xyzMeta, spotState] = await Promise.all([
+    const [mainMeta, xyzMeta, spotState, openOrders, xyzOpenOrders] = await Promise.all([
       postApi({ type: 'meta' }),
       postApi({ type: 'meta', dex: 'xyz' }),
-      postApi({ type: 'spotClearinghouseState', user: WALLET_ADDRESS })
+      postApi({ type: 'spotClearinghouseState', user: WALLET_ADDRESS }),
+      postApi({ type: 'openOrders', user: WALLET_ADDRESS }),
+      postApi({ type: 'openOrders', user: WALLET_ADDRESS, dex: 'xyz' })
     ]);
+
+    // Объединяем ордера с L1 и XYZ DEX
+    const allOpenOrders = [...(Array.isArray(openOrders) ? openOrders : []), ...(Array.isArray(xyzOpenOrders) ? xyzOpenOrders : [])];
 
     const mainCoins = mainMeta?.universe ? mainMeta.universe.map(u => u.name) : [];
     const xyzCoins = xyzMeta?.universe ? xyzMeta.universe.map(u => u.name) : [];
@@ -301,7 +337,9 @@ async function fetchWalletPositions() {
             positionValue: positionValue,
             unrealizedPnl: parseFloat(pos.unrealizedPnl || 0),
             returnOnEquity: parseFloat(pos.returnOnEquity || 0) * 100,
-            leverage: levText
+            leverage: levText,
+            leverageValue: pos.leverage && pos.leverage.value ? pos.leverage.value : 1,
+            marginUsed: parseFloat(pos.marginUsed || 0)
           });
         }
       });
@@ -336,7 +374,8 @@ async function fetchWalletPositions() {
             positionValue: total * entryPx,
             unrealizedPnl: parseFloat(b.unrealizedPnl || 0),
             returnOnEquity: 0,
-            leverage: ''
+            leverage: '',
+            marginUsed: total * entryPx
           });
         }
       });
@@ -353,7 +392,7 @@ async function fetchWalletPositions() {
       }
     });
 
-    if (uniquePositions.length === 0) {
+    if (uniquePositions.length === 0 && (!openOrders || !Array.isArray(openOrders) || openOrders.length === 0)) {
       container.innerHTML = '<div class="mu">Активных позиций не найдено</div>';
       render();
       return;
@@ -363,13 +402,20 @@ async function fetchWalletPositions() {
     let totalUnrealizedPnl = 0;
 
     let html = `
+      <div class="wallet-tabs">
+        <button class="tab-btn active" onclick="switchWalletTab(this, 'pos')">Позиции</button>
+        <button class="tab-btn" onclick="switchWalletTab(this, 'orders')">Ордера</button>
+      </div>
+      <div id="wallet-pos" class="tab-content active">
       <table class="pos-table">
         <thead>
           <tr>
             <th>Рынок</th>
             <th>Актив / Маржа</th>
             <th>Размер</th>
+            <th>Нач. маржа</th>
             <th>Ср. вход</th>
+            <th>Текущая цена</th>
             <th>Стоимость (Value)</th>
             <th>Unrealized PnL</th>
             <th>RSI 4h</th>
@@ -386,10 +432,10 @@ async function fetchWalletPositions() {
 
     // Параллельная загрузка RSI для всех монет
     await Promise.all(uniquePositions.map(async pos => {
-      const rawName = String(pos.coin).toUpperCase().replace('XYZ:', '');
-      if (!rsiCache[rawName]) {
-        const rsiData = await fetchRSI(pos.coin, rsiIntervals);
-        rsiCache[rawName] = rsiData;
+      const cleanName = String(pos.coin).toUpperCase().replace('XYZ:', '').replace('@', '');
+      if (!rsiCache[cleanName]) {
+        const rsiData = await fetchRSI(cleanName, rsiIntervals);
+        rsiCache[cleanName] = rsiData;
       }
     }));
 
@@ -420,35 +466,128 @@ async function fetchWalletPositions() {
 
       const tradeUrl = `https://app.hyperliquid.xyz/trade/${encodeURIComponent(pos.coin)}`;
 
+      const initialMargin = pos.type === 'SPOT'
+        ? 0
+        : Math.abs(pos.szi) * pos.entryPx / (pos.leverageValue || 1);
+
       html += `
         <tr>
           <td><span class="b">${pos.type}</span></td>
           <td><b>${pos.coin}</b> ${side} ${levBadge}</td>
           <td>${Math.abs(pos.szi)}</td>
+          <td>${fmtUsd(initialMargin)}</td>
           <td>${fmt(pos.entryPx)}</td>
+          <td>${fmt(pos.markPx || pos.entryPx)}</td>
           <td><b>${fmtUsd(pos.positionValue)}</b></td>
           <td>${pnlStr}</td>
           <td>${formatRSI(rsiCache[cleanName]?.['4h'])}</td>
           <td>${formatRSI(rsiCache[cleanName]?.['1d'])}</td>
           <td>${formatRSI(rsiCache[cleanName]?.['1w'])}</td>
-          <td><a href="${tradeUrl}" target="_blank" style="color:var(--ac); text-decoration:none">Торговать ↗</a></td>
+          <td><a href="${tradeUrl}" target="_blank" style="color:var(--ac); text-decoration:none">↗</a></td>
         </tr>
       `;
     });
+
+    // Карта открытых лимитных ордеров по тикеру
+    const ordersMap = {};
+    if (Array.isArray(allOpenOrders)) {
+      allOpenOrders.forEach(ord => {
+        const coinKey = String(ord.coin).toUpperCase().replace(/XYZ:/g, '').replace('@', '');
+        if (!ordersMap[coinKey]) ordersMap[coinKey] = [];
+        ordersMap[coinKey].push({
+          side: ord.side === 'B' ? 'buy' : 'sell',
+          price: parseFloat(ord.limitPx)
+        });
+      });
+    }
 
     html += `
         </tbody>
         <tfoot>
           <tr>
-            <td colspan="4">Всего по открытым позициям:</td>
+            <td colspan="5">Всего по открытым позициям:</td>
             <td>${fmtUsd(totalPosValue)}</td>
-            <td colspan="3">$${totalUnrealizedPnl >= 0 ? '+' : ''}${totalUnrealizedPnl.toFixed(2)}</td>
+            <td colspan="4">$${totalUnrealizedPnl >= 0 ? '+' : ''}${totalUnrealizedPnl.toFixed(2)}</td>
           </tr>
         </tfoot>
       </table>
+      </div>
+      <div id="wallet-orders" class="tab-content">
+      <table class="pos-table">
+        <thead>
+          <tr>
+            <th>Тикер</th>
+            <th>Сторона</th>
+            <th>Цена</th>
+            <th>Размер</th>
+            <th>Маржа входа</th>
+            <th>Ссылка</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    // Определяем какие тикеры есть в сигналах и их тип
+    const signalTickers = {};
+    S.forEach(sig => {
+      const t = (sig.ticker || '').toUpperCase().replace(/xyz:/gi, '');
+      signalTickers[t] = sig.market;  // 'crypto' или 'tradfi'
+    });
+
+    if (Array.isArray(allOpenOrders)) {
+      if (allOpenOrders.length === 0) {
+        html += `<tr><td colspan="6" class="mu">Нет открытых ордеров</td></tr>`;
+      } else {
+        allOpenOrders.forEach(ord => {
+          const cleanCoin = ord.coin.replace(/xyz:/gi, '');
+          const signalTicker = HL_TO_SIGNAL[cleanCoin] || cleanCoin;
+          const signalMarket = signalTickers[cleanCoin] || signalTickers[signalTicker];
+          const isSpot = signalMarket === 'crypto';
+          const label = isSpot ? '(spot)' : (signalMarket ? '(margin)' : (ord.coin.includes('xyz:') ? '(spot)' : '(margin)'));
+          const coinDisplay = signalTicker;
+          const entryMargin = Math.abs(parseFloat(ord.sz));
+          const tradeLink = `https://app.hyperliquid.xyz/trade/${encodeURIComponent(ord.coin)}`;
+          const hasCard = !!signalMarket;
+          html += `<tr${hasCard ? '' : ' style="color:var(--r) !important"' }><td>${coinDisplay}</td><td><span class="${ord.side === 'B' ? 'pos' : 'neg'}">${ord.side === 'B' ? 'BUY' : 'SELL'}</span></td><td>${fmt(parseFloat(ord.limitPx))}</td><td>${Math.abs(parseFloat(ord.sz))}</td><td>${fmt(entryMargin)}</td><td><a href="${tradeLink}" target="_blank" style="color:var(--ac)">↗</a></td></tr>`;
+        });
+      }
+    } else {
+      html += `<tr><td colspan="6" class="mu" style="color:var(--r)">Ошибка загрузки ордеров</td></tr>`;
+    }
+
+    html += `
+        </tbody>
+      </table>
+      </div>
     `;
 
     container.innerHTML = html;
+
+    // Обновляем счётчики вкладок
+    const posCount = uniquePositions.length;
+    const orderCount = Array.isArray(allOpenOrders) ? allOpenOrders.length : 0;
+    const posBtn = container.querySelector('.wallet-tabs .tab-btn[onclick*="pos"]');
+    const orderBtn = container.querySelector('.wallet-tabs .tab-btn[onclick*="orders"]');
+    if (posBtn) posBtn.textContent = `Позиции (${posCount})`;
+    if (orderBtn) orderBtn.textContent = `Ордера (${orderCount})`;
+    
+    // Применяем ордера к сигналам и рендерим карточки
+    S.forEach(p => {
+      const tickerKey = (p.ticker || '').toUpperCase();
+      const hlTicker = TICKER_MAP[tickerKey] || tickerKey;
+      const cleanTicker = hlTicker.replace(/xyz:/gi, ''); // Remove xyz: prefix case-insensitive
+      const tickerOrders = ordersMap[cleanTicker] || ordersMap[tickerKey] || [];
+      // DEBUG
+      if (tickerKey === 'WTIOIL') console.log(`[DEBUG WTIOIL] tickerKey="${tickerKey}", hlTicker="${hlTicker}", cleanTicker="${cleanTicker}", tickerOrders=`, tickerOrders);
+      if (tickerKey === 'LIT') console.log(`[DEBUG LIT] tickerKey="${tickerKey}", hlTicker="${hlTicker}", cleanTicker="${cleanTicker}", tickerOrders=`, tickerOrders);
+      // END DEBUG
+      // Обновляем только если ордера есть или это новый сигнал
+      if (tickerOrders.length > 0) {
+        p.orders = tickerOrders;
+      } else if (!p.orders) {
+        p.orders = [];
+      }
+    });
     render();
 
   } catch (e) {
@@ -465,17 +604,27 @@ function chart(p) {
   const hit1 = checkHit(p.entry1, p.rawCandles, p.createdAt);
   const hit2 = checkHit(p.entry2, p.rawCandles, p.createdAt);
 
-  if (p.tp2) L.push({v: p.tp2, c: 'var(--g)', t: 'TP2'});
-  if (p.tp1) L.push({v: p.tp1, c: 'var(--g)', t: 'TP1'});
+  if (p.tp2) L.push({v: p.tp2, c: 'var(--g)', t: 'TP2', dot: true});
+  if (p.tp1) L.push({v: p.tp1, c: 'var(--g)', t: 'TP1', dot: true});
 
   if (activePos && activePos.entryPx > 0) {
-    L.push({v: activePos.entryPx, c: 'var(--g)', t: 'Вход кошелька', solid: true});
+    L.push({v: activePos.entryPx, c: 'var(--g)', t: 'Вход кошелька'});
   }
 
-  if (p.entry1) L.push({v: p.entry1, c: 'var(--ac)', t: 'Вход1' + (hit1 ? ' ✅' : '')});
-  if (p.entry2) L.push({v: p.entry2, c: 'var(--ac)', t: 'Вход2' + (hit2 ? ' ✅' : '')});
+  if (p.entry1) L.push({v: p.entry1, c: 'var(--ac)', t: 'Вход1' + (hit1 ? ' ✅' : ''), dot: true});
+  if (p.entry2) L.push({v: p.entry2, c: 'var(--ac)', t: 'Вход2' + (hit2 ? ' ✅' : ''), dot: true});
   if (p.cur) L.push({v: p.cur, c: 'var(--y)', t: 'Цена'});
   if (p.stop) L.push({v: p.stop, c: 'var(--r)', t: 'Стоп'});
+  
+  // Добавление лимитных ордеров в виде сплошных точек на графике
+  // BUY - зелёные, SELL - красные
+  if (Array.isArray(p.orders)) {
+    p.orders.forEach(ord => {
+      if (ord.price != null) {
+        L.push({v: ord.price, c: ord.side === 'buy' ? 'var(--g)' : 'var(--r)', t: 'Лимит ' + (ord.side === 'buy' ? 'BUY' : 'SELL'), dot: true});
+      }
+    });
+  }
 
   const cd = (p.view === 'c' && p.candles) ? p.candles.slice(-60) : [];
   const vs = L.map(l => l.v).concat(cd.flatMap(c => [c[2], c[3]]));
@@ -485,7 +634,7 @@ function chart(p) {
   const pad = (hi - lo) * 0.15 || hi * 0.05;
   lo -= pad; hi += pad;
 
-  const W = 320, H = 170, pl = 6, pr = 85;
+  const W = 320, H = 170, pl = 16, pr = 85;
   const y = v => H - 8 - (v - lo) / (hi - lo) * (H - 16);
 
   let s = `<svg viewBox="0 0 ${W} ${H}">`;
@@ -502,9 +651,16 @@ function chart(p) {
 
   L.forEach(l => {
     const yy = y(l.v);
-    const dash = l.solid ? '' : (l.t === 'Цена' ? ' stroke-dasharray="3 3"' : ' stroke-dasharray="1 2"');
-    const strokeWidth = l.solid ? '0.75' : '0.5';
-    s += `<line x1="${pl}" x2="${W - pr}" y1="${yy}" y2="${yy}" stroke="${l.c}" stroke-width="${strokeWidth}"${dash}/><text x="${W - pr + 4}" y="${yy + 3}" font-size="9.5" fill="${l.c}">${l.t} ${fmt(l.v)}</text>`;
+    // Вход кошелька и Цена — пунктирные; точки — circle; остальное — сплошные
+    const isDashed = l.t === 'Цена' || l.t === 'Вход кошелька';
+    const dash = isDashed ? ' stroke-dasharray="3 3"' : '';
+    const strokeWidth = 0.75;
+    if (l.dot) {
+      // Тире для входов, тейков и лимитных ордеров, подпись слева
+      s += `<line x1="${pl}" x2="${pl + 10}" y1="${yy}" y2="${yy}" stroke="${l.c}" stroke-width="0.75"/><text x="${pl}" y="${yy + 3}" font-size="9.5" fill="${l.c}" text-anchor="end" style="font-weight:600">${l.t}</text>`;
+    } else {
+      s += `<line x1="${pl}" x2="${W - pr}" y1="${yy}" y2="${yy}" stroke="${l.c}" stroke-width="${strokeWidth}"${dash}/><text x="${W - pr + 4}" y="${yy + 3}" font-size="9.5" fill="${l.c}">${l.t} ${fmt(l.v)}</text>`;
+    }
   });
 
   return s + '</svg>';
@@ -533,7 +689,7 @@ function card(p) {
   const levBadge = (activePos && activePos.leverage) ? `<span class="b b-lev">${activePos.leverage}</span>` : '';
 
   const rr = (p.stop != null && p.tp1 != null && p.entry1 && p.entry1 > p.stop) ? ((p.tp1 - p.entry1) / (p.entry1 - p.stop)) : null;
-  const tv = `https://app.hyperliquid.xyz/trade/${encodeURIComponent(hlSymbol)}`;
+  const tv = `https://app.hyperliquid.xyz/trade/${encodeURIComponent(rawSymbol === 'WTIOIL' ? 'xyz:WTIOIL' : hlSymbol)}`;
 
   const hit1 = checkHit(p.entry1, p.rawCandles, p.createdAt);
   const hit2 = checkHit(p.entry2, p.rawCandles, p.createdAt);
@@ -541,14 +697,21 @@ function card(p) {
   return `
   <div class="c">
     <div class="h">
-      <span class="t">${p.ticker || ''}</span>
+      <a href="${tv}" target="_blank" style="color:var(--tx); text-decoration:none">
+        <span class="t">${p.ticker || ''}</span>
+      </a>
       ${levBadge}
+      <span class="b">4h</span>
+      ${Array.isArray(p.orders) && p.orders.length > 0
+        ? p.orders.map(ord => `<span style="color:${ord.side === 'buy' ? 'var(--g)' : 'var(--r)'}">л.${ord.side === 'buy' ? 'BUY' : 'SELL'} ${fmt(ord.price)}</span>`).join('')
+        : '<span class="neg">нет лимиток</span>'
+      }
       <span class="b">${p.market === 'crypto' ? 'Crypto' : 'HIP-3'}</span>
-      <span class="b s-${p.status}">${ST[p.status] || p.status}</span>
+      <button class="d" style="margin-left:auto" onclick="del(${p.id})">×</button>
     </div>
     <div style="color:${/шорт|short/i.test(p.kind)?'var(--r)':'var(--g)'}; font-weight:600">${p.kind || ''}</div>
     ${chart(p)}
-    ${p.view === 'c' ? `<div class="n"><div>Hyperliquid (${hlSymbol})</div><button class="p btn-sm" onclick="fetchCandles(${p.id})">↻ Обновить</button></div>` : ''}
+    ${p.view === 'c' ? `<div class="n"><button class="p btn-sm" onclick="fetchCandles(${p.id})">↻ Обновить</button></div>` : ''}
     <div class="k">
       <div>Вход<b>${fmt(p.entry1)}${hit1 ? ' ✅' : ''}${p.entry2 ? ' – ' + fmt(p.entry2) + (hit2 ? ' ✅' : '') : ''}</b></div>
       <div>Стоп<b>${fmt(p.stop)}</b></div>
@@ -559,15 +722,8 @@ function card(p) {
     </div>
     ${p.note ? `<div class="n">${p.note}</div>` : ''}
     <div class="r">
-      <input type="text" placeholder="Новая цена" id="inp_${p.id}">
-      <button onclick="price(${p.id})">Записать</button>
-    </div>
-    <div class="r">
       <button onclick="edit(${p.id})">Изменить</button>
       <button onclick="vw(${p.id})">${p.view === 'c' ? 'Уровни' : 'Свечи'}</button>
-      <a href="${tv}" target="_blank"><button>Hyperliquid ↗</button></a>
-      <span style="flex:1"></span>
-      <button class="d" onclick="del(${p.id})">Удалить</button>
     </div>
   </div>`;
 }
@@ -579,17 +735,6 @@ function render() {
   
   $('list').innerHTML = filtered.length ? filtered.map(card).join('') : '<p class="mu">Нет подходящих позиций</p>';
   $('cnt').textContent = `Всего сигналов: ${S.length} | В позиции: ${S.filter(p => p.status === 'open').length}`;
-}
-
-function price(id) {
-  const val = parseFloat($('inp_' + id).value.replace(',', '.'));
-  if (isNaN(val)) return;
-  const p = S.find(x => x.id === id);
-  if (p) {
-    p.cur = val;
-    saveData();
-    render();
-  }
 }
 
 function del(id) {
