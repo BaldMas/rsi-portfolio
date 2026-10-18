@@ -863,14 +863,21 @@ function saveE() {
   fetchCandles(item.id);
 }
 
-function io() { $('ta').value = JSON.stringify(S, null, 2); io2.showModal(); }
+function io() {
+  const cleanS = S.map(p => {
+    const { rawCandles, candles, curCandles, ...signalOnly } = p;
+    return signalOnly;
+  });
+  $('ta').value = JSON.stringify(cleanS, null, 2);
+  io2.showModal();
+}
 function imp() {
   try {
     S = JSON.parse($('ta').value);
     saveData();
     render();
     io2.close();
-    refreshAll();
+    // Не вызываем refreshAll() — импорт только сигналов без свечей
   } catch(e) { alert('Ошибка в формате JSON'); }
 }
 
