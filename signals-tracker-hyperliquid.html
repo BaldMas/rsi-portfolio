@@ -276,7 +276,7 @@ function switchWalletTab(btn, tabId) {
   const tabContents = container.querySelectorAll('.tab-content');
   const tabButtons = container.querySelectorAll('.tab-btn');
   tabContents.forEach(c => c.classList.toggle('active', c.id === 'wallet-' + tabId));
-  tabButtons.forEach(b => b.classList.toggle('active', b === btn));
+  tabButtons.forEach(b => b.classList.toggle('active', b.dataset.tab === tabId));
 }
 
 async function fetchWalletPositions() {
@@ -326,7 +326,12 @@ async function fetchWalletPositions() {
           }
 
           const entryPx = parseFloat(pos.entryPx || 0);
+          let markPx = parseFloat(pos.markPx || 0);
           const positionValue = parseFloat(pos.positionValue || (Math.abs(szi) * entryPx));
+          // Если markPx не пришёл из API, вычисляем из positionValue / size
+          if (!markPx && szi !== 0) {
+            markPx = positionValue / Math.abs(szi);
+          }
           const levText = formatLeverage(pos.leverage);
 
           activePositions.push({
@@ -334,6 +339,7 @@ async function fetchWalletPositions() {
             coin: coinName,
             szi: szi,
             entryPx: entryPx,
+            markPx: markPx,
             positionValue: positionValue,
             unrealizedPnl: parseFloat(pos.unrealizedPnl || 0),
             returnOnEquity: parseFloat(pos.returnOnEquity || 0) * 100,
@@ -366,16 +372,23 @@ async function fetchWalletPositions() {
         const total = parseFloat(b.total);
         if (total > 0 && b.coin !== 'USDC') {
           const entryPx = parseFloat(b.entryPx || 0);
+          let markPx = parseFloat(b.markPx || 0);
+          // Для спота positionValue = total * markPx, если markPx нет — пробуем entryPx
+          const positionValue = parseFloat(b.positionValue || (total * (markPx || entryPx)));
+          if (!markPx && total !== 0) {
+            markPx = positionValue / total;
+          }
           activePositions.push({
             type: 'SPOT',
             coin: b.coin,
             szi: total,
             entryPx: entryPx,
-            positionValue: total * entryPx,
+            markPx: markPx,
+            positionValue: positionValue,
             unrealizedPnl: parseFloat(b.unrealizedPnl || 0),
             returnOnEquity: 0,
             leverage: '',
-            marginUsed: total * entryPx
+            marginUsed: positionValue
           });
         }
       });
@@ -403,8 +416,8 @@ async function fetchWalletPositions() {
 
     let html = `
       <div class="wallet-tabs">
-        <button class="tab-btn active" onclick="switchWalletTab(this, 'pos')">Позиции</button>
-        <button class="tab-btn" onclick="switchWalletTab(this, 'orders')">Ордера</button>
+        <button class="tab-btn active" data-tab="pos" onclick="switchWalletTab(this, 'pos')">Позиции</button>
+        <button class="tab-btn" data-tab="orders" onclick="switchWalletTab(this, 'orders')">Ордера</button>
       </div>
       <div id="wallet-pos" class="tab-content active">
       <table class="pos-table">
@@ -521,6 +534,9 @@ async function fetchWalletPositions() {
             <th>Цена</th>
             <th>Размер</th>
             <th>Маржа входа</th>
+            <th>RSI 4h</th>
+            <th>RSI 1D</th>
+            <th>RSI 7D</th>
             <th>Ссылка</th>
           </tr>
         </thead>
@@ -534,12 +550,38 @@ async function fetchWalletPositions() {
       signalTickers[t] = sig.market;  // 'crypto' или 'tradfi'
     });
 
+    // Собираем уникальные монеты из ордеров для RSI
+    const orderCoins = new Set();
+    if (Array.isArray(allOpenOrders)) {
+      allOpenOrders.forEach(ord => {
+        const cleanCoin = ord.coin.replace(/xyz:/gi, '').replace('@', '').toUpperCase();
+        orderCoins.add(cleanCoin);
+      });
+    }
+
+    // Параллельная загрузка RSI для монет из ордеров
+    const orderRsiIntervals = [['4h', 14], ['1d', 14], ['1w', 14]];
+    const orderRsiCache = {};
+    try {
+      await Promise.all(Array.from(orderCoins).map(async coin => {
+        try {
+          const rsiData = await fetchRSI(coin, orderRsiIntervals);
+          orderRsiCache[coin] = rsiData;
+        } catch (e) {
+          console.warn('RSI fetch failed for', coin, e);
+          orderRsiCache[coin] = {};
+        }
+      }));
+    } catch (e) {
+      console.warn('RSI batch failed', e);
+    }
+
     if (Array.isArray(allOpenOrders)) {
       if (allOpenOrders.length === 0) {
-        html += `<tr><td colspan="6" class="mu">Нет открытых ордеров</td></tr>`;
+        html += `<tr><td colspan="9" class="mu">Нет открытых ордеров</td></tr>`;
       } else {
         allOpenOrders.forEach(ord => {
-          const cleanCoin = ord.coin.replace(/xyz:/gi, '');
+          const cleanCoin = ord.coin.replace(/xyz:/gi, '').replace('@', '').toUpperCase();
           const signalTicker = HL_TO_SIGNAL[cleanCoin] || cleanCoin;
           const signalMarket = signalTickers[cleanCoin] || signalTickers[signalTicker];
           const isSpot = signalMarket === 'crypto';
@@ -548,11 +590,12 @@ async function fetchWalletPositions() {
           const entryMargin = Math.abs(parseFloat(ord.sz));
           const tradeLink = `https://app.hyperliquid.xyz/trade/${encodeURIComponent(ord.coin)}`;
           const hasCard = !!signalMarket;
-          html += `<tr${hasCard ? '' : ' style="color:var(--r) !important"' }><td>${coinDisplay}</td><td><span class="${ord.side === 'B' ? 'pos' : 'neg'}">${ord.side === 'B' ? 'BUY' : 'SELL'}</span></td><td>${fmt(parseFloat(ord.limitPx))}</td><td>${Math.abs(parseFloat(ord.sz))}</td><td>${fmt(entryMargin)}</td><td><a href="${tradeLink}" target="_blank" style="color:var(--ac)">↗</a></td></tr>`;
+          const rsi = orderRsiCache[cleanCoin] || {};
+          html += `<tr${hasCard ? '' : ' style="color:var(--r) !important"' }><td>${coinDisplay}</td><td><span class="${ord.side === 'B' ? 'pos' : 'neg'}">${ord.side === 'B' ? 'BUY' : 'SELL'}</span></td><td>${fmt(parseFloat(ord.limitPx))}</td><td>${Math.abs(parseFloat(ord.sz))}</td><td>${fmt(entryMargin)}</td><td>${formatRSI(rsi['4h'])}</td><td>${formatRSI(rsi['1d'])}</td><td>${formatRSI(rsi['1w'])}</td><td><a href="${tradeLink}" target="_blank" style="color:var(--ac)">↗</a></td></tr>`;
         });
       }
     } else {
-      html += `<tr><td colspan="6" class="mu" style="color:var(--r)">Ошибка загрузки ордеров</td></tr>`;
+      html += `<tr><td colspan="9" class="mu" style="color:var(--r)">Ошибка загрузки ордеров</td></tr>`;
     }
 
     html += `
@@ -566,8 +609,8 @@ async function fetchWalletPositions() {
     // Обновляем счётчики вкладок
     const posCount = uniquePositions.length;
     const orderCount = Array.isArray(allOpenOrders) ? allOpenOrders.length : 0;
-    const posBtn = container.querySelector('.wallet-tabs .tab-btn[onclick*="pos"]');
-    const orderBtn = container.querySelector('.wallet-tabs .tab-btn[onclick*="orders"]');
+    const posBtn = container.querySelector('.wallet-tabs .tab-btn[data-tab="pos"]');
+    const orderBtn = container.querySelector('.wallet-tabs .tab-btn[data-tab="orders"]');
     if (posBtn) posBtn.textContent = `Позиции (${posCount})`;
     if (orderBtn) orderBtn.textContent = `Ордера (${orderCount})`;
     
@@ -865,7 +908,7 @@ function saveE() {
 
 function io() {
   const cleanS = S.map(p => {
-    const { rawCandles, candles, curCandles, ...signalOnly } = p;
+    const { rawCandles, candles, curCandles, cur, orders, ...signalOnly } = p;
     return signalOnly;
   });
   $('ta').value = JSON.stringify(cleanS, null, 2);
