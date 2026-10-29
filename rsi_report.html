@@ -67459,7 +67459,6 @@ const HISTORY = {
 };
 /* HW: fetch history + click popup */
 let HISTORY_LOADED = true;
-let HISTORY={};
 function loadHistory(){fetch('history.json').then(r=>r.json()).then(d=>{HISTORY=d;}).catch(()=>{});}
 loadHistory();
 function showPopup(td){
