@@ -3,6 +3,7 @@
 
 # Только HTML файлы
 !index.html
+!favicon.ico
 !urgent.html
 !watch.html
 !neutral.html
@@ -21,3 +22,5 @@
 !portfel.html
 !rsi_report.html
 !signals-tracker-hyperliquid.html
+!country_cache.json
+!history.json
