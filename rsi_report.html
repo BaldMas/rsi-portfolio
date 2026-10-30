@@ -67461,19 +67461,34 @@ const HISTORY = {
 let HISTORY_LOADED = true;
 function loadHistory(){} /* embedded at build */
 loadHistory();
+const COLMAP={'Цена':'price','Объём 24ч':'volume24h','Z 1D':'z_1d',
+              'RSI 4h':'RSI_4h','RSI 1D':'RSI_1D','RSI 1W':'RSI_1W'};
+function getSeries(row,key){
+  const ticker=row.querySelector('td.tk').dataset.v;
+  const full=row.dataset.dex+':'+ticker;
+  const sub=HISTORY[full]||HISTORY[ticker]||{};
+  const out=[];
+  Object.keys(sub).forEach(k=>{ if(k.toLowerCase()===key.toLowerCase()) out.push(...sub[k]); });
+  out.sort((a,b)=>a.t<b.t?-1:a.t>b.t?1:0);
+  return out.filter((p,i)=>i===0||p.t!==out[i-1].t||p.v!==out[i-1].v);
+}
 function showPopup(td){
-  const ticker=td.closest('tr').querySelector('td.tk').dataset.v||'';
-  const idx=Array.from(td.parentNode.children).indexOf(td);
-  const hdr=document.querySelector('#tbl thead tr').children[idx].textContent.trim();
-  const key=hdr.replace(/\s+/g,'_').toLowerCase();
-  function render(){
-    const tickerNorm=ticker.toUpperCase(); const sub=(HISTORY[tickerNorm]||HISTORY[ticker]||HISTORY[ticker.toLowerCase()]||{}); const items=sub[key]||sub[hdr]||sub[key.toLowerCase()]||sub[hdr.toLowerCase()]||sub[Object.keys(sub).find?k=>k.toLowerCase()===key.toLowerCase():null]||[];
-    const html='<h3 style="margin:0 0 8px;padding:6px 8px;background:#4a4e55;border-radius:4px;color:#fff;font-size:15px;">'+ticker+' · '+hdr+'</h3><table><tr><th>t</th><th>v</th></tr>'+items.map(it=>'<tr style="border-bottom:1px solid #444;"><td style="padding:3px 4px;">'+it.t+'</td><td style="padding:3px 4px;text-align:right;">'+it.v+'</td></tr>').join('')+'</table><button onclick="this.parentElement.remove()" style="margin-top:10px;padding:6px 12px;background:#555;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:12px;">close</button>';
+  const row=td.closest('tr');
+  const idx=td.cellIndex;
+  const th=document.querySelector('#tbl thead tr').children[idx];
+  const hdr=th.textContent.trim();
+  const key=COLMAP[hdr];
+  const ticker=row.querySelector('td.tk').dataset.v;
+  const items=key?getSeries(row,key):[];
   const d=document.createElement('div');
-  d.style.cssText='position:fixed;top:10%;left:10%;width:320px;background:#2b2d31;border:2px solid #555;padding:14px;z-index:9999;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.6);font-family:sans-serif;font-size:13px;color:#e8e8e8';
-  d.innerHTML=html; d.querySelector('button').onclick=()=>d.remove(); document.body.appendChild(d);
-  }
-  const _sub=HISTORY[ticker]||{}; const _items=_sub[key]||_sub[hdr]||_sub[Object.keys(_sub).find?k=>k.toLowerCase()===key.toLowerCase():null]||[]; if(!(HISTORY[ticker]&&_items.length>0)){loadHistory();setTimeout(()=>{if(HISTORY[ticker]&&((HISTORY[ticker][key]||HISTORY[ticker][hdr])&&((HISTORY[ticker][key]||HISTORY[ticker][hdr]).length>0))){render();}else{const tmp=document.createElement('div');tmp.textContent='Нет данных';tmp.style.cssText='position:fixed;top:10%;left:10%;padding:12px;background:#2b2d31;color:#fff;border-radius:6px;z-index:9999';document.body.appendChild(tmp);setTimeout(()=>tmp.remove(),1500);}},600);}else{render();}
+  d.style.cssText='position:fixed;top:10%;left:10%;width:320px;max-height:80vh;overflow:auto;background:#2b2d31;border:2px solid #555;padding:14px;z-index:9999;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.6);font:13px sans-serif;color:#e8e8e8';
+  d.innerHTML='<h3 style="margin:0 0 8px">'+row.dataset.dex+':'+ticker+' · '+hdr+'</h3>'+
+    (items.length
+      ? '<table style="width:100%">'+items.map(it=>'<tr><td>'+it.t+'</td><td style="text-align:right">'+it.v+'</td></tr>').join('')+'</table>'
+      : '<p>Нет данных</p>')+
+    '<button style="margin-top:10px">close</button>';
+  d.querySelector('button').onclick=()=>d.remove();
+  document.body.appendChild(d);
 }
 if(document.querySelectorAll){
 document.querySelectorAll('td.n').forEach(td=>{
