@@ -1,121 +1,121 @@
 ﻿Биржа;Монета (API);Тикер;Название;Категория;Страна;Цена;Объём 24ч, $
-xyz;xyz:ANT;ANT;ANT;Акция;China;110.73;12163932.5366
-xyz;xyz:CAMBRICON;CAMBRICON;CAMBRICON;Акция;China;113.12;19098.8322
-xyz;xyz:MINIMAX;MINIMAX;MINIMAX;Акция;China;19.928;2905227.911650001
-xyz;xyz:SHEIN;SHEIN;SHEIN;Акция;China;4.6621;239672.64296
-para;para:UNITREE;UNITREE;UNITREE;Акция;China;93.4429;602377.46974
-xyz;xyz:UNITREE;UNITREE;UNITREE;Акция;China;93.406;21021935.92037001
-xyz;xyz:ZHIPU;ZHIPU;ZHIPU;Акция;China;57.107;4567713.348451
-xyz;xyz:NIFTY;NIFTY;NIFTY;ETF;India;23558.0;218689.7345999999
-xyz;xyz:JIO;JIO;JIO;Акция;India;15.08;1277093.3536999999
-xyz;xyz:RELIANCE;RELIANCE;RELIANCE;Акция;India;13.843;91992.1649
-xyz;xyz:KIOXIA;KIOXIA;KIOXIA;Акция;Japan;69.156;7287587.579082996
-xyz;xyz:SOFTBANK;SOFTBANK;SOFTBANK;Акция;Japan;27.007;207171.156783
-xyz;xyz:HYUNDAI;HYUNDAI;HYUNDAI;Акция;South Korea;207.92;679969.2056799999
-xyz;xyz:GIGADEV;GIGADEV;GIGADEV;Акция;US;37.872;1372616.1132399999
-xyz;xyz:HO;HO;HO;Акция;US;4.5765;467501.2769000001
+xyz;xyz:ANT;ANT;ANT;Акция;China;111.78;12908854.9741
+xyz;xyz:CAMBRICON;CAMBRICON;CAMBRICON;Акция;China;114.22;19107.9706
+xyz;xyz:MINIMAX;MINIMAX;MINIMAX;Акция;China;19.915;2903335.044750001
+xyz;xyz:SHEIN;SHEIN;SHEIN;Акция;China;4.62;286798.09001
+para;para:UNITREE;UNITREE;UNITREE;Акция;China;93.6461;600351.9878199999
+xyz;xyz:UNITREE;UNITREE;UNITREE;Акция;China;93.593;21049733.898180004
+xyz;xyz:ZHIPU;ZHIPU;ZHIPU;Акция;China;57.146;4562472.789093999
+xyz;xyz:NIFTY;NIFTY;NIFTY;ETF;India;23564.0;227540.7424999999
+xyz;xyz:JIO;JIO;JIO;Акция;India;15.121;1291835.0166
+xyz;xyz:RELIANCE;RELIANCE;RELIANCE;Акция;India;13.85;90866.9842
+xyz;xyz:KIOXIA;KIOXIA;KIOXIA;Акция;Japan;69.062;7170680.265195997
+xyz;xyz:SOFTBANK;SOFTBANK;SOFTBANK;Акция;Japan;26.941;206231.106196
+xyz;xyz:HYUNDAI;HYUNDAI;HYUNDAI;Акция;South Korea;207.93;676529.7757100001
+xyz;xyz:GIGADEV;GIGADEV;GIGADEV;Акция;US;37.829;1371318.4992299997
+xyz;xyz:HO;HO;HO;Акция;US;4.5992;462110.1699
 xyz;xyz:OURA;OURA;OURA;Акция;US;48.377;946.7757
-xyz;xyz:PURRDAT;PURRDAT;PURRDAT;Акция;US;9.813;6265410.4695000015
-xyz;xyz:IREN;IREN;IREN Limited;Акция;Австралия;22.575;3338193.0560999983
-xyz;xyz:BRENTOIL;BRENTOIL;Нефть Brent;Товар;Без страны (товар);105.68;450694772.89679986
-xyz;xyz:CL;CL;Нефть WTI;Товар;Без страны (товар);97.558;477195408.29494107
-xyz;xyz:COPPER;COPPER;Медь;Товар;Без страны (товар);6.3713;4831321.133226
-xyz;xyz:GOLD;GOLD;Золото;Товар;Без страны (товар);3907.6;85675144.40162998
-xyz;xyz:NATGAS;NATGAS;Природный газ;Товар;Без страны (товар);2.8992;8625477.118890002
-xyz;xyz:PALLADIUM;PALLADIUM;Палладий;Товар;Без страны (товар);944.51;1164358.996606
-xyz;xyz:PLATINUM;PLATINUM;Платина;Товар;Без страны (товар);1424.6;1969346.5127999997
-xyz;xyz:SILVER;SILVER;Серебро;Товар;Без страны (товар);48.977;224322495.3113899
-xyz;xyz:ARM;ARM;Arm Holdings;Акция;Великобритания;202.33;3720292.206600001
-xyz;xyz:BB;BB;BlackBerry;Акция;Канада;8.0579;3735445.870789999
-xyz;xyz:BABA;BABA;Alibaba;Акция;Китай;102.19;3527542.7703299983
-xyz;xyz:CXMT;CXMT;ChangXin Memory Technologies;Акция;Китай;5.8752;15906110.716609996
-xyz;xyz:EWJ;EWJ;iShares MSCI Japan ETF;ETF;Не определена;92.557;542815.1391420001
-xyz;xyz:EWT;EWT;iShares MSCI Taiwan ETF;ETF;Не определена;97.462;214891.3355699999
-xyz;xyz:EWY;EWY;iShares MSCI South Korea ETF;ETF;Не определена;154.32;44414046.35519
-xyz;xyz:EWZ;EWZ;iShares MSCI Brazil ETF;ETF;Не определена;32.296;2074309.34336
-xyz;xyz:KORU;KORU;Direxion Daily South Korea Bull 3X Shares;ETF;Не определена;10.865;58288064.840000026
-xyz;xyz:KSTR;KSTR;KraneShares China Tech.&Semic. STAR 50 Index ETF;ETF;Не определена;16.776;614552.6192199999
-xyz;xyz:LYTE;LYTE;Roundhill Photonics & Optics ETF;ETF;Не определена;15.72;409978.6798799998
-xyz;xyz:MAGS;MAGS;Roundhill Magnificent Seven ETF;ETF;Не определена;67.844;190218.77284
-xyz;xyz:NCLD;NCLD;Roundhill Neocloud ETF;ETF;Не определена;14.326;89560.14811
-xyz;xyz:SMH;SMH;VanEck Semiconductor ETF;ETF;Не определена;517.98;862154.7120200002
-xyz;xyz:SNXX;SNXX;Tradr 2X Long Sndk Daily ETF;ETF;Не определена;6.283;11453656.732649999
-xyz;xyz:SOXL;SOXL;Direxion Daily Semiconductor Bull 3X Shares;ETF;Не определена;72.591;252004327.59711006
-xyz;xyz:TLT;TLT;iShares 20+ Year Treasury Bond ETF;ETF;Не определена;81.562;1736230.9873000006
-xyz;xyz:URNM;URNM;Sprott Uranium Miners ETF;ETF;Не определена;41.47;281642.6983100001
-xyz;xyz:XBI;XBI;State Street SPDR S&P Biotech ETF;ETF;Не определена;152.21;199050.3336
-xyz;xyz:XLE;XLE;State Street Energy Select Sector SPDR ETF;ETF;Не определена;67.912;193883.6535199999
-xyz;xyz:ASML;ASML;ASML;Акция;Нидерланды;1562.1;1244305.7121999995
-io;io:NBIS;NBIS;Nebius Group;Акция;Нидерланды;144.5;1831276.8678999995
-xyz;xyz:NBIS;NBIS;Nebius Group;Акция;Нидерланды;144.71;34483160.24990001
-io;io:DRAM;DRAM;Roundhill Memory ETF;ETF;США;47.378;2666426.25077
-xyz;xyz:DRAM;DRAM;Roundhill Memory ETF;ETF;США;47.403;121672566.84370004
-xyz;xyz:AAOI;AAOI;Applied Optoelectronics, Inc.;Акция;США;64.465;4301728.428970002
-io;io:AAPL;AAPL;Apple;Акция;США;324.92;118158.52181
-xyz;xyz:AAPL;AAPL;Apple;Акция;США;324.82;154521105.62110987
-xyz;xyz:AMAT;AMAT;Applied Materials, Inc.;Акция;США;384.84;820994.8396200001
-xyz;xyz:AMD;AMD;Advanced Micro Devices;Акция;США;479.15;37299957.51998999
-xyz;xyz:AMZN;AMZN;Amazon;Акция;США;246.49;29795753.94104
-para;para:AVGO;AVGO;Broadcom;Акция;США;327.24;12441.8468
-xyz;xyz:AVGO;AVGO;Broadcom;Акция;США;327.49;2459859.4516000007
-xyz;xyz:BE;BE;Bloom Energy Corporation;Акция;США;205.35;4744596.627000003
-xyz;xyz:BIRD;BIRD;Smartbird, Inc;Акция;США;1.7921;83760.8127
-xyz;xyz:BMNR;BMNR;Bitmine Immersion Technologies, Inc.;Акция;США;19.863;372447.5197000001
-xyz;xyz:BOT;BOT;Robostrategy, Inc.;Акция;США;21.906;672565.6524199999
-xyz;xyz:BX;BX;Blackstone Inc.;Акция;США;119.47;1443816.3961999998
-xyz;xyz:CBRS;CBRS;Cerebras Systems;Акция;США;97.181;17757608.88901001
-xyz;xyz:COIN;COIN;Coinbase;Акция;США;138.48;13052681.87574
-xyz;xyz:COST;COST;Costco Wholesale Corporation;Акция;США;1035.6;227020.4231600001
-xyz;xyz:CRCL;CRCL;Circle Internet Group;Акция;США;72.461;90546152.622547
-xyz;xyz:CRWD;CRWD;CrowdStrike Holdings, Inc.;Акция;США;245.16;1210038.0586999995
-xyz;xyz:CRWV;CRWV;CoreWeave, Inc.;Акция;США;51.491;25096819.77586
-xyz;xyz:CVX;CVX;Chevron Corporation;Акция;США;229.25;42904.7635
-xyz;xyz:DELL;DELL;Dell Technologies Inc.;Акция;США;401.7;4063876.467799999
-xyz;xyz:DKNG;DKNG;DraftKings Inc.;Акция;США;21.59;281961.4183899999
-xyz;xyz:EBAY;EBAY;eBay Inc.;Акция;США;120.7;106651.0779
-xyz;xyz:GEV;GEV;GE Vernova Inc.;Акция;США;873.0;153243.99151
-xyz;xyz:GLW;GLW;Corning Incorporated;Акция;США;124.95;100156.012
-xyz;xyz:GME;GME;GameStop Corp.;Акция;США;24.19;1001967.20581
-xyz;xyz:GOOGL;GOOGL;Alphabet;Акция;США;279.72;99718326.13430999
-xyz;xyz:HIMS;HIMS;Hims & Hers Health, Inc.;Акция;США;25.327;2196636.097710001
-xyz;xyz:HOOD;HOOD;Robinhood;Акция;США;84.352;7125743.946830997
-xyz;xyz:IBM;IBM;International Business Machines Corporation;Акция;США;249.16;572500.3778
-xyz;xyz:ICE;ICE;Intercontinental Exchange, Inc.;Акция;США;171.1;22846.4853
-xyz;xyz:INTC;INTC;Intel;Акция;США;61.75;121832418.94105004
-xyz;xyz:LITE;LITE;Lumentum Holdings;Акция;США;698.26;58386023.64217999
-xyz;xyz:LLY;LLY;Eli Lilly and Company;Акция;США;1401.4;2199596.588929999
-xyz;xyz:LRCX;LRCX;Lam Research Corporation;Акция;США;234.04;71142.8365
-xyz;xyz:META;META;Meta Platforms;Акция;США;610.04;27328793.349940002
-xyz;xyz:MRNA;MRNA;Moderna, Inc.;Акция;США;221.62;11009133.7162
-xyz;xyz:MRVL;MRVL;Marvell Technology;Акция;США;175.54;30606555.662900023
-xyz;xyz:MSFT;MSFT;Microsoft;Акция;США;505.96;22075867.57053
-xyz;xyz:MSTR;MSTR;Strategy;Акция;США;131.24;17156275.63789001
-xyz;xyz:MU;MU;Micron Technology;Акция;США;857.17;150877082.04242998
-xyz;xyz:NET;NET;Cloudflare, Inc.;Акция;США;265.46;2354350.5961999996
-xyz;xyz:NFLX;NFLX;Netflix;Акция;США;62.372;2625746.7700540004
-xyz;xyz:NOW;NOW;ServiceNow, Inc.;Акция;США;105.15;2174223.3828000007
-io;io:NVDA;NVDA;NVIDIA;Акция;США;205.12;2909304.89932
-xyz;xyz:NVDA;NVDA;NVIDIA;Акция;США;205.16;118581434.27848992
-xyz;xyz:ORCL;ORCL;Oracle;Акция;США;117.89;30607240.697809994
-xyz;xyz:PLTR;PLTR;Palantir Technologies;Акция;США;164.77;43605678.68477001
-xyz;xyz:QCOM;QCOM;QUALCOMM Incorporated;Акция;США;164.3;728695.5971999998
-xyz;xyz:QNT;QNT;Quantinuum Inc.;Акция;США;31.635;502888.4394800001
-xyz;xyz:RDDT;RDDT;Reddit, Inc.;Акция;США;91.362;650538.3465999998
-xyz;xyz:RIVN;RIVN;Rivian Automotive, Inc.;Акция;США;13.213;1824887.0149000003
-xyz;xyz:RKLB;RKLB;Rocket Lab Corporation;Акция;США;53.083;6319830.2333700005
-xyz;xyz:SHAZ;SHAZ;SharonAI Holdings Inc.;Акция;США;21.362;372561.3544099999
-io;io:SNDK;SNDK;Sandisk;Акция;США;1111.1;19524900.532999996
-xyz;xyz:SNDK;SNDK;Sandisk;Акция;США;1112.0;270799538.0731999
-xyz;xyz:SPCX;SPCX;Space Exploration Technologies (SpaceX);Акция;США;137.81;98860711.0493
-xyz;xyz:STRC;STRC;Strategy Inc;Акция;США;99.3;1507293.3023
-xyz;xyz:TSLA;TSLA;Tesla;Акция;США;402.1;54224241.90896
-xyz;xyz:TWST;TWST;Twist Bioscience Corporation;Акция;США;129.83;46000.9087
-xyz;xyz:USAR;USAR;USA Rare Earth, Inc.;Акция;США;8.9344;750400.92716
-xyz;xyz:WDC;WDC;Western Digital Corporation;Акция;США;345.82;1865236.2156699998
-xyz;xyz:ZM;ZM;Zoom Communications, Inc.;Акция;США;91.502;146298.558627
-xyz;xyz:TSM;TSM;TSMC;Акция;Тайвань;401.75;2768403.6455499995
-xyz;xyz:UMC;UMC;United Microelectronics Corporation;Акция;Тайвань;16.03;55043.6118
-xyz;xyz:NOK;NOK;Nokia Oyj;Акция;Финляндия;8.4642;359287.75971
-xyz;xyz:SKHX;SKHX;SK hynix;Акция;Южная Корея;1054.2;289718183.23820007
-xyz;xyz:SKHY;SKHY;SK hynix ADR;Акция;Южная Корея;150.32;101158396.00960003
-xyz;xyz:SMSN;SMSN;Samsung Electronics;Акция;Южная Корея;165.34;46981227.55276001
+xyz;xyz:PURRDAT;PURRDAT;PURRDAT;Акция;US;9.8344;6263055.194100001
+xyz;xyz:IREN;IREN;IREN Limited;Акция;Австралия;22.483;3338020.7649999983
+xyz;xyz:BRENTOIL;BRENTOIL;Нефть Brent;Товар;Без страны (товар);106.46;450243104.7607999
+xyz;xyz:CL;CL;Нефть WTI;Товар;Без страны (товар);98.442;476903435.97321194
+xyz;xyz:COPPER;COPPER;Медь;Товар;Без страны (товар);6.3635;4796232.957864001
+xyz;xyz:GOLD;GOLD;Золото;Товар;Без страны (товар);3907.3;85837077.46448
+xyz;xyz:NATGAS;NATGAS;Природный газ;Товар;Без страны (товар);2.9014;8607940.414390001
+xyz;xyz:PALLADIUM;PALLADIUM;Палладий;Товар;Без страны (товар);945.3;1174706.930191
+xyz;xyz:PLATINUM;PLATINUM;Платина;Товар;Без страны (товар);1427.0;1981495.1151899996
+xyz;xyz:SILVER;SILVER;Серебро;Товар;Без страны (товар);48.997;230127506.5198099
+xyz;xyz:ARM;ARM;Arm Holdings;Акция;Великобритания;201.54;3746840.799900001
+xyz;xyz:BB;BB;BlackBerry;Акция;Канада;8.0686;3726131.2167599997
+xyz;xyz:BABA;BABA;Alibaba;Акция;Китай;102.24;3511202.2881899984
+xyz;xyz:CXMT;CXMT;ChangXin Memory Technologies;Акция;Китай;5.872;15903603.547719995
+xyz;xyz:EWJ;EWJ;iShares MSCI Japan ETF;ETF;Не определена;92.599;550404.1477420001
+xyz;xyz:EWT;EWT;iShares MSCI Taiwan ETF;ETF;Не определена;97.41;214924.5148099999
+xyz;xyz:EWY;EWY;iShares MSCI South Korea ETF;ETF;Не определена;154.01;43784727.68782999
+xyz;xyz:EWZ;EWZ;iShares MSCI Brazil ETF;ETF;Не определена;32.132;2020396.51938
+xyz;xyz:KORU;KORU;Direxion Daily South Korea Bull 3X Shares;ETF;Не определена;10.811;58426755.36650003
+xyz;xyz:KSTR;KSTR;KraneShares China Tech.&Semic. STAR 50 Index ETF;ETF;Не определена;16.729;618055.83318
+xyz;xyz:LYTE;LYTE;Roundhill Photonics & Optics ETF;ETF;Не определена;15.702;410988.1447799998
+xyz;xyz:MAGS;MAGS;Roundhill Magnificent Seven ETF;ETF;Не определена;67.925;190228.99054
+xyz;xyz:NCLD;NCLD;Roundhill Neocloud ETF;ETF;Не определена;14.314;89561.33312
+xyz;xyz:SMH;SMH;VanEck Semiconductor ETF;ETF;Не определена;516.78;871344.0462800002
+xyz;xyz:SNXX;SNXX;Tradr 2X Long Sndk Daily ETF;ETF;Не определена;6.2269;11552380.968490003
+xyz;xyz:SOXL;SOXL;Direxion Daily Semiconductor Bull 3X Shares;ETF;Не определена;72.152;251515532.71378002
+xyz;xyz:TLT;TLT;iShares 20+ Year Treasury Bond ETF;ETF;Не определена;81.396;1748869.0824900004
+xyz;xyz:URNM;URNM;Sprott Uranium Miners ETF;ETF;Не определена;41.488;282933.7004300001
+xyz;xyz:XBI;XBI;State Street SPDR S&P Biotech ETF;ETF;Не определена;152.09;199260.3301
+xyz;xyz:XLE;XLE;State Street Energy Select Sector SPDR ETF;ETF;Не определена;67.877;193675.5798799999
+xyz;xyz:ASML;ASML;ASML;Акция;Нидерланды;1560.7;1256134.2770999994
+io;io:NBIS;NBIS;Nebius Group;Акция;Нидерланды;144.55;1828558.7257999997
+xyz;xyz:NBIS;NBIS;Nebius Group;Акция;Нидерланды;144.61;34255414.555500016
+io;io:DRAM;DRAM;Roundhill Memory ETF;ETF;США;47.27;2661816.71889
+xyz;xyz:DRAM;DRAM;Roundhill Memory ETF;ETF;США;47.283;121731202.92090003
+xyz;xyz:AAOI;AAOI;Applied Optoelectronics, Inc.;Акция;США;64.378;4304684.498690001
+io;io:AAPL;AAPL;Apple;Акция;США;324.81;123924.13461
+xyz;xyz:AAPL;AAPL;Apple;Акция;США;324.84;154944661.5993899
+xyz;xyz:AMAT;AMAT;Applied Materials, Inc.;Акция;США;384.15;840722.7191400001
+xyz;xyz:AMD;AMD;Advanced Micro Devices;Акция;США;478.26;37573065.447790004
+xyz;xyz:AMZN;AMZN;Amazon;Акция;США;246.26;29658455.723380007
+para;para:AVGO;AVGO;Broadcom;Акция;США;327.1;12461.453
+xyz;xyz:AVGO;AVGO;Broadcom;Акция;США;327.2;2460334.948200001
+xyz;xyz:BE;BE;Bloom Energy Corporation;Акция;США;209.68;4919644.373300002
+xyz;xyz:BIRD;BIRD;Smartbird, Inc;Акция;США;1.8016;82861.31046
+xyz;xyz:BMNR;BMNR;Bitmine Immersion Technologies, Inc.;Акция;США;19.836;373253.2193800001
+xyz;xyz:BOT;BOT;Robostrategy, Inc.;Акция;США;21.941;667796.89372
+xyz;xyz:BX;BX;Blackstone Inc.;Акция;США;119.53;1420884.7126999998
+xyz;xyz:CBRS;CBRS;Cerebras Systems;Акция;США;97.182;17764291.705350004
+xyz;xyz:COIN;COIN;Coinbase;Акция;США;138.35;12959251.54094
+xyz;xyz:COST;COST;Costco Wholesale Corporation;Акция;США;1035.8;238673.2071100001
+xyz;xyz:CRCL;CRCL;Circle Internet Group;Акция;США;72.457;90550571.49887003
+xyz;xyz:CRWD;CRWD;CrowdStrike Holdings, Inc.;Акция;США;245.26;1207066.0216999995
+xyz;xyz:CRWV;CRWV;CoreWeave, Inc.;Акция;США;51.398;25109134.611210003
+xyz;xyz:CVX;CVX;Chevron Corporation;Акция;США;228.74;42368.5001
+xyz;xyz:DELL;DELL;Dell Technologies Inc.;Акция;США;400.18;4071996.429899999
+xyz;xyz:DKNG;DKNG;DraftKings Inc.;Акция;США;21.592;283543.1410199999
+xyz;xyz:EBAY;EBAY;eBay Inc.;Акция;США;120.75;106815.2934
+xyz;xyz:GEV;GEV;GE Vernova Inc.;Акция;США;872.08;155078.37879
+xyz;xyz:GLW;GLW;Corning Incorporated;Акция;США;124.95;97288.7091
+xyz;xyz:GME;GME;GameStop Corp.;Акция;США;24.153;995468.09395
+xyz;xyz:GOOGL;GOOGL;Alphabet;Акция;США;279.57;99861970.68857999
+xyz;xyz:HIMS;HIMS;Hims & Hers Health, Inc.;Акция;США;25.325;2194893.7353600003
+xyz;xyz:HOOD;HOOD;Robinhood;Акция;США;84.275;6940374.015372997
+xyz;xyz:IBM;IBM;International Business Machines Corporation;Акция;США;249.28;573693.3931999999
+xyz;xyz:ICE;ICE;Intercontinental Exchange, Inc.;Акция;США;171.46;22868.8875
+xyz;xyz:INTC;INTC;Intel;Акция;США;61.586;121187809.37575005
+xyz;xyz:LITE;LITE;Lumentum Holdings;Акция;США;696.58;58385447.60194999
+xyz;xyz:LLY;LLY;Eli Lilly and Company;Акция;США;1397.6;2206141.2094199993
+xyz;xyz:LRCX;LRCX;Lam Research Corporation;Акция;США;233.85;71196.1752
+xyz;xyz:META;META;Meta Platforms;Акция;США;610.42;26815270.581849996
+xyz;xyz:MRNA;MRNA;Moderna, Inc.;Акция;США;220.69;11193664.2432
+xyz;xyz:MRVL;MRVL;Marvell Technology;Акция;США;173.92;30676185.116000023
+xyz;xyz:MSFT;MSFT;Microsoft;Акция;США;505.37;22070766.577890005
+xyz;xyz:MSTR;MSTR;Strategy;Акция;США;131.38;17164207.22316001
+xyz;xyz:MU;MU;Micron Technology;Акция;США;854.57;151049985.67105
+xyz;xyz:NET;NET;Cloudflare, Inc.;Акция;США;273.0;2514414.4736999995
+xyz;xyz:NFLX;NFLX;Netflix;Акция;США;62.391;2660284.3978150003
+xyz;xyz:NOW;NOW;ServiceNow, Inc.;Акция;США;104.98;2177085.365300001
+io;io:NVDA;NVDA;NVIDIA;Акция;США;204.92;2983914.4866299997
+xyz;xyz:NVDA;NVDA;NVIDIA;Акция;США;204.97;119272182.21346991
+xyz;xyz:ORCL;ORCL;Oracle;Акция;США;118.44;30666545.818299998
+xyz;xyz:PLTR;PLTR;Palantir Technologies;Акция;США;164.58;44211495.04349001
+xyz;xyz:QCOM;QCOM;QUALCOMM Incorporated;Акция;США;164.17;729162.5493999997
+xyz;xyz:QNT;QNT;Quantinuum Inc.;Акция;США;31.534;501911.5764200001
+xyz;xyz:RDDT;RDDT;Reddit, Inc.;Акция;США;91.287;638473.05413
+xyz;xyz:RIVN;RIVN;Rivian Automotive, Inc.;Акция;США;13.196;1826844.2686200007
+xyz;xyz:RKLB;RKLB;Rocket Lab Corporation;Акция;США;52.852;6246885.57741
+xyz;xyz:SHAZ;SHAZ;SharonAI Holdings Inc.;Акция;США;21.173;378872.0614999998
+io;io:SNDK;SNDK;Sandisk;Акция;США;1106.9;19392827.59347
+xyz;xyz:SNDK;SNDK;Sandisk;Акция;США;1107.1;272340749.2157999
+xyz;xyz:SPCX;SPCX;Space Exploration Technologies (SpaceX);Акция;США;137.63;98877565.10659999
+xyz;xyz:STRC;STRC;Strategy Inc;Акция;США;99.3;1513331.2823
+xyz;xyz:TSLA;TSLA;Tesla;Акция;США;402.97;54326392.82038999
+xyz;xyz:TWST;TWST;Twist Bioscience Corporation;Акция;США;129.83;45821.8602
+xyz;xyz:USAR;USAR;USA Rare Earth, Inc.;Акция;США;8.9147;749136.274587
+xyz;xyz:WDC;WDC;Western Digital Corporation;Акция;США;345.86;1882423.4223700003
+xyz;xyz:ZM;ZM;Zoom Communications, Inc.;Акция;США;91.435;146254.240114
+xyz;xyz:TSM;TSM;TSMC;Акция;Тайвань;401.27;2756097.8258899995
+xyz;xyz:UMC;UMC;United Microelectronics Corporation;Акция;Тайвань;15.961;57125.6822
+xyz;xyz:NOK;NOK;Nokia Oyj;Акция;Финляндия;8.4761;357816.978931
+xyz;xyz:SKHX;SKHX;SK hynix;Акция;Южная Корея;1053.1;290263658.65599996
+xyz;xyz:SKHY;SKHY;SK hynix ADR;Акция;Южная Корея;149.92;100549516.99120003
+xyz;xyz:SMSN;SMSN;Samsung Electronics;Акция;Южная Корея;164.9;47241425.36382001
